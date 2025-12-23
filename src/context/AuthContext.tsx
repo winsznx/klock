@@ -1,7 +1,10 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { useAccount } from 'wagmi'
+// Use useAppKitAccount from Reown instead of useAccount from wagmi
+// This is CRITICAL because wagmi's useAccount only works for EVM chains,
+// while useAppKitAccount works for ALL chains including Bitcoin/Leather
+import { useAppKitAccount } from '@reown/appkit/react'
 
 interface AuthContextType {
     isLoggedIn: boolean
@@ -14,7 +17,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const { address, isConnected } = useAccount()
+    // useAppKitAccount works for ALL chains (EVM, Bitcoin, Solana)
+    // Unlike wagmi's useAccount which only works for EVM chains
+    const { address, isConnected } = useAppKitAccount()
     const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     // Check localStorage for login state on mount
