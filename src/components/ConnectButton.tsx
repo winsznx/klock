@@ -1,15 +1,15 @@
 'use client'
 
-import { useAppKit } from '@reown/appkit/react'
-import { useDisconnect } from 'wagmi'
+import { useAppKit, useDisconnect } from '@reown/appkit/react'
 import { LogOut, Wallet, LogIn, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
 
 export default function ConnectButton() {
     const { open } = useAppKit()
-    const { isConnected, address, isLoggedIn, login, logout } = useAuth()
+    // Use Reown's useDisconnect instead of wagmi's - works for all chains including Bitcoin
     const { disconnect } = useDisconnect()
+    const { isConnected, address, isLoggedIn, login, logout } = useAuth()
     const [mounted, setMounted] = useState(false)
 
     // Prevent hydration mismatch
