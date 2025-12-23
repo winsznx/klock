@@ -3,9 +3,21 @@
 import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
-import { mainnet, arbitrum, base, sepolia } from '@reown/appkit/networks'
+import {
+    mainnet,
+    arbitrum,
+    base,
+    sepolia,
+    polygon,
+    optimism,
+    avalanche,
+    bsc,
+    celo,
+    baseSepolia
+} from '@reown/appkit/networks'
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
+import { AuthProvider } from './AuthContext'
 
 // Set up queryClient
 const queryClient = new QueryClient()
@@ -16,29 +28,23 @@ if (!projectId) {
 
 // Set up metadata
 const metadata = {
-    name: 'Social Ritual dApp',
-    description: 'A daily social ritual engagement dApp on Base and Stacks',
-    url: 'https://social-ritual.example.com', // origin must match your domain & subdomain
+    name: 'PULSE - Social Ritual dApp',
+    description: 'A daily social ritual engagement dApp on Base and multi-chain',
+    url: typeof window !== 'undefined' ? window.location.origin : 'https://klock-jade.vercel.app',
     icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { bitcoin, bitcoinTestnet } from '@reown/appkit/networks'
-
-// Define adapters
-const bitcoinAdapter = new BitcoinAdapter({
-    projectId
-})
-
-// Create the modal
+// Create the modal - EVM chains only (no Bitcoin adapter to prevent Leather auto-trigger)
 const modal = createAppKit({
-    adapters: [wagmiAdapter, bitcoinAdapter],
+    adapters: [wagmiAdapter],
     projectId,
-    networks: [mainnet, arbitrum, base, sepolia, bitcoin, bitcoinTestnet],
+    networks: [mainnet, polygon, optimism, arbitrum, base, bsc, avalanche, celo, sepolia, baseSepolia],
     defaultNetwork: base,
     metadata: metadata,
     features: {
         analytics: true,
+        email: false,
+        socials: false,
     },
     themeMode: 'light',
     themeVariables: {
@@ -53,10 +59,13 @@ function ContextProvider({ children, cookies }: { children: ReactNode; cookies: 
     return (
         <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
             <QueryClientProvider client={queryClient}>
-                {children}
+                <AuthProvider>
+                    {children}
+                </AuthProvider>
             </QueryClientProvider>
         </WagmiProvider>
     )
 }
 
 export default ContextProvider
+
