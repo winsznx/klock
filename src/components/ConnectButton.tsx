@@ -1,6 +1,7 @@
 'use client'
 
 import { useAppKit, useDisconnect } from '@reown/appkit/react'
+import { useRouter } from 'next/navigation'
 import { LogOut, Wallet, LogIn, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
@@ -10,12 +11,18 @@ export default function ConnectButton() {
     // Use Reown's useDisconnect instead of wagmi's - works for all chains including Bitcoin
     const { disconnect } = useDisconnect()
     const { isConnected, address, isLoggedIn, login, logout } = useAuth()
+    const router = useRouter()
     const [mounted, setMounted] = useState(false)
 
     // Prevent hydration mismatch
     useEffect(() => {
         setMounted(true)
     }, [])
+
+    const handleLoginAndNavigate = () => {
+        login()
+        router.push('/dashboard')
+    }
 
     if (!mounted) return <div className="h-10 w-32 bg-gray-200 rounded-full animate-pulse" />
 
@@ -50,7 +57,7 @@ export default function ConnectButton() {
                     </button>
                 </div>
                 <button
-                    onClick={login}
+                    onClick={handleLoginAndNavigate}
                     className="flex items-center gap-2 bg-gradient-to-r from-[#FF6B00] to-[#ff8533] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200"
                 >
                     <LogIn size={16} />
