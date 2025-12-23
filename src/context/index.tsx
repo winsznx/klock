@@ -54,6 +54,8 @@ const modal = createAppKit({
     ],
     defaultNetwork: base,
     metadata: metadata,
+    // CRITICAL: Disable auto-reconnect to prevent Leather wallet from auto-triggering on page load
+    enableReconnect: false,
     features: {
         analytics: true,
         // Disable email and social login to prevent auto-connect behaviors
