@@ -1,0 +1,8 @@
+[network]
+name = "mainnet"
+stacks_node_rpc_address = "https://api.mainnet.hiro.so"
+deployment_fee_rate = 10
+
+[accounts.deployer]
+# Replace with your 12 or 24 word mnemonic phrase
+mnemonic = "your twelve word mnemonic phrase goes here replace with actual words"
