@@ -1,14 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useAuth } from '@/context/AuthContext'
 import EngagementCard from './EngagementCard'
+import ProtectedRoute from './ProtectedRoute'
 import { motion } from 'framer-motion'
 import {
     Zap, Globe, CloudSun, UserCheck, Clock,
     MessageSquare, Flame, Trophy, TrendingUp, Gift
 } from 'lucide-react'
-import ConnectButton from './ConnectButton'
 
 // Mock Data for the 10 functions
 const INTERACTIONS = [
@@ -20,12 +20,11 @@ const INTERACTIONS = [
     { id: '6', name: 'Commit Message', desc: 'Etch your mood on the ticker.', icon: MessageSquare, points: 20 },
     { id: '7', name: 'Stake for Streak', desc: 'High risk, high reward.', icon: Flame, points: 200, risk: true },
     { id: '8', name: 'Claim Milestone', desc: 'Evolve your profile level.', icon: Trophy, points: 500 },
-    { id: '9', name: 'Predict Pulse', desc: 'Vote on tomorrow’s activity.', icon: TrendingUp, points: 80 },
+    { id: '9', name: 'Predict Pulse', desc: "Vote on tomorrow's activity.", icon: TrendingUp, points: 80 },
     { id: '10', name: 'Open Capsule', desc: 'Reveal long-term rewards.', icon: Gift, points: 1000 },
 ]
 
-export default function QuestDashboard() {
-    const { isConnected } = useAccount()
+function QuestContent() {
     const [completed, setCompleted] = useState<string[]>([])
     const [timestamps, setTimestamps] = useState<Record<string, number>>({})
     const [comboActive, setComboActive] = useState(false)
@@ -63,21 +62,6 @@ export default function QuestDashboard() {
         setCompleted(prev => [...prev, id])
 
         checkCombo(newTimestamps)
-    }
-
-    if (!isConnected) {
-        return (
-            <div className="flex flex-col items-center justify-center p-12 text-center">
-                <div className="bg-orange-50 p-6 rounded-full mb-6 animate-pulse-orange">
-                    <Zap size={48} className="text-[#FF6B00]" />
-                </div>
-                <h2 className="text-2xl font-bold mb-4">Connect to Start Your Ritual</h2>
-                <p className="text-gray-500 mb-8 max-w-md">
-                    Join the global social heartbeat. Check in, sync up, and earn your place in the daily wave.
-                </p>
-                <ConnectButton />
-            </div>
-        )
     }
 
     const progress = (completed.length / INTERACTIONS.length) * 100
@@ -152,5 +136,13 @@ export default function QuestDashboard() {
                 ))}
             </motion.div>
         </div>
+    )
+}
+
+export default function QuestDashboard() {
+    return (
+        <ProtectedRoute>
+            <QuestContent />
+        </ProtectedRoute>
     )
 }
