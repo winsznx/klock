@@ -1,7 +1,7 @@
 import ConnectButton from '@/components/ConnectButton'
 import HeroActions from '@/components/HeroActions'
-import QuestDashboard from '@/components/QuestDashboard'
-import { Zap, Globe, Users, TrendingUp, Shield, Sparkles } from 'lucide-react'
+import { Zap, Globe, Users, TrendingUp, Shield, Sparkles, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -257,10 +257,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quest Dashboard Section */}
-      <section id="dashboard" className="py-12 md:py-20 px-4 md:px-8">
-        <div className="flex flex-col items-center">
-          <QuestDashboard />
+      {/* CTA Section */}
+      <section className="py-12 md:py-20 px-4 md:px-8 bg-gradient-to-r from-[#FF6B00] to-[#FF8533]">
+        <div className="max-w-4xl mx-auto text-center text-white">
+          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+            Ready to Start Your Journey?
+          </h2>
+          <p className="text-lg md:text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
+            Connect your wallet, complete daily rituals, and become part of the world's first decentralized social heartbeat.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <HeroActions />
+            <Link
+              href="/dashboard"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-[#FF6B00] rounded-full font-semibold hover:bg-orange-50 transition-all duration-200 shadow-lg"
+            >
+              View Dashboard
+              <ArrowRight size={20} />
+            </Link>
+          </div>
         </div>
       </section>
 
