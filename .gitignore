@@ -1,6 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Dependencies
+node_modules/
 /node_modules
 /.pnp
 .pnp.*
@@ -85,12 +86,6 @@ $RECYCLE.BIN/
 .cache
 .parcel-cache
 
-# Lock Files (keep one, ignore others)
-# Uncomment the ones you want to ignore
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
-
 # Build artifacts
 .turbo
 .webpack
@@ -120,5 +115,16 @@ playwright/.cache/
 *.bak
 *.backup
 
-# Antigravity artifacts (optional - uncomment if you don't want to commit these)
-# .gemini/
+# Contracts - Solidity
+contracts/solidity/node_modules/
+contracts/solidity/.env
+contracts/solidity/cache/
+contracts/solidity/artifacts/
+contracts/solidity/typechain-types/
+
+# Contracts - Clarity
+contracts/clarity/.cache/
+contracts/clarity/history.txt
+contracts/clarity/settings/Devnet.toml
+contracts/clarity/settings/Testnet.toml
+contracts/clarity/settings/Mainnet.toml
