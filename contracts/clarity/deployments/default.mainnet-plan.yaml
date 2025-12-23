@@ -1,0 +1,18 @@
+---
+id: 0
+name: Mainnet deployment
+network: mainnet
+stacks-node: "https://api.mainnet.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoin.blockstack.com:8332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: pulse
+            expected-sender: SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV
+            cost: 197590
+            path: pulse.clar
+            anchor-block-only: true
+            clarity-version: 4
+      epoch: "3.3"
