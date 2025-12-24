@@ -2,30 +2,25 @@
 
 import { useAuth } from '@/context/AuthContext'
 import { useStacks } from '@/context/StacksContext'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import ConnectButton from './ConnectButton'
 import StacksConnectButton from './StacksConnectButton'
-import { ArrowRight, LogIn } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export default function HeroActions() {
-    const { isConnected: isEvmConnected, isLoggedIn } = useAuth()
-    const { isConnected: isStacksConnected, address: stacksAddress } = useStacks()
-    const router = useRouter()
-
-    const goToDashboard = () => {
-        router.push('/dashboard')
-    }
+    const { isLoggedIn } = useAuth()
+    const { isConnected: isStacksConnected } = useStacks()
 
     // If user is logged in (either EVM or Stacks), show Enter Dashboard
     if (isLoggedIn || isStacksConnected) {
         return (
-            <button
-                onClick={goToDashboard}
+            <Link
+                href="/dashboard"
                 className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg transform hover:-translate-y-0.5"
             >
                 Enter Dashboard
                 <ArrowRight size={20} />
-            </button>
+            </Link>
         )
     }
 
