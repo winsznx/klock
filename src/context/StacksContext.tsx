@@ -21,109 +21,127 @@ async function fetchQuestStatuses(
     address: string,
     contractInfo: { apiUrl: string; contractAddress: string; contractName: string }
 ): Promise<StacksUserProfile | null> {
+    let profile: StacksUserProfile = {
+        totalPoints: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+        lastCheckinDay: 0,
+        questBitmap: 0,
+        level: 1,
+        totalCheckins: 0,
+    }
+
     try {
-        // For each quest ID (1-10), check if completed today using has-completed-quest-today
-        let questBitmap = 0
+        // First, get the current day from the contract
+        const dayResponse = await fetch(
+            `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-day`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sender: address,
+                    arguments: [],
+                }),
+            }
+        )
 
-        for (let questId = 1; questId <= 10; questId++) {
-            try {
-                const response = await fetch(
-                    `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/has-completed-quest-today`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            sender: address,
-                            arguments: [
-                                // First arg: principal (user address) - properly encoded
-                                cvToHex(principalCV(address)),
-                                // Second arg: quest-id as uint128
-                                cvToHex(uintCV(questId))
-                            ],
-                        }),
-                    }
-                )
-
-                if (response.ok) {
-                    const data = await response.json()
-                    console.log(`[Stacks] Quest ${questId} status:`, data)
-                    // If the response indicates the quest is completed
-                    // Clarity true = 0x03, false = 0x04
-                    if (data.okay && data.result === '0x03') {
-                        questBitmap |= (1 << (questId - 1))
-                    }
-                }
-            } catch (err) {
-                console.error(`[Stacks] Error checking quest ${questId}:`, err)
+        let currentDay = 0
+        if (dayResponse.ok) {
+            const dayData = await dayResponse.json()
+            if (dayData.okay && dayData.result) {
+                const dayCv = hexToCV(dayData.result) as any
+                currentDay = Number(dayCv.value || 0)
+                console.log('[Stacks] Current day:', currentDay)
             }
         }
 
-        console.log('[Stacks] Quest bitmap:', questBitmap.toString(2).padStart(10, '0'))
-
-        // Also fetch user profile for points/streak data
-        let profile = {
-            totalPoints: 0,
-            currentStreak: 0,
-            longestStreak: 0,
-            lastCheckinDay: 0,
-            questBitmap,
-            level: 1,
-            totalCheckins: 0,
-        }
-
-        try {
-            const profileResponse = await fetch(
-                `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
+        // Use get-daily-quest-status to get the completed-quests bitmap in ONE call
+        if (currentDay > 0) {
+            const questStatusResponse = await fetch(
+                `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-daily-quest-status`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         sender: address,
                         arguments: [
-                            cvToHex(principalCV(address))
+                            cvToHex(principalCV(address)),
+                            cvToHex(uintCV(currentDay))
                         ],
                     }),
                 }
             )
 
-            if (profileResponse.ok) {
-                const profileData = await profileResponse.json()
-                console.log('[Stacks] User profile response:', profileData)
+            if (questStatusResponse.ok) {
+                const questData = await questStatusResponse.json()
+                console.log('[Stacks] Daily quest status:', questData)
 
-                // Parse the Clarity tuple response
-                if (profileData.okay && profileData.result && profileData.result !== '0x09') {
+                if (questData.okay && questData.result && questData.result !== '0x09') {
                     try {
-                        const cv = hexToCV(profileData.result) as any
-                        console.log('[Stacks] Parsed CV:', cv)
-
-                        // Check if it's an optional some - handle both string and numeric type formats
-                        const isSome = cv.type === ClarityType.OptionalSome || cv.type === 'some'
-                        if (isSome && ('value' in cv)) {
-                            const tuple = cv.value as any
-                            const isTuple = tuple.type === ClarityType.Tuple || tuple.type === 'tuple'
-                            if (isTuple && tuple.data) {
-                                const data = tuple.data
-                                profile.totalPoints = Number(data['total-points']?.value || 0)
-                                profile.currentStreak = Number(data['current-streak']?.value || 0)
-                                profile.longestStreak = Number(data['longest-streak']?.value || 0)
-                                profile.level = Number(data['level']?.value || 1)
-                                profile.totalCheckins = Number(data['total-checkins']?.value || 0)
-                                console.log('[Stacks] Parsed profile:', profile)
+                        const cv = hexToCV(questData.result) as any
+                        // It's optional some -> tuple with completed-quests uint
+                        if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
+                            const tuple = cv.value
+                            if (tuple.data && tuple.data['completed-quests']) {
+                                profile.questBitmap = Number(tuple.data['completed-quests'].value || 0)
+                                console.log('[Stacks] Quest bitmap:', profile.questBitmap.toString(2).padStart(10, '0'))
                             }
                         }
-                    } catch (parseErr) {
-                        console.error('[Stacks] Error parsing profile CV:', parseErr)
+                    } catch (err) {
+                        console.error('[Stacks] Error parsing quest status:', err)
                     }
                 }
             }
-        } catch (err) {
-            console.error('[Stacks] Error fetching profile:', err)
+        }
+
+        // Fetch user profile for points/streak data
+        const profileResponse = await fetch(
+            `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sender: address,
+                    arguments: [
+                        cvToHex(principalCV(address))
+                    ],
+                }),
+            }
+        )
+
+        if (profileResponse.ok) {
+            const profileData = await profileResponse.json()
+            console.log('[Stacks] User profile response:', profileData)
+
+            // Parse the Clarity tuple response
+            if (profileData.okay && profileData.result && profileData.result !== '0x09') {
+                try {
+                    const cv = hexToCV(profileData.result) as any
+                    console.log('[Stacks] Parsed CV type:', cv.type, 'keys:', cv.value ? Object.keys(cv.value.data || {}) : 'none')
+
+                    // Handle optional some wrapping tuple
+                    if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
+                        const tuple = cv.value
+                        if (tuple.data) {
+                            const data = tuple.data
+                            profile.totalPoints = Number(data['total-points']?.value || 0)
+                            profile.currentStreak = Number(data['current-streak']?.value || 0)
+                            profile.longestStreak = Number(data['longest-streak']?.value || 0)
+                            profile.level = Number(data['level']?.value || 1)
+                            profile.totalCheckins = Number(data['total-checkins']?.value || 0)
+                            console.log('[Stacks] Parsed profile:', profile)
+                        }
+                    }
+                } catch (parseErr) {
+                    console.error('[Stacks] Error parsing profile CV:', parseErr)
+                }
+            }
         }
 
         return profile
     } catch (err) {
-        console.error('[Stacks] Error fetching quest statuses:', err)
-        return null
+        console.error('[Stacks] Error fetching data:', err)
+        return profile  // Return default profile instead of null
     }
 }
 
