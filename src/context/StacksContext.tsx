@@ -1,20 +1,6 @@
 'use client'
 
-import { useCallback, useState, useEffect, createContext, useContext, type ReactNode } from 'react'
-import {
-    showConnect,
-    UserSession,
-    AppConfig,
-    openContractCall,
-} from '@stacks/connect'
-import {
-    uintCV,
-    stringUtf8CV,
-    principalCV,
-    PostConditionMode,
-    cvToHex
-} from '@stacks/transactions'
-import { STACKS_MAINNET, STACKS_TESTNET } from '@stacks/network'
+import { useCallback, useState, useEffect, createContext, useContext, useRef, type ReactNode } from 'react'
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
 // Types
@@ -43,12 +29,6 @@ export interface StacksContractInfo {
 
 // Get project ID for WalletConnect bridge
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || ''
-
-// App configuration for @stacks/connect
-const appConfig = new AppConfig(['store_write', 'publish_data'])
-
-// Create a persistent user session
-const userSession = new UserSession({ appConfig })
 
 // Context for Stacks connection state
 interface StacksContextType {
@@ -86,6 +66,10 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     const [userProfile, setUserProfile] = useState<StacksUserProfile | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [isClient, setIsClient] = useState(false)
+
+    // Ref to hold the user session (created lazily on client)
+    const userSessionRef = useRef<any>(null)
 
     // Get contract info based on network
     const contractInfo: StacksContractInfo = isMainnet
@@ -98,27 +82,55 @@ export function StacksProvider({ children }: { children: ReactNode }) {
             network: 'testnet' as const,
         }
 
-    // Check for existing session on mount
+    // Initialize on client only
     useEffect(() => {
-        if (userSession.isUserSignedIn()) {
-            const userData = userSession.loadUserData()
-            const profile = userData.profile
-            // Determine network from address prefix (SP = mainnet, ST = testnet)
-            const stxAddress = userData.profile?.stxAddress?.mainnet || userData.profile?.stxAddress?.testnet
-            if (stxAddress) {
-                setAddress(stxAddress)
-                setIsMainnet(stxAddress.startsWith('SP'))
-                setIsConnected(true)
+        setIsClient(true)
+    }, [])
+
+    // Check for existing session on mount (client only)
+    useEffect(() => {
+        if (!isClient) return
+
+        const initSession = async () => {
+            try {
+                const { AppConfig, UserSession } = await import('@stacks/connect')
+                const appConfig = new AppConfig(['store_write', 'publish_data'])
+                const session = new UserSession({ appConfig })
+                userSessionRef.current = session
+
+                if (session.isUserSignedIn()) {
+                    const userData = session.loadUserData()
+                    const stxAddress = userData.profile?.stxAddress?.mainnet || userData.profile?.stxAddress?.testnet
+                    if (stxAddress) {
+                        setAddress(stxAddress)
+                        setIsMainnet(stxAddress.startsWith('SP'))
+                        setIsConnected(true)
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to initialize Stacks session:', err)
             }
         }
-    }, [])
+
+        initSession()
+    }, [isClient])
 
     // Connect to Stacks wallet
     const connectWallet = useCallback(async () => {
+        if (!isClient) return
+
         setIsLoading(true)
         setError(null)
 
         try {
+            const { showConnect, AppConfig, UserSession } = await import('@stacks/connect')
+
+            // Ensure we have a session
+            if (!userSessionRef.current) {
+                const appConfig = new AppConfig(['store_write', 'publish_data'])
+                userSessionRef.current = new UserSession({ appConfig })
+            }
+
             showConnect({
                 appDetails: {
                     name: 'PULSE',
@@ -129,8 +141,8 @@ export function StacksProvider({ children }: { children: ReactNode }) {
                 // Enable WalletConnect for mobile wallet QR scanning
                 ...(projectId && { walletConnectProjectId: projectId }),
                 onFinish: () => {
-                    if (userSession.isUserSignedIn()) {
-                        const userData = userSession.loadUserData()
+                    if (userSessionRef.current?.isUserSignedIn()) {
+                        const userData = userSessionRef.current.loadUserData()
                         const stxAddress = userData.profile?.stxAddress?.mainnet || userData.profile?.stxAddress?.testnet
                         if (stxAddress) {
                             setAddress(stxAddress)
@@ -144,25 +156,28 @@ export function StacksProvider({ children }: { children: ReactNode }) {
                     setError('Connection cancelled')
                     setIsLoading(false)
                 },
-                userSession,
+                userSession: userSessionRef.current,
             })
         } catch (err) {
             console.error('Failed to connect Stacks wallet:', err)
             setError(err instanceof Error ? err.message : 'Failed to connect wallet')
             setIsLoading(false)
         }
-    }, [])
+    }, [isClient])
 
     // Disconnect wallet
     const disconnectWallet = useCallback(() => {
-        userSession.signUserOut()
+        if (userSessionRef.current) {
+            userSessionRef.current.signUserOut()
+        }
         setIsConnected(false)
         setAddress(null)
         setUserProfile(null)
     }, [])
 
     // Get the Stacks network
-    const getNetwork = useCallback(() => {
+    const getNetwork = useCallback(async () => {
+        const { STACKS_MAINNET, STACKS_TESTNET } = await import('@stacks/network')
         return isMainnet ? STACKS_MAINNET : STACKS_TESTNET
     }, [isMainnet])
 
@@ -171,17 +186,23 @@ export function StacksProvider({ children }: { children: ReactNode }) {
         functionName: string,
         functionArgs: any[] = []
     ): Promise<{ success: boolean; txId?: string; error?: string }> => {
+        if (!isClient) {
+            return { success: false, error: 'Client not ready' }
+        }
         if (!isConnected || !address) {
             return { success: false, error: 'Wallet not connected' }
         }
 
         const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
-        const network = getNetwork()
 
         setIsLoading(true)
         setError(null)
 
         try {
+            const { openContractCall } = await import('@stacks/connect')
+            const { PostConditionMode } = await import('@stacks/transactions')
+            const network = await getNetwork()
+
             return new Promise((resolve) => {
                 openContractCall({
                     network,
@@ -214,7 +235,7 @@ export function StacksProvider({ children }: { children: ReactNode }) {
             setIsLoading(false)
             return { success: false, error: errorMessage }
         }
-    }, [isConnected, address, isMainnet, getNetwork])
+    }, [isClient, isConnected, address, isMainnet, getNetwork])
 
     // Quest functions
     const dailyCheckin = useCallback(() =>
@@ -223,17 +244,25 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     const relaySignal = useCallback(() =>
         executeContractCall('relay-signal', []), [executeContractCall])
 
-    const updateAtmosphere = useCallback((weatherCode: number) =>
-        executeContractCall('update-atmosphere', [uintCV(weatherCode)]), [executeContractCall])
+    const updateAtmosphere = useCallback(async (weatherCode: number) => {
+        const { uintCV } = await import('@stacks/transactions')
+        return executeContractCall('update-atmosphere', [uintCV(weatherCode)])
+    }, [executeContractCall])
 
-    const nudgeFriend = useCallback((friendAddress: string) =>
-        executeContractCall('nudge-friend', [principalCV(friendAddress)]), [executeContractCall])
+    const nudgeFriend = useCallback(async (friendAddress: string) => {
+        const { principalCV } = await import('@stacks/transactions')
+        return executeContractCall('nudge-friend', [principalCV(friendAddress)])
+    }, [executeContractCall])
 
-    const commitMessage = useCallback((message: string) =>
-        executeContractCall('commit-message', [stringUtf8CV(message)]), [executeContractCall])
+    const commitMessage = useCallback(async (message: string) => {
+        const { stringUtf8CV } = await import('@stacks/transactions')
+        return executeContractCall('commit-message', [stringUtf8CV(message)])
+    }, [executeContractCall])
 
-    const predictPulse = useCallback((level: number) =>
-        executeContractCall('predict-pulse', [uintCV(level)]), [executeContractCall])
+    const predictPulse = useCallback(async (level: number) => {
+        const { uintCV } = await import('@stacks/transactions')
+        return executeContractCall('predict-pulse', [uintCV(level)])
+    }, [executeContractCall])
 
     const claimDailyCombo = useCallback(() =>
         executeContractCall('claim-daily-combo-bonus', []), [executeContractCall])
@@ -252,6 +281,8 @@ export function StacksProvider({ children }: { children: ReactNode }) {
 
         try {
             setIsLoading(true)
+            const { principalCV, cvToHex } = await import('@stacks/transactions')
+
             const response = await fetch(
                 `${contract.apiUrl}/v2/contracts/call-read/${contract.contractAddress}/${contract.contractName}/get-user-profile`,
                 {
