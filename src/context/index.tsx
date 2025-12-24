@@ -4,7 +4,6 @@ import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import { defineChain } from '@reown/appkit/networks'
 import {
     mainnet,
     arbitrum,
@@ -38,62 +37,15 @@ const metadata = {
     icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
-// Define Stacks Mainnet custom network
-// CAIP-2 chain ID for Stacks Mainnet is "stacks:1"
-const stacks = defineChain({
-    id: 1,
-    caipNetworkId: 'stacks:1',
-    chainNamespace: 'stacks',
-    name: 'Stacks Mainnet',
-    nativeCurrency: {
-        decimals: 6,
-        name: 'Stacks',
-        symbol: 'STX',
-    },
-    rpcUrls: {
-        default: {
-            http: ['https://api.mainnet.hiro.so'],
-        },
-    },
-    blockExplorers: {
-        default: {
-            name: 'Stacks Explorer',
-            url: 'https://explorer.hiro.so'
-        },
-    },
-})
-
-// Define Stacks Testnet custom network
-const stacksTestnet = defineChain({
-    id: 2147483648,
-    caipNetworkId: 'stacks:2147483648',
-    chainNamespace: 'stacks',
-    name: 'Stacks Testnet',
-    nativeCurrency: {
-        decimals: 6,
-        name: 'Stacks',
-        symbol: 'STX',
-    },
-    rpcUrls: {
-        default: {
-            http: ['https://api.testnet.hiro.so'],
-        },
-    },
-    blockExplorers: {
-        default: {
-            name: 'Stacks Explorer',
-            url: 'https://explorer.hiro.so/?chain=testnet'
-        },
-    },
-})
-
 // Set up Bitcoin Adapter
-// Note: BitcoinAdapter handles Bitcoin L1 and supports Stacks addresses via WalletConnect
+// Leather/Xverse wallets connect via WalletConnect and return both BTC and STX addresses
+// We detect STX addresses by their prefix (SP/ST) and use stx_callContract RPC
 const bitcoinAdapter = new BitcoinAdapter({
     projectId
 })
 
-// Create the modal with EVM, Bitcoin, and Stacks support
+// Create the modal with EVM and Bitcoin support
+// For Stacks: Connect via WalletConnect QR -> Leather returns STX address -> Use stx_callContract RPC
 const modal = createAppKit({
     adapters: [wagmiAdapter, bitcoinAdapter],
     projectId,
@@ -103,15 +55,11 @@ const modal = createAppKit({
         baseSepolia,
         // Additional EVM Networks
         mainnet, polygon, optimism, arbitrum, bsc, avalanche, celo, sepolia,
-        // Bitcoin Networks
+        // Bitcoin Networks - Leather/Xverse connect here and provide STX addresses too
         bitcoin, bitcoinTestnet,
-        // Stacks Networks
-        stacks, stacksTestnet,
     ],
     defaultNetwork: base,
     metadata: metadata,
-    // Disable auto-reconnect to prevent wallet auto-triggering
-    enableReconnect: false,
     features: {
         analytics: true,
         email: false,

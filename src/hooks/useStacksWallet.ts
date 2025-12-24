@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useState, useMemo } from 'react'
-import { useAppKitAccount, useAppKitProvider, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
 // Types
@@ -42,16 +42,20 @@ function isStacksMainnet(address: string | undefined): boolean {
 /**
  * Hook for Stacks contract interaction via Reown AppKit
  * Uses the WalletConnect RPC methods (stx_callContract) directly
+ * 
+ * Leather/Xverse connect via BitcoinAdapter (bip122 namespace) but provide STX addresses
+ * We detect STX addresses by prefix and use stx_* RPC methods
  */
 export function useStacksWallet() {
     const { address, isConnected } = useAppKitAccount()
-    const { walletProvider } = useAppKitProvider<any>('stacks')
+    // Use 'bip122' (Bitcoin namespace) since Leather connects through BitcoinAdapter
+    const { walletProvider } = useAppKitProvider<any>('bip122')
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [userProfile, setUserProfile] = useState<StacksUserProfile | null>(null)
 
-    // Check if this is a Stacks connection
+    // Check if this is a Stacks connection (address starts with SP/ST)
     const isStacksConnected = isConnected && isStacksAddress(address)
     const isMainnet = isStacksMainnet(address)
 
@@ -77,7 +81,7 @@ export function useStacksWallet() {
         }
 
         if (!walletProvider) {
-            return { success: false, error: 'Wallet provider not available' }
+            return { success: false, error: 'Wallet provider not available. Please reconnect.' }
         }
 
         const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
@@ -87,6 +91,7 @@ export function useStacksWallet() {
 
         try {
             // Use the Reown RPC method for Stacks contract calls
+            // This works through the WalletConnect session established via BitcoinAdapter
             const result = await walletProvider.request({
                 method: 'stx_callContract',
                 params: {
