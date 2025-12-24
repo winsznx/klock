@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useCallback, useState, useEffect, ReactNode } from 'react'
 import { connect, request, isConnected, disconnect as stacksDisconnect, getLocalStorage } from '@stacks/connect'
-import { uintCV, stringAsciiCV, principalCV, cvToHex, hexToCV, ClarityType } from '@stacks/transactions'
+import { uintCV, stringUtf8CV, principalCV, cvToHex, hexToCV, ClarityType } from '@stacks/transactions'
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
 // Types
@@ -305,7 +305,7 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     )
 
     const commitMessage = useCallback((message: string) =>
-        executeContractCall('commit-message', [stringAsciiCV(message)]),
+        executeContractCall('commit-message', [stringUtf8CV(message)]),
         [executeContractCall]
     )
 
