@@ -22,20 +22,22 @@ async function fetchQuestStatuses(
     contractInfo: { apiUrl: string; contractAddress: string; contractName: string }
 ): Promise<StacksUserProfile | null> {
     try {
-        // For each quest ID (1-10), check if completed today
+        // For each quest ID (1-10), check if completed today using has-completed-quest-today
         let questBitmap = 0
 
         for (let questId = 1; questId <= 10; questId++) {
             try {
                 const response = await fetch(
-                    `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-quest-status`,
+                    `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/has-completed-quest-today`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             sender: address,
                             arguments: [
-                                // u<quest-id> - unsigned int
+                                // First arg: principal (user address)
+                                `0x0516${address.slice(2)}`, // Standard principal encoding
+                                // Second arg: quest-id as uint128
                                 `0x0100000000000000000000000000000000${questId.toString(16).padStart(2, '0')}`
                             ],
                         }),
@@ -44,12 +46,11 @@ async function fetchQuestStatuses(
 
                 if (response.ok) {
                     const data = await response.json()
-                    // If the response indicates the quest is completed, set the bit
-                    if (data.okay && data.result) {
-                        // Clarity true = 0x03, false = 0x04
-                        if (data.result === '0x03') {
-                            questBitmap |= (1 << (questId - 1))
-                        }
+                    console.log(`[Stacks] Quest ${questId} status:`, data)
+                    // If the response indicates the quest is completed
+                    // Clarity true = 0x03, false = 0x04
+                    if (data.okay && data.result === '0x03') {
+                        questBitmap |= (1 << (questId - 1))
                     }
                 }
             } catch (err) {
@@ -59,8 +60,9 @@ async function fetchQuestStatuses(
 
         console.log('[Stacks] Quest bitmap:', questBitmap.toString(2).padStart(10, '0'))
 
-        return {
-            totalPoints: 0, // Would need to fetch from contract
+        // Also fetch user profile for points/streak data
+        let profile = {
+            totalPoints: 0,
             currentStreak: 0,
             longestStreak: 0,
             lastCheckinDay: 0,
@@ -68,6 +70,32 @@ async function fetchQuestStatuses(
             level: 1,
             totalCheckins: 0,
         }
+
+        try {
+            const profileResponse = await fetch(
+                `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sender: address,
+                        arguments: [
+                            `0x0516${address.slice(2)}`
+                        ],
+                    }),
+                }
+            )
+
+            if (profileResponse.ok) {
+                const profileData = await profileResponse.json()
+                console.log('[Stacks] User profile response:', profileData)
+                // Parse profile data if available (would need to decode Clarity tuple)
+            }
+        } catch (err) {
+            console.error('[Stacks] Error fetching profile:', err)
+        }
+
+        return profile
     } catch (err) {
         console.error('[Stacks] Error fetching quest statuses:', err)
         return null
