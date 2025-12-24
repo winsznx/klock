@@ -4,11 +4,6 @@ import { useCallback, useState, useEffect, createContext, useContext, type React
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
 // Types
-export interface StacksUserData {
-    address: string
-    isMainnet: boolean
-}
-
 export interface StacksUserProfile {
     totalPoints: number
     currentStreak: number
@@ -38,14 +33,14 @@ interface StacksContextType {
     contractInfo: StacksContractInfo
     connectWallet: () => Promise<void>
     disconnectWallet: () => void
-    // Quest functions
-    dailyCheckin: () => Promise<{ success: boolean; txId?: string; error?: string }>
-    relaySignal: () => Promise<{ success: boolean; txId?: string; error?: string }>
-    updateAtmosphere: (weatherCode: number) => Promise<{ success: boolean; txId?: string; error?: string }>
-    nudgeFriend: (friendAddress: string) => Promise<{ success: boolean; txId?: string; error?: string }>
-    commitMessage: (message: string) => Promise<{ success: boolean; txId?: string; error?: string }>
-    predictPulse: (level: number) => Promise<{ success: boolean; txId?: string; error?: string }>
-    claimDailyCombo: () => Promise<{ success: boolean; txId?: string; error?: string }>
+    // Quest functions - accept optional external address for AppKit integration
+    dailyCheckin: (externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
+    relaySignal: (externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
+    updateAtmosphere: (weatherCode: number, externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
+    nudgeFriend: (friendAddress: string, externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
+    commitMessage: (message: string, externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
+    predictPulse: (level: number, externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
+    claimDailyCombo: (externalAddress?: string) => Promise<{ success: boolean; txId?: string; error?: string }>
     isQuestCompleted: (questId: number) => boolean
     refreshData: () => Promise<void>
 }
@@ -54,7 +49,7 @@ const StacksContext = createContext<StacksContextType | null>(null)
 
 /**
  * Provider component for Stacks wallet connection
- * Uses @stacks/connect with the new connect() API
+ * Supports both @stacks/connect flow AND external addresses from AppKit
  */
 export function StacksProvider({ children }: { children: ReactNode }) {
     const [isConnected, setIsConnected] = useState(false)
@@ -91,7 +86,6 @@ export function StacksProvider({ children }: { children: ReactNode }) {
                 const connected = checkIsConnected()
 
                 if (connected) {
-                    // Try to get stored address from localStorage
                     const storedAddress = localStorage.getItem('stacks_connected_address')
                     if (storedAddress) {
                         setAddress(storedAddress)
@@ -116,12 +110,9 @@ export function StacksProvider({ children }: { children: ReactNode }) {
 
         try {
             const { connect } = await import('@stacks/connect')
-
-            // Use the new connect() API which returns address info
             const result = await connect()
 
             if (result && result.addresses && result.addresses.length > 0) {
-                // Find the STX address (mainnet or testnet)
                 const stxAddressInfo = result.addresses.find((addr: { address: string }) =>
                     addr.address.startsWith('SP') || addr.address.startsWith('ST')
                 )
@@ -130,7 +121,6 @@ export function StacksProvider({ children }: { children: ReactNode }) {
                     setAddress(stxAddressInfo.address)
                     setIsMainnet(stxAddressInfo.address.startsWith('SP'))
                     setIsConnected(true)
-                    // Store in localStorage for persistence
                     localStorage.setItem('stacks_connected_address', stxAddressInfo.address)
                 }
             }
@@ -157,25 +147,32 @@ export function StacksProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('stacks_connected_address')
     }, [])
 
-    // Get the Stacks network
-    const getNetwork = useCallback(async () => {
+    // Get the Stacks network based on address
+    const getNetworkForAddress = useCallback(async (addr: string) => {
         const { STACKS_MAINNET, STACKS_TESTNET } = await import('@stacks/network')
-        return isMainnet ? STACKS_MAINNET : STACKS_TESTNET
-    }, [isMainnet])
+        return addr.startsWith('SP') ? STACKS_MAINNET : STACKS_TESTNET
+    }, [])
 
     // Execute a contract call
+    // Accepts optional external address for cases where AppKit detected the address
     const executeContractCall = useCallback(async (
         functionName: string,
-        functionArgs: any[] = []
+        functionArgs: any[] = [],
+        externalAddress?: string
     ): Promise<{ success: boolean; txId?: string; error?: string }> => {
         if (!isClient) {
             return { success: false, error: 'Client not ready' }
         }
-        if (!isConnected || !address) {
-            return { success: false, error: 'Wallet not connected' }
+
+        // Use external address if provided (from AppKit), otherwise use internal address
+        const activeAddress = externalAddress || address
+        if (!activeAddress) {
+            return { success: false, error: 'No Stacks address available' }
         }
 
-        const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
+        // Determine network and contract from address
+        const addressIsMainnet = activeAddress.startsWith('SP')
+        const contract = addressIsMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
 
         setIsLoading(true)
         setError(null)
@@ -183,7 +180,7 @@ export function StacksProvider({ children }: { children: ReactNode }) {
         try {
             const { openContractCall } = await import('@stacks/connect')
             const { PostConditionMode } = await import('@stacks/transactions')
-            const network = await getNetwork()
+            const network = await getNetworkForAddress(activeAddress)
 
             return new Promise((resolve) => {
                 openContractCall({
@@ -207,7 +204,7 @@ export function StacksProvider({ children }: { children: ReactNode }) {
                     },
                     onCancel: () => {
                         setIsLoading(false)
-                        resolve({ success: false, error: 'Transaction cancelled' })
+                        resolve({ success: false, error: 'Transaction cancelled by user' })
                     },
                 })
             })
@@ -217,37 +214,37 @@ export function StacksProvider({ children }: { children: ReactNode }) {
             setIsLoading(false)
             return { success: false, error: errorMessage }
         }
-    }, [isClient, isConnected, address, isMainnet, getNetwork])
+    }, [isClient, address, getNetworkForAddress])
 
-    // Quest functions
-    const dailyCheckin = useCallback(() =>
-        executeContractCall('daily-checkin', []), [executeContractCall])
+    // Quest functions - accept optional external address
+    const dailyCheckin = useCallback((externalAddress?: string) =>
+        executeContractCall('daily-checkin', [], externalAddress), [executeContractCall])
 
-    const relaySignal = useCallback(() =>
-        executeContractCall('relay-signal', []), [executeContractCall])
+    const relaySignal = useCallback((externalAddress?: string) =>
+        executeContractCall('relay-signal', [], externalAddress), [executeContractCall])
 
-    const updateAtmosphere = useCallback(async (weatherCode: number) => {
+    const updateAtmosphere = useCallback(async (weatherCode: number, externalAddress?: string) => {
         const { uintCV } = await import('@stacks/transactions')
-        return executeContractCall('update-atmosphere', [uintCV(weatherCode)])
+        return executeContractCall('update-atmosphere', [uintCV(weatherCode)], externalAddress)
     }, [executeContractCall])
 
-    const nudgeFriend = useCallback(async (friendAddress: string) => {
+    const nudgeFriend = useCallback(async (friendAddress: string, externalAddress?: string) => {
         const { principalCV } = await import('@stacks/transactions')
-        return executeContractCall('nudge-friend', [principalCV(friendAddress)])
+        return executeContractCall('nudge-friend', [principalCV(friendAddress)], externalAddress)
     }, [executeContractCall])
 
-    const commitMessage = useCallback(async (message: string) => {
+    const commitMessage = useCallback(async (message: string, externalAddress?: string) => {
         const { stringUtf8CV } = await import('@stacks/transactions')
-        return executeContractCall('commit-message', [stringUtf8CV(message)])
+        return executeContractCall('commit-message', [stringUtf8CV(message)], externalAddress)
     }, [executeContractCall])
 
-    const predictPulse = useCallback(async (level: number) => {
+    const predictPulse = useCallback(async (level: number, externalAddress?: string) => {
         const { uintCV } = await import('@stacks/transactions')
-        return executeContractCall('predict-pulse', [uintCV(level)])
+        return executeContractCall('predict-pulse', [uintCV(level)], externalAddress)
     }, [executeContractCall])
 
-    const claimDailyCombo = useCallback(() =>
-        executeContractCall('claim-daily-combo-bonus', []), [executeContractCall])
+    const claimDailyCombo = useCallback((externalAddress?: string) =>
+        executeContractCall('claim-daily-combo-bonus', [], externalAddress), [executeContractCall])
 
     // Check if quest is completed
     const isQuestCompleted = useCallback((questId: number): boolean => {
@@ -281,7 +278,6 @@ export function StacksProvider({ children }: { children: ReactNode }) {
                 const data = await response.json()
                 if (data.okay && data.result) {
                     console.log('User profile:', data.result)
-                    // TODO: Parse Clarity tuple response into StacksUserProfile
                 }
             }
         } catch (err) {
@@ -335,17 +331,4 @@ export function useStacks() {
         throw new Error('useStacks must be used within a StacksProvider')
     }
     return context
-}
-
-/**
- * Hook to check multi-chain connection status
- */
-export function useMultiChainStatus() {
-    const stacks = useContext(StacksContext)
-
-    return {
-        isStacksConnected: stacks?.isConnected || false,
-        stacksAddress: stacks?.address || null,
-        stacksNetwork: stacks?.isMainnet ? 'mainnet' : 'testnet',
-    }
 }

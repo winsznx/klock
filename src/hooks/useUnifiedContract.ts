@@ -152,51 +152,51 @@ export function useUnifiedContract() {
     const error = baseContract.error || stacksContract.error
 
     // Unified quest execution - routes to correct contract
-    // For Stacks: Always use StacksContext functions which will show wallet picker for signing
+    // For Stacks: Pass the address from AppKit so StacksContext can use it
     const dailyCheckin = useCallback(async () => {
         if (activeContract === 'base') return baseContract.dailyCheckin()
         if (activeContract === 'stacks') {
-            // Use StacksContext for transaction - it will show wallet picker for signing
-            return stacksContract.dailyCheckin()
+            // Pass stacksAddress (from AppKit or StacksContext) to enable transactions
+            return stacksContract.dailyCheckin(stacksAddress || undefined)
         }
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     const relaySignal = useCallback(async () => {
         if (activeContract === 'base') return baseContract.relaySignal()
-        if (activeContract === 'stacks') return stacksContract.relaySignal()
+        if (activeContract === 'stacks') return stacksContract.relaySignal(stacksAddress || undefined)
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     const updateAtmosphere = useCallback(async (weatherCode: number) => {
         if (activeContract === 'base') return baseContract.updateAtmosphere(weatherCode)
-        if (activeContract === 'stacks') return stacksContract.updateAtmosphere(weatherCode)
+        if (activeContract === 'stacks') return stacksContract.updateAtmosphere(weatherCode, stacksAddress || undefined)
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     const nudgeFriend = useCallback(async (friendAddress: string) => {
         if (activeContract === 'base') return baseContract.nudgeFriend(friendAddress)
-        if (activeContract === 'stacks') return stacksContract.nudgeFriend(friendAddress)
+        if (activeContract === 'stacks') return stacksContract.nudgeFriend(friendAddress, stacksAddress || undefined)
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     const commitMessage = useCallback(async (message: string) => {
         if (activeContract === 'base') return baseContract.commitMessage(message)
-        if (activeContract === 'stacks') return stacksContract.commitMessage(message)
+        if (activeContract === 'stacks') return stacksContract.commitMessage(message, stacksAddress || undefined)
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     const predictPulse = useCallback(async (level: number) => {
         if (activeContract === 'base') return baseContract.predictPulse(level)
-        if (activeContract === 'stacks') return stacksContract.predictPulse(level)
+        if (activeContract === 'stacks') return stacksContract.predictPulse(level, stacksAddress || undefined)
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     const claimDailyCombo = useCallback(async () => {
         if (activeContract === 'base') return baseContract.claimDailyCombo()
-        if (activeContract === 'stacks') return stacksContract.claimDailyCombo()
+        if (activeContract === 'stacks') return stacksContract.claimDailyCombo(stacksAddress || undefined)
         return { success: false, error: 'No supported network connected' }
-    }, [activeContract, baseContract, stacksContract])
+    }, [activeContract, baseContract, stacksContract, stacksAddress])
 
     // Unified refresh
     const refreshData = useCallback(async () => {
