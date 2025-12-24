@@ -5,8 +5,15 @@
 
 import { BASE_CONTRACTS, STACKS_CONTRACTS, PULSE_ABI } from '@/config/contracts'
 import { createPublicClient, http } from 'viem'
-import { base } from 'viem/chains'
+import { base, baseSepolia } from 'viem/chains'
 import { cvToHex, principalCV, hexToCV, ClarityType } from '@stacks/transactions'
+
+export type NetworkFilter =
+    | 'all'
+    | 'base-mainnet'
+    | 'base-testnet'
+    | 'stacks-mainnet'
+    | 'stacks-testnet'
 
 export interface LeaderboardEntry {
     rank: number
@@ -16,6 +23,7 @@ export interface LeaderboardEntry {
     level: number
     streak: number
     network: 'base' | 'stacks'
+    isTestnet: boolean
 }
 
 export interface GlobalStats {
@@ -25,29 +33,48 @@ export interface GlobalStats {
     avgLevel: number
 }
 
-// Known active addresses for demo (in production, you'd get these from events/indexer)
-// These are example addresses - replace with actual active users from your contracts
-const KNOWN_BASE_ADDRESSES: string[] = [
-    '0xcF0A164b64b92Fa6262e312cDB60a12c302e8F1c', // Contract deployer
-]
+// Known active addresses (in production, you'd get these from events/indexer)
+const KNOWN_ADDRESSES = {
+    baseMainnet: [
+        '0xcF0A164b64b92Fa6262e312cDB60a12c302e8F1c', // Contract deployer
+    ],
+    baseTestnet: [
+        '0x22E7AA46aDDF743c99322212852dB2FA17b404b2', // Testnet contract
+    ],
+    stacksMainnet: [
+        'SP2KZ109PC2HRFH8T37ZDBVAQF2DK38RTXQSBK80T',
+    ],
+    stacksTestnet: [
+        'ST31DP8F8CF2GXSZBHHHK5J6Y061744E1TP7FRGHT',
+    ],
+}
 
-const KNOWN_STACKS_ADDRESSES: string[] = [
-    'SP2KZ109PC2HRFH8T37ZDBVAQF2DK38RTXQSBK80T', // Example user
-]
-
-// Create Base public client for reading contract
-const baseClient = createPublicClient({
+// Create Base public clients for reading contracts
+const baseMainnetClient = createPublicClient({
     chain: base,
     transport: http(BASE_CONTRACTS.mainnet.rpcUrl),
+})
+
+const baseTestnetClient = createPublicClient({
+    chain: baseSepolia,
+    transport: http(BASE_CONTRACTS.testnet.rpcUrl),
 })
 
 /**
  * Fetch user profile from Base contract
  */
-async function fetchBaseUserProfile(address: string): Promise<LeaderboardEntry | null> {
+async function fetchBaseUserProfile(
+    address: string,
+    isTestnet: boolean
+): Promise<LeaderboardEntry | null> {
     try {
-        const result = await baseClient.readContract({
-            address: BASE_CONTRACTS.mainnet.address,
+        const client = isTestnet ? baseTestnetClient : baseMainnetClient
+        const contractAddress = isTestnet
+            ? BASE_CONTRACTS.testnet.address
+            : BASE_CONTRACTS.mainnet.address
+
+        const result = await client.readContract({
+            address: contractAddress,
             abi: PULSE_ABI,
             functionName: 'getUserProfile',
             args: [address as `0x${string}`],
@@ -56,13 +83,14 @@ async function fetchBaseUserProfile(address: string): Promise<LeaderboardEntry |
         if (!result || !result.exists) return null
 
         return {
-            rank: 0, // Will be assigned after sorting
+            rank: 0,
             address: address,
             displayAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
             totalPoints: Number(result.totalPoints || 0),
             level: Number(result.level || 1),
             streak: Number(result.currentStreak || 0),
             network: 'base',
+            isTestnet,
         }
     } catch (err) {
         console.error(`[Leaderboard] Error fetching Base profile for ${address}:`, err)
@@ -73,9 +101,15 @@ async function fetchBaseUserProfile(address: string): Promise<LeaderboardEntry |
 /**
  * Fetch user profile from Stacks contract
  */
-async function fetchStacksUserProfile(address: string): Promise<LeaderboardEntry | null> {
+async function fetchStacksUserProfile(
+    address: string,
+    isTestnet: boolean
+): Promise<LeaderboardEntry | null> {
     try {
-        const contractInfo = STACKS_CONTRACTS.mainnet
+        const contractInfo = isTestnet
+            ? STACKS_CONTRACTS.testnet
+            : STACKS_CONTRACTS.mainnet
+
         const response = await fetch(
             `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
             {
@@ -91,7 +125,7 @@ async function fetchStacksUserProfile(address: string): Promise<LeaderboardEntry
         if (!response.ok) return null
 
         const data = await response.json()
-        if (!data.okay || data.result === '0x09') return null // None
+        if (!data.okay || data.result === '0x09') return null
 
         const cv = hexToCV(data.result) as any
         if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
@@ -107,6 +141,7 @@ async function fetchStacksUserProfile(address: string): Promise<LeaderboardEntry
                     level: Number(profileData['level']?.value ?? 1),
                     streak: Number(profileData['current-streak']?.value ?? 0),
                     network: 'stacks',
+                    isTestnet,
                 }
             }
         }
@@ -121,10 +156,15 @@ async function fetchStacksUserProfile(address: string): Promise<LeaderboardEntry
 /**
  * Fetch Base global stats
  */
-async function fetchBaseGlobalStats(): Promise<{ totalUsers: number; totalPoints: number } | null> {
+async function fetchBaseGlobalStats(isTestnet: boolean): Promise<{ totalUsers: number; totalPoints: number } | null> {
     try {
-        const result = await baseClient.readContract({
-            address: BASE_CONTRACTS.mainnet.address,
+        const client = isTestnet ? baseTestnetClient : baseMainnetClient
+        const contractAddress = isTestnet
+            ? BASE_CONTRACTS.testnet.address
+            : BASE_CONTRACTS.mainnet.address
+
+        const result = await client.readContract({
+            address: contractAddress,
             abi: PULSE_ABI,
             functionName: 'getGlobalStats',
             args: [],
@@ -141,44 +181,79 @@ async function fetchBaseGlobalStats(): Promise<{ totalUsers: number; totalPoints
 }
 
 /**
- * Fetch top users from contract events (simplified - in production use an indexer)
- * For now, we'll fetch from a curated list + the current connected user
+ * Fetch leaderboard data from contracts
  */
 export async function fetchLeaderboard(
-    network: 'all' | 'base' | 'stacks',
+    network: NetworkFilter,
     connectedAddress?: string
 ): Promise<{ entries: LeaderboardEntry[]; stats: GlobalStats }> {
     const entries: LeaderboardEntry[] = []
+    const fetchPromises: Promise<void>[] = []
 
-    // Fetch Base users
-    if (network === 'all' || network === 'base') {
-        const baseAddresses = [...KNOWN_BASE_ADDRESSES]
+    // Determine which networks to fetch
+    const fetchBaseMainnet = network === 'all' || network === 'base-mainnet'
+    const fetchBaseTestnet = network === 'all' || network === 'base-testnet'
+    const fetchStacksMainnet = network === 'all' || network === 'stacks-mainnet'
+    const fetchStacksTestnet = network === 'all' || network === 'stacks-testnet'
 
-        // Add connected address if it's a Base address
-        if (connectedAddress && connectedAddress.startsWith('0x') && !baseAddresses.includes(connectedAddress as any)) {
-            baseAddresses.push(connectedAddress)
+    // Fetch Base Mainnet
+    if (fetchBaseMainnet) {
+        const addresses = [...KNOWN_ADDRESSES.baseMainnet]
+        if (connectedAddress?.startsWith('0x') && !addresses.includes(connectedAddress)) {
+            addresses.push(connectedAddress)
         }
-
-        const baseProfiles = await Promise.all(
-            baseAddresses.map(addr => fetchBaseUserProfile(addr))
+        fetchPromises.push(
+            Promise.all(addresses.map(addr => fetchBaseUserProfile(addr, false)))
+                .then(profiles => {
+                    entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
+                })
         )
-        entries.push(...baseProfiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
     }
 
-    // Fetch Stacks users
-    if (network === 'all' || network === 'stacks') {
-        const stacksAddresses = [...KNOWN_STACKS_ADDRESSES]
-
-        // Add connected address if it's a Stacks address
-        if (connectedAddress && connectedAddress.startsWith('SP') && !stacksAddresses.includes(connectedAddress as any)) {
-            stacksAddresses.push(connectedAddress)
+    // Fetch Base Testnet
+    if (fetchBaseTestnet) {
+        const addresses = [...KNOWN_ADDRESSES.baseTestnet]
+        if (connectedAddress?.startsWith('0x') && !addresses.includes(connectedAddress)) {
+            addresses.push(connectedAddress)
         }
-
-        const stacksProfiles = await Promise.all(
-            stacksAddresses.map(addr => fetchStacksUserProfile(addr))
+        fetchPromises.push(
+            Promise.all(addresses.map(addr => fetchBaseUserProfile(addr, true)))
+                .then(profiles => {
+                    entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
+                })
         )
-        entries.push(...stacksProfiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
     }
+
+    // Fetch Stacks Mainnet
+    if (fetchStacksMainnet) {
+        const addresses = [...KNOWN_ADDRESSES.stacksMainnet]
+        if (connectedAddress?.startsWith('SP') && !addresses.includes(connectedAddress)) {
+            addresses.push(connectedAddress)
+        }
+        fetchPromises.push(
+            Promise.all(addresses.map(addr => fetchStacksUserProfile(addr, false)))
+                .then(profiles => {
+                    entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
+                })
+        )
+    }
+
+    // Fetch Stacks Testnet
+    if (fetchStacksTestnet) {
+        const addresses = [...KNOWN_ADDRESSES.stacksTestnet]
+        if (connectedAddress?.startsWith('ST') && !addresses.includes(connectedAddress)) {
+            addresses.push(connectedAddress)
+        }
+        fetchPromises.push(
+            Promise.all(addresses.map(addr => fetchStacksUserProfile(addr, true)))
+                .then(profiles => {
+                    entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
+                })
+        )
+    }
+
+    // Wait for all fetches
+    await Promise.all(fetchPromises)
 
     // Sort by total points descending
     entries.sort((a, b) => b.totalPoints - a.totalPoints)
@@ -198,11 +273,19 @@ export async function fetchLeaderboard(
             : 0,
     }
 
-    // Try to get actual global stats from Base
-    const baseStats = await fetchBaseGlobalStats()
-    if (baseStats) {
-        stats.totalUsers = Math.max(stats.totalUsers, baseStats.totalUsers)
-        stats.totalPoints = Math.max(stats.totalPoints, baseStats.totalPoints)
+    // Try to get actual global stats from Base (mainnet first, then testnet)
+    if (fetchBaseMainnet) {
+        const baseStats = await fetchBaseGlobalStats(false)
+        if (baseStats) {
+            stats.totalUsers = Math.max(stats.totalUsers, baseStats.totalUsers)
+            stats.totalPoints = Math.max(stats.totalPoints, baseStats.totalPoints)
+        }
+    } else if (fetchBaseTestnet) {
+        const baseStats = await fetchBaseGlobalStats(true)
+        if (baseStats) {
+            stats.totalUsers = Math.max(stats.totalUsers, baseStats.totalUsers)
+            stats.totalPoints = Math.max(stats.totalPoints, baseStats.totalPoints)
+        }
     }
 
     return { entries, stats }
@@ -220,3 +303,14 @@ export function formatNumber(num: number): string {
     }
     return num.toLocaleString()
 }
+
+/**
+ * Network filter options for UI
+ */
+export const NETWORK_OPTIONS: { value: NetworkFilter; label: string; icon: string; color: string }[] = [
+    { value: 'all', label: 'All Networks', icon: '🌐', color: 'gray' },
+    { value: 'base-mainnet', label: 'Base', icon: '🔵', color: 'blue' },
+    { value: 'base-testnet', label: 'Base Sepolia', icon: '🔵', color: 'blue' },
+    { value: 'stacks-mainnet', label: 'Stacks', icon: '🟣', color: 'purple' },
+    { value: 'stacks-testnet', label: 'Stacks Testnet', icon: '🟣', color: 'purple' },
+]

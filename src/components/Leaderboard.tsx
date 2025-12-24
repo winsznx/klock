@@ -4,21 +4,32 @@ import { useState, useEffect } from 'react'
 import { Trophy, Medal, Award, ChevronDown, Users, Loader2, RefreshCw } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useStacks } from '@/context/StacksContext'
-import { fetchLeaderboard, formatNumber, type LeaderboardEntry, type GlobalStats } from '@/lib/leaderboard'
-
-// Network types
-type NetworkFilter = 'all' | 'base' | 'stacks'
+import {
+    fetchLeaderboard,
+    formatNumber,
+    NETWORK_OPTIONS,
+    type LeaderboardEntry,
+    type GlobalStats,
+    type NetworkFilter
+} from '@/lib/leaderboard'
 
 // Network badge component
-function NetworkBadge({ network }: { network: 'base' | 'stacks' }) {
-    const styles = network === 'base'
+function NetworkBadge({ network, isTestnet }: { network: 'base' | 'stacks'; isTestnet: boolean }) {
+    const baseStyles = network === 'base'
         ? 'bg-blue-100 text-blue-700 border-blue-200'
         : 'bg-purple-100 text-purple-700 border-purple-200'
 
     return (
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${styles}`}>
-            {network === 'base' ? 'Base' : 'STX'}
-        </span>
+        <div className="flex items-center gap-1">
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${baseStyles}`}>
+                {network === 'base' ? 'Base' : 'STX'}
+            </span>
+            {isTestnet && (
+                <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 border border-yellow-200">
+                    Test
+                </span>
+            )}
+        </div>
     )
 }
 
@@ -65,8 +76,8 @@ export default function Leaderboard() {
 
     // Get connected address based on network filter
     const getConnectedAddress = () => {
-        if (selectedNetwork === 'base') return evmAddress
-        if (selectedNetwork === 'stacks') return stacksAddress
+        if (selectedNetwork.startsWith('base')) return evmAddress
+        if (selectedNetwork.startsWith('stacks')) return stacksAddress
         return stacksAddress || evmAddress
     }
 
@@ -96,13 +107,7 @@ export default function Leaderboard() {
         loadLeaderboard()
     }, [selectedNetwork, evmAddress, stacksAddress])
 
-    const networkOptions: { value: NetworkFilter; label: string; icon: string }[] = [
-        { value: 'all', label: 'All Networks', icon: '🌐' },
-        { value: 'base', label: 'Base', icon: '🔵' },
-        { value: 'stacks', label: 'Stacks', icon: '🟣' },
-    ]
-
-    const selectedOption = networkOptions.find(opt => opt.value === selectedNetwork)
+    const selectedOption = NETWORK_OPTIONS.find(opt => opt.value === selectedNetwork)
 
     // Check if current user is in the leaderboard
     const currentUserAddress = getConnectedAddress()
@@ -149,8 +154,8 @@ export default function Leaderboard() {
                         </button>
 
                         {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-full min-w-[160px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
-                                {networkOptions.map((option) => (
+                            <div className="absolute right-0 mt-2 w-full min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                                {NETWORK_OPTIONS.map((option) => (
                                     <button
                                         key={option.value}
                                         onClick={() => {
@@ -178,8 +183,8 @@ export default function Leaderboard() {
                     <div className="col-span-4">Address</div>
                     <div className="col-span-2 text-center">Points</div>
                     <div className="col-span-2 text-center">Level</div>
-                    <div className="col-span-2 text-center">Streak</div>
-                    <div className="col-span-1 text-center">Network</div>
+                    <div className="col-span-1 text-center">Streak</div>
+                    <div className="col-span-2 text-center">Network</div>
                 </div>
 
                 {/* Loading State */}
@@ -195,7 +200,7 @@ export default function Leaderboard() {
                     <div className="divide-y divide-gray-100">
                         {leaderboardData.map((entry, index) => (
                             <div
-                                key={`${entry.network}-${entry.address}`}
+                                key={`${entry.network}-${entry.isTestnet}-${entry.address}`}
                                 className={`grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-4 px-4 md:px-6 py-4 hover:bg-gray-50 transition-colors ${index < 3 ? 'bg-gradient-to-r from-orange-50/50 to-transparent' : ''
                                     } ${isCurrentUser(entry.address) ? 'ring-2 ring-[#FF6B00] ring-inset bg-orange-50' : ''}`}
                             >
@@ -215,7 +220,7 @@ export default function Leaderboard() {
                                             {isCurrentUser(entry.address) && ' (You)'}
                                         </code>
                                         <span className="md:hidden">
-                                            <NetworkBadge network={entry.network} />
+                                            <NetworkBadge network={entry.network} isTestnet={entry.isTestnet} />
                                         </span>
                                     </div>
                                 </div>
@@ -223,7 +228,7 @@ export default function Leaderboard() {
                                 {/* Points */}
                                 <div className="col-span-1 md:col-span-2 flex items-center md:justify-center">
                                     <div className="flex items-center gap-1">
-                                        <span className="text-sm text-gray-500 md:hidden">Points:</span>
+                                        <span className="text-sm text-gray-500 md:hidden">Pts:</span>
                                         <span className="font-bold text-[#FF6B00]">{entry.totalPoints.toLocaleString()}</span>
                                     </div>
                                 </div>
@@ -237,16 +242,16 @@ export default function Leaderboard() {
                                 </div>
 
                                 {/* Streak */}
-                                <div className="hidden md:flex col-span-2 items-center justify-center">
+                                <div className="hidden md:flex col-span-1 items-center justify-center">
                                     <div className="flex items-center gap-1">
                                         <span className="text-orange-500">🔥</span>
-                                        <span className="font-semibold text-gray-700">{entry.streak} days</span>
+                                        <span className="font-semibold text-gray-700">{entry.streak}</span>
                                     </div>
                                 </div>
 
                                 {/* Network Badge - Desktop only */}
-                                <div className="hidden md:flex col-span-1 items-center justify-center">
-                                    <NetworkBadge network={entry.network} />
+                                <div className="hidden md:flex col-span-2 items-center justify-center">
+                                    <NetworkBadge network={entry.network} isTestnet={entry.isTestnet} />
                                 </div>
                             </div>
                         ))}
