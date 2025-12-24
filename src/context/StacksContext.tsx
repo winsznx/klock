@@ -74,16 +74,16 @@ async function fetchQuestStatuses(
 
             if (questStatusResponse.ok) {
                 const questData = await questStatusResponse.json()
-                console.log('[Stacks] Daily quest status:', questData)
 
                 if (questData.okay && questData.result && questData.result !== '0x09') {
                     try {
                         const cv = hexToCV(questData.result) as any
-                        // It's optional some -> tuple with completed-quests uint
+                        // Structure: { type: 'some', value: { type: 'tuple', value: {...} } }
                         if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
                             const tuple = cv.value
-                            if (tuple.data && tuple.data['completed-quests']) {
-                                profile.questBitmap = Number(tuple.data['completed-quests'].value || 0)
+                            const data = tuple.value || tuple.data
+                            if (data && data['completed-quests']) {
+                                profile.questBitmap = Number(data['completed-quests'].value || 0)
                                 console.log('[Stacks] Quest bitmap:', profile.questBitmap.toString(2).padStart(10, '0'))
                             }
                         }
@@ -111,39 +111,26 @@ async function fetchQuestStatuses(
 
         if (profileResponse.ok) {
             const profileData = await profileResponse.json()
-            console.log('[Stacks] User profile response:', profileData)
 
             // Parse the Clarity tuple response
             if (profileData.okay && profileData.result && profileData.result !== '0x09') {
                 try {
                     const cv = hexToCV(profileData.result) as any
-                    console.log('[Stacks] Full CV structure:', JSON.stringify(cv, (key, value) =>
-                        typeof value === 'bigint' ? value.toString() : value
-                    ))
 
-                    // The cv might be: { type: 'some', value: { type: 'tuple', data: {...} } }
-                    // Or it might be: { type: 'some', value: {...} } where value IS the tuple data
-                    let tupleData: any = null
-
+                    // Structure is: { type: 'some', value: { type: 'tuple', value: { field: { type, value } } } }
                     if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
-                        // Check if cv.value has a data property (newer format)
-                        if (cv.value.data) {
-                            tupleData = cv.value.data
-                        }
-                        // Or cv.value might be the data object itself
-                        else if (typeof cv.value === 'object') {
-                            tupleData = cv.value
-                        }
-                    }
+                        const tuple = cv.value
+                        // The actual data is in tuple.value, not tuple.data!
+                        const data = tuple.value || tuple.data
 
-                    if (tupleData) {
-                        console.log('[Stacks] Tuple data keys:', Object.keys(tupleData))
-                        profile.totalPoints = Number(tupleData['total-points']?.value ?? tupleData['total-points'] ?? 0)
-                        profile.currentStreak = Number(tupleData['current-streak']?.value ?? tupleData['current-streak'] ?? 0)
-                        profile.longestStreak = Number(tupleData['longest-streak']?.value ?? tupleData['longest-streak'] ?? 0)
-                        profile.level = Number(tupleData['level']?.value ?? tupleData['level'] ?? 1)
-                        profile.totalCheckins = Number(tupleData['total-checkins']?.value ?? tupleData['total-checkins'] ?? 0)
-                        console.log('[Stacks] Parsed profile:', profile)
+                        if (data) {
+                            profile.totalPoints = Number(data['total-points']?.value ?? 0)
+                            profile.currentStreak = Number(data['current-streak']?.value ?? 0)
+                            profile.longestStreak = Number(data['longest-streak']?.value ?? 0)
+                            profile.level = Number(data['level']?.value ?? 1)
+                            profile.totalCheckins = Number(data['total-checkins']?.value ?? 0)
+                            console.log('[Stacks] Parsed profile:', profile)
+                        }
                     }
                 } catch (parseErr) {
                     console.error('[Stacks] Error parsing profile CV:', parseErr)
