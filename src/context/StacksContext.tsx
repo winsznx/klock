@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useEffect, createContext, useContext, useRef, type ReactNode } from 'react'
+import { useCallback, useState, useEffect, createContext, useContext, type ReactNode } from 'react'
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
 // Types
@@ -26,9 +26,6 @@ export interface StacksContractInfo {
     fullContractId: string
     explorerUrl: string
 }
-
-// Get project ID for WalletConnect bridge
-const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || ''
 
 // Context for Stacks connection state
 interface StacksContextType {
@@ -57,7 +54,7 @@ const StacksContext = createContext<StacksContextType | null>(null)
 
 /**
  * Provider component for Stacks wallet connection
- * Uses @stacks/connect with WalletConnect for mobile wallet support
+ * Uses @stacks/connect with the new connect() API
  */
 export function StacksProvider({ children }: { children: ReactNode }) {
     const [isConnected, setIsConnected] = useState(false)
@@ -67,9 +64,6 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isClient, setIsClient] = useState(false)
-
-    // Ref to hold the user session (created lazily on client)
-    const userSessionRef = useRef<any>(null)
 
     // Get contract info based on network
     const contractInfo: StacksContractInfo = isMainnet
@@ -87,35 +81,33 @@ export function StacksProvider({ children }: { children: ReactNode }) {
         setIsClient(true)
     }, [])
 
-    // Check for existing session on mount (client only)
+    // Check for existing connection on mount (client only)
     useEffect(() => {
         if (!isClient) return
 
-        const initSession = async () => {
+        const checkConnection = async () => {
             try {
-                const { AppConfig, UserSession } = await import('@stacks/connect')
-                const appConfig = new AppConfig(['store_write', 'publish_data'])
-                const session = new UserSession({ appConfig })
-                userSessionRef.current = session
+                const { isConnected: checkIsConnected } = await import('@stacks/connect')
+                const connected = checkIsConnected()
 
-                if (session.isUserSignedIn()) {
-                    const userData = session.loadUserData()
-                    const stxAddress = userData.profile?.stxAddress?.mainnet || userData.profile?.stxAddress?.testnet
-                    if (stxAddress) {
-                        setAddress(stxAddress)
-                        setIsMainnet(stxAddress.startsWith('SP'))
+                if (connected) {
+                    // Try to get stored address from localStorage
+                    const storedAddress = localStorage.getItem('stacks_connected_address')
+                    if (storedAddress) {
+                        setAddress(storedAddress)
+                        setIsMainnet(storedAddress.startsWith('SP'))
                         setIsConnected(true)
                     }
                 }
             } catch (err) {
-                console.error('Failed to initialize Stacks session:', err)
+                console.error('Failed to check Stacks connection:', err)
             }
         }
 
-        initSession()
+        checkConnection()
     }, [isClient])
 
-    // Connect to Stacks wallet
+    // Connect to Stacks wallet using the new connect() API
     const connectWallet = useCallback(async () => {
         if (!isClient) return
 
@@ -123,41 +115,27 @@ export function StacksProvider({ children }: { children: ReactNode }) {
         setError(null)
 
         try {
-            const { showConnect, AppConfig, UserSession } = await import('@stacks/connect')
+            const { connect } = await import('@stacks/connect')
 
-            // Ensure we have a session
-            if (!userSessionRef.current) {
-                const appConfig = new AppConfig(['store_write', 'publish_data'])
-                userSessionRef.current = new UserSession({ appConfig })
+            // Use the new connect() API which returns address info
+            const result = await connect()
+
+            if (result && result.addresses && result.addresses.length > 0) {
+                // Find the STX address (mainnet or testnet)
+                const stxAddressInfo = result.addresses.find((addr: { address: string }) =>
+                    addr.address.startsWith('SP') || addr.address.startsWith('ST')
+                )
+
+                if (stxAddressInfo) {
+                    setAddress(stxAddressInfo.address)
+                    setIsMainnet(stxAddressInfo.address.startsWith('SP'))
+                    setIsConnected(true)
+                    // Store in localStorage for persistence
+                    localStorage.setItem('stacks_connected_address', stxAddressInfo.address)
+                }
             }
 
-            showConnect({
-                appDetails: {
-                    name: 'PULSE',
-                    icon: typeof window !== 'undefined'
-                        ? `${window.location.origin}/icon.png`
-                        : 'https://klock-jade.vercel.app/icon.png',
-                },
-                // Enable WalletConnect for mobile wallet QR scanning
-                ...(projectId && { walletConnectProjectId: projectId }),
-                onFinish: () => {
-                    if (userSessionRef.current?.isUserSignedIn()) {
-                        const userData = userSessionRef.current.loadUserData()
-                        const stxAddress = userData.profile?.stxAddress?.mainnet || userData.profile?.stxAddress?.testnet
-                        if (stxAddress) {
-                            setAddress(stxAddress)
-                            setIsMainnet(stxAddress.startsWith('SP'))
-                            setIsConnected(true)
-                        }
-                    }
-                    setIsLoading(false)
-                },
-                onCancel: () => {
-                    setError('Connection cancelled')
-                    setIsLoading(false)
-                },
-                userSession: userSessionRef.current,
-            })
+            setIsLoading(false)
         } catch (err) {
             console.error('Failed to connect Stacks wallet:', err)
             setError(err instanceof Error ? err.message : 'Failed to connect wallet')
@@ -166,13 +144,17 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     }, [isClient])
 
     // Disconnect wallet
-    const disconnectWallet = useCallback(() => {
-        if (userSessionRef.current) {
-            userSessionRef.current.signUserOut()
+    const disconnectWallet = useCallback(async () => {
+        try {
+            const { disconnect } = await import('@stacks/connect')
+            disconnect()
+        } catch (err) {
+            console.error('Failed to disconnect:', err)
         }
         setIsConnected(false)
         setAddress(null)
         setUserProfile(null)
+        localStorage.removeItem('stacks_connected_address')
     }, [])
 
     // Get the Stacks network
