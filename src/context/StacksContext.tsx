@@ -117,20 +117,33 @@ async function fetchQuestStatuses(
             if (profileData.okay && profileData.result && profileData.result !== '0x09') {
                 try {
                     const cv = hexToCV(profileData.result) as any
-                    console.log('[Stacks] Parsed CV type:', cv.type, 'keys:', cv.value ? Object.keys(cv.value.data || {}) : 'none')
+                    console.log('[Stacks] Full CV structure:', JSON.stringify(cv, (key, value) =>
+                        typeof value === 'bigint' ? value.toString() : value
+                    ))
 
-                    // Handle optional some wrapping tuple
+                    // The cv might be: { type: 'some', value: { type: 'tuple', data: {...} } }
+                    // Or it might be: { type: 'some', value: {...} } where value IS the tuple data
+                    let tupleData: any = null
+
                     if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
-                        const tuple = cv.value
-                        if (tuple.data) {
-                            const data = tuple.data
-                            profile.totalPoints = Number(data['total-points']?.value || 0)
-                            profile.currentStreak = Number(data['current-streak']?.value || 0)
-                            profile.longestStreak = Number(data['longest-streak']?.value || 0)
-                            profile.level = Number(data['level']?.value || 1)
-                            profile.totalCheckins = Number(data['total-checkins']?.value || 0)
-                            console.log('[Stacks] Parsed profile:', profile)
+                        // Check if cv.value has a data property (newer format)
+                        if (cv.value.data) {
+                            tupleData = cv.value.data
                         }
+                        // Or cv.value might be the data object itself
+                        else if (typeof cv.value === 'object') {
+                            tupleData = cv.value
+                        }
+                    }
+
+                    if (tupleData) {
+                        console.log('[Stacks] Tuple data keys:', Object.keys(tupleData))
+                        profile.totalPoints = Number(tupleData['total-points']?.value ?? tupleData['total-points'] ?? 0)
+                        profile.currentStreak = Number(tupleData['current-streak']?.value ?? tupleData['current-streak'] ?? 0)
+                        profile.longestStreak = Number(tupleData['longest-streak']?.value ?? tupleData['longest-streak'] ?? 0)
+                        profile.level = Number(tupleData['level']?.value ?? tupleData['level'] ?? 1)
+                        profile.totalCheckins = Number(tupleData['total-checkins']?.value ?? tupleData['total-checkins'] ?? 0)
+                        console.log('[Stacks] Parsed profile:', profile)
                     }
                 } catch (parseErr) {
                     console.error('[Stacks] Error parsing profile CV:', parseErr)
