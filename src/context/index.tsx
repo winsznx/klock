@@ -4,6 +4,7 @@ import { wagmiAdapter, projectId } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
+import { defineChain } from '@reown/appkit/networks'
 import {
     mainnet,
     arbitrum,
@@ -37,15 +38,62 @@ const metadata = {
     icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
+// Define Stacks Mainnet custom network
+// CAIP-2 chain ID for Stacks Mainnet is "stacks:1"
+const stacks = defineChain({
+    id: 1,
+    caipNetworkId: 'stacks:1',
+    chainNamespace: 'stacks',
+    name: 'Stacks Mainnet',
+    nativeCurrency: {
+        decimals: 6,
+        name: 'Stacks',
+        symbol: 'STX',
+    },
+    rpcUrls: {
+        default: {
+            http: ['https://api.mainnet.hiro.so'],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: 'Stacks Explorer',
+            url: 'https://explorer.hiro.so'
+        },
+    },
+})
+
+// Define Stacks Testnet custom network
+const stacksTestnet = defineChain({
+    id: 2147483648,
+    caipNetworkId: 'stacks:2147483648',
+    chainNamespace: 'stacks',
+    name: 'Stacks Testnet',
+    nativeCurrency: {
+        decimals: 6,
+        name: 'Stacks',
+        symbol: 'STX',
+    },
+    rpcUrls: {
+        default: {
+            http: ['https://api.testnet.hiro.so'],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: 'Stacks Explorer',
+            url: 'https://explorer.hiro.so/?chain=testnet'
+        },
+    },
+})
+
 // Set up Bitcoin Adapter
 // Note: BitcoinAdapter handles Bitcoin L1 and supports Stacks addresses via WalletConnect
-// Leather/Xverse wallets return Stacks addresses which we can use with stx_callContract RPC
 const bitcoinAdapter = new BitcoinAdapter({
     projectId
 })
 
-// Create the modal with EVM and Bitcoin support
-// Stacks transactions use Reown's stx_callContract RPC method via the same WalletConnect session
+// Create the modal with EVM, Bitcoin, and Stacks support
 const modal = createAppKit({
     adapters: [wagmiAdapter, bitcoinAdapter],
     projectId,
@@ -55,8 +103,10 @@ const modal = createAppKit({
         baseSepolia,
         // Additional EVM Networks
         mainnet, polygon, optimism, arbitrum, bsc, avalanche, celo, sepolia,
-        // Bitcoin Networks - Leather/Xverse support both Bitcoin L1 and Stacks
-        bitcoin, bitcoinTestnet
+        // Bitcoin Networks
+        bitcoin, bitcoinTestnet,
+        // Stacks Networks
+        stacks, stacksTestnet,
     ],
     defaultNetwork: base,
     metadata: metadata,
