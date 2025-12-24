@@ -21,6 +21,7 @@ import {
 import React, { type ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
 import { AuthProvider } from './AuthContext'
+import { StacksProvider } from './StacksContext'
 
 // Set up queryClient
 const queryClient = new QueryClient()
@@ -38,14 +39,14 @@ const metadata = {
 }
 
 // Set up Bitcoin Adapter
-// Note: For Stacks transactions, we use @stacks/connect directly
-// The BitcoinAdapter enables connection with wallets like Leather/Xverse
+// Note: BitcoinAdapter handles Bitcoin L1 only
+// Stacks is handled separately via StacksProvider using @stacks/connect
 const bitcoinAdapter = new BitcoinAdapter({
     projectId
 })
 
 // Create the modal with EVM and Bitcoin support
-// Stacks transactions are handled separately via @stacks/connect
+// Stacks uses a separate connection flow via @stacks/connect
 const modal = createAppKit({
     adapters: [wagmiAdapter, bitcoinAdapter],
     projectId,
@@ -55,7 +56,7 @@ const modal = createAppKit({
         baseSepolia,
         // Additional EVM Networks
         mainnet, polygon, optimism, arbitrum, bsc, avalanche, celo, sepolia,
-        // Bitcoin Networks (wallets like Leather also support Stacks)
+        // Bitcoin Networks (L1 only - not Stacks)
         bitcoin, bitcoinTestnet
     ],
     defaultNetwork: base,
@@ -80,9 +81,11 @@ function ContextProvider({ children, cookies }: { children: ReactNode; cookies: 
     return (
         <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
             <QueryClientProvider client={queryClient}>
-                <AuthProvider>
-                    {children}
-                </AuthProvider>
+                <StacksProvider>
+                    <AuthProvider>
+                        {children}
+                    </AuthProvider>
+                </StacksProvider>
             </QueryClientProvider>
         </WagmiProvider>
     )
