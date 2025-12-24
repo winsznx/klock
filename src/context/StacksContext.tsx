@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useCallback, useState, useEffect, ReactNode } from 'react'
 import { connect, request, isConnected, disconnect as stacksDisconnect, getLocalStorage } from '@stacks/connect'
-import { uintCV, stringAsciiCV, principalCV, cvToHex } from '@stacks/transactions'
+import { uintCV, stringAsciiCV, principalCV, cvToHex, hexToCV, ClarityType } from '@stacks/transactions'
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
 // Types
@@ -89,7 +89,30 @@ async function fetchQuestStatuses(
             if (profileResponse.ok) {
                 const profileData = await profileResponse.json()
                 console.log('[Stacks] User profile response:', profileData)
-                // Parse profile data if available (would need to decode Clarity tuple)
+
+                // Parse the Clarity tuple response
+                if (profileData.okay && profileData.result && profileData.result !== '0x09') {
+                    try {
+                        const cv = hexToCV(profileData.result)
+                        console.log('[Stacks] Parsed CV:', cv)
+
+                        // Check if it's an optional some (0x0a) wrapping a tuple
+                        if (cv.type === ClarityType.OptionalSome && 'value' in cv) {
+                            const tuple = cv.value as any
+                            if (tuple.type === ClarityType.Tuple && tuple.data) {
+                                const data = tuple.data
+                                profile.totalPoints = Number(data['total-points']?.value || BigInt(0))
+                                profile.currentStreak = Number(data['current-streak']?.value || BigInt(0))
+                                profile.longestStreak = Number(data['longest-streak']?.value || BigInt(0))
+                                profile.level = Number(data['level']?.value || BigInt(1))
+                                profile.totalCheckins = Number(data['total-checkins']?.value || BigInt(0))
+                                console.log('[Stacks] Parsed profile:', profile)
+                            }
+                        }
+                    } catch (parseErr) {
+                        console.error('[Stacks] Error parsing profile CV:', parseErr)
+                    }
+                }
             }
         } catch (err) {
             console.error('[Stacks] Error fetching profile:', err)
