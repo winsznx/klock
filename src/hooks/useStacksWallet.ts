@@ -142,13 +142,8 @@ export function useStacksWallet() {
                 }
             }
 
-            // If we have stacks in the session (even without methods), try stacks chain ID
-            if (isMainnet) {
-                targetChainId = 'stacks:1'
-            } else if (address?.startsWith('ST')) {
-                targetChainId = 'stacks:2147483648'
-            }
-
+            // Don't override with stacks namespace if it's not in the session
+            // Leather/Xverse put STX addresses in bip122 namespace
             console.log('[Stacks] Final chain ID:', targetChainId || 'none')
 
             // Prepare the request
@@ -163,7 +158,8 @@ export function useStacksWallet() {
 
             console.log('[Stacks] Request payload:', requestPayload)
 
-            // Send the request with the determined chain ID
+            // Send the request with the bip122 chain ID from the session
+            // The wallet should forward stx_* methods to the Stacks handler
             let result
             if (targetChainId) {
                 result = await universalProvider.request(requestPayload, targetChainId)
