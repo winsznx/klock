@@ -93,19 +93,21 @@ async function fetchQuestStatuses(
                 // Parse the Clarity tuple response
                 if (profileData.okay && profileData.result && profileData.result !== '0x09') {
                     try {
-                        const cv = hexToCV(profileData.result)
+                        const cv = hexToCV(profileData.result) as any
                         console.log('[Stacks] Parsed CV:', cv)
 
-                        // Check if it's an optional some (0x0a) wrapping a tuple
-                        if (cv.type === ClarityType.OptionalSome && 'value' in cv) {
+                        // Check if it's an optional some - handle both string and numeric type formats
+                        const isSome = cv.type === ClarityType.OptionalSome || cv.type === 'some'
+                        if (isSome && ('value' in cv)) {
                             const tuple = cv.value as any
-                            if (tuple.type === ClarityType.Tuple && tuple.data) {
+                            const isTuple = tuple.type === ClarityType.Tuple || tuple.type === 'tuple'
+                            if (isTuple && tuple.data) {
                                 const data = tuple.data
-                                profile.totalPoints = Number(data['total-points']?.value || BigInt(0))
-                                profile.currentStreak = Number(data['current-streak']?.value || BigInt(0))
-                                profile.longestStreak = Number(data['longest-streak']?.value || BigInt(0))
-                                profile.level = Number(data['level']?.value || BigInt(1))
-                                profile.totalCheckins = Number(data['total-checkins']?.value || BigInt(0))
+                                profile.totalPoints = Number(data['total-points']?.value || 0)
+                                profile.currentStreak = Number(data['current-streak']?.value || 0)
+                                profile.longestStreak = Number(data['longest-streak']?.value || 0)
+                                profile.level = Number(data['level']?.value || 1)
+                                profile.totalCheckins = Number(data['total-checkins']?.value || 0)
                                 console.log('[Stacks] Parsed profile:', profile)
                             }
                         }
