@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useMemo } from 'react'
+import { useCallback, useState, useMemo, useEffect } from 'react'
 import { useAppKitAccount, useAppKitProvider } from '@reown/appkit/react'
 import { STACKS_CONTRACTS } from '@/config/contracts'
 
@@ -43,13 +43,15 @@ function isStacksMainnet(address: string | undefined): boolean {
  * Hook for Stacks contract interaction via Reown AppKit
  * Uses the WalletConnect RPC methods (stx_callContract) directly
  * 
- * Leather/Xverse connect via BitcoinAdapter (bip122 namespace) but provide STX addresses
+ * Xverse/Leather connect via BitcoinAdapter and provide STX addresses
  * We detect STX addresses by prefix and use stx_* RPC methods
  */
 export function useStacksWallet() {
     const { address, isConnected } = useAppKitAccount()
-    // Use 'bip122' (Bitcoin namespace) since Leather connects through BitcoinAdapter
-    const { walletProvider } = useAppKitProvider<any>('bip122')
+    // Try both 'bip122' (Bitcoin) and 'eip155' (EVM) providers
+    // Xverse may expose the provider differently
+    const { walletProvider: btcProvider } = useAppKitProvider<any>('bip122')
+    const { walletProvider: evmProvider } = useAppKitProvider<any>('eip155')
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -58,6 +60,22 @@ export function useStacksWallet() {
     // Check if this is a Stacks connection (address starts with SP/ST)
     const isStacksConnected = isConnected && isStacksAddress(address)
     const isMainnet = isStacksMainnet(address)
+
+    // Use whichever provider is available
+    const walletProvider = btcProvider || evmProvider
+
+    // Log provider status for debugging
+    useEffect(() => {
+        if (isStacksConnected) {
+            console.log('[Stacks] Connected with address:', address)
+            console.log('[Stacks] BTC Provider available:', !!btcProvider)
+            console.log('[Stacks] EVM Provider available:', !!evmProvider)
+            console.log('[Stacks] Using provider:', walletProvider ? 'available' : 'none')
+            if (walletProvider) {
+                console.log('[Stacks] Provider methods:', Object.keys(walletProvider))
+            }
+        }
+    }, [isStacksConnected, address, btcProvider, evmProvider, walletProvider])
 
     // Get contract info based on network
     const contractInfo: StacksContractInfo = useMemo(() => {
@@ -81,7 +99,10 @@ export function useStacksWallet() {
         }
 
         if (!walletProvider) {
-            return { success: false, error: 'Wallet provider not available. Please reconnect.' }
+            console.error('[Stacks] No wallet provider available')
+            console.log('[Stacks] btcProvider:', btcProvider)
+            console.log('[Stacks] evmProvider:', evmProvider)
+            return { success: false, error: 'Wallet provider not available. Try reconnecting your wallet.' }
         }
 
         const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
@@ -89,9 +110,15 @@ export function useStacksWallet() {
         setIsLoading(true)
         setError(null)
 
+        console.log('[Stacks] Executing contract call:', {
+            contract: contract.fullContractId,
+            functionName,
+            functionArgs,
+        })
+
         try {
             // Use the Reown RPC method for Stacks contract calls
-            // This works through the WalletConnect session established via BitcoinAdapter
+            // Format according to WalletConnect Stacks RPC spec
             const result = await walletProvider.request({
                 method: 'stx_callContract',
                 params: {
@@ -101,7 +128,7 @@ export function useStacksWallet() {
                 }
             })
 
-            console.log('Stacks tx result:', result)
+            console.log('[Stacks] Transaction result:', result)
             setIsLoading(false)
 
             if (result && result.txid) {
@@ -109,14 +136,15 @@ export function useStacksWallet() {
             }
 
             return { success: true, txId: result?.transaction }
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Transaction failed'
-            console.error('Stacks contract call error:', err)
+        } catch (err: any) {
+            const errorMessage = err?.message || err?.toString() || 'Transaction failed'
+            console.error('[Stacks] Contract call error:', err)
+            console.error('[Stacks] Error details:', JSON.stringify(err, null, 2))
             setError(errorMessage)
             setIsLoading(false)
             return { success: false, error: errorMessage }
         }
-    }, [isStacksConnected, address, isMainnet, walletProvider])
+    }, [isStacksConnected, address, isMainnet, walletProvider, btcProvider, evmProvider])
 
     // Quest functions - pass Clarity-formatted arguments
     const dailyCheckin = useCallback(() =>
@@ -170,12 +198,12 @@ export function useStacksWallet() {
             if (response.ok) {
                 const data = await response.json()
                 if (data.okay && data.result) {
-                    console.log('User profile:', data.result)
+                    console.log('[Stacks] User profile:', data.result)
                     // TODO: Parse Clarity tuple response into StacksUserProfile
                 }
             }
         } catch (err) {
-            console.error('Error fetching Stacks user profile:', err)
+            console.error('[Stacks] Error fetching user profile:', err)
         } finally {
             setIsLoading(false)
         }
