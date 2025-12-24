@@ -1,38 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Trophy, Medal, Award, ChevronDown, Users, Loader2, ExternalLink } from 'lucide-react'
+import { Trophy, Medal, Award, ChevronDown, Users, Loader2, RefreshCw } from 'lucide-react'
+import { useAuth } from '@/context/AuthContext'
+import { useStacks } from '@/context/StacksContext'
+import { fetchLeaderboard, formatNumber, type LeaderboardEntry, type GlobalStats } from '@/lib/leaderboard'
 
 // Network types
 type NetworkFilter = 'all' | 'base' | 'stacks'
-
-// Leaderboard entry type
-interface LeaderboardEntry {
-    rank: number
-    address: string
-    displayAddress: string
-    totalPoints: number
-    level: number
-    streak: number
-    network: 'base' | 'stacks'
-}
-
-// Mock data for demonstration - in production, this would fetch from contracts
-const mockBaseLeaderboard: LeaderboardEntry[] = [
-    { rank: 1, address: '0x1234...5678', displayAddress: '0x1234...5678', totalPoints: 15420, level: 8, streak: 45, network: 'base' },
-    { rank: 2, address: '0x2345...6789', displayAddress: '0x2345...6789', totalPoints: 12350, level: 7, streak: 32, network: 'base' },
-    { rank: 3, address: '0x3456...7890', displayAddress: '0x3456...7890', totalPoints: 10890, level: 6, streak: 28, network: 'base' },
-    { rank: 4, address: '0x4567...8901', displayAddress: '0x4567...8901', totalPoints: 9450, level: 5, streak: 21, network: 'base' },
-    { rank: 5, address: '0x5678...9012', displayAddress: '0x5678...9012', totalPoints: 8200, level: 5, streak: 19, network: 'base' },
-]
-
-const mockStacksLeaderboard: LeaderboardEntry[] = [
-    { rank: 1, address: 'SP2K...K80T', displayAddress: 'SP2K...K80T', totalPoints: 18650, level: 9, streak: 52, network: 'stacks' },
-    { rank: 2, address: 'SP3M...L91U', displayAddress: 'SP3M...L91U', totalPoints: 14200, level: 7, streak: 38, network: 'stacks' },
-    { rank: 3, address: 'SP4N...M02V', displayAddress: 'SP4N...M02V', totalPoints: 11750, level: 6, streak: 30, network: 'stacks' },
-    { rank: 4, address: 'SP5O...N13W', displayAddress: 'SP5O...N13W', totalPoints: 9800, level: 5, streak: 24, network: 'stacks' },
-    { rank: 5, address: 'SP6P...O24X', displayAddress: 'SP6P...O24X', totalPoints: 7650, level: 4, streak: 18, network: 'stacks' },
-]
 
 // Network badge component
 function NetworkBadge({ network }: { network: 'base' | 'stacks' }) {
@@ -80,36 +55,46 @@ function RankBadge({ rank }: { rank: number }) {
 export default function Leaderboard() {
     const [selectedNetwork, setSelectedNetwork] = useState<NetworkFilter>('all')
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
+    const [stats, setStats] = useState<GlobalStats>({ totalUsers: 0, totalPoints: 0, highestStreak: 0, avgLevel: 0 })
 
-    // Fetch leaderboard data based on network filter
-    useEffect(() => {
-        const fetchLeaderboard = async () => {
+    const { address: evmAddress } = useAuth()
+    const { address: stacksAddress } = useStacks()
+
+    // Get connected address based on network filter
+    const getConnectedAddress = () => {
+        if (selectedNetwork === 'base') return evmAddress
+        if (selectedNetwork === 'stacks') return stacksAddress
+        return stacksAddress || evmAddress
+    }
+
+    // Fetch leaderboard data
+    const loadLeaderboard = async (showRefreshState = false) => {
+        if (showRefreshState) {
+            setIsRefreshing(true)
+        } else {
             setIsLoading(true)
-
-            // Simulate API delay
-            await new Promise(resolve => setTimeout(resolve, 500))
-
-            let data: LeaderboardEntry[] = []
-
-            if (selectedNetwork === 'all') {
-                // Combine and sort by points
-                data = [...mockBaseLeaderboard, ...mockStacksLeaderboard]
-                    .sort((a, b) => b.totalPoints - a.totalPoints)
-                    .map((entry, idx) => ({ ...entry, rank: idx + 1 }))
-            } else if (selectedNetwork === 'base') {
-                data = mockBaseLeaderboard
-            } else {
-                data = mockStacksLeaderboard
-            }
-
-            setLeaderboardData(data)
-            setIsLoading(false)
         }
 
-        fetchLeaderboard()
-    }, [selectedNetwork])
+        try {
+            const connectedAddress = getConnectedAddress()
+            const { entries, stats: fetchedStats } = await fetchLeaderboard(selectedNetwork, connectedAddress || undefined)
+            setLeaderboardData(entries)
+            setStats(fetchedStats)
+        } catch (err) {
+            console.error('[Leaderboard] Error loading data:', err)
+        } finally {
+            setIsLoading(false)
+            setIsRefreshing(false)
+        }
+    }
+
+    // Fetch on mount and when network changes
+    useEffect(() => {
+        loadLeaderboard()
+    }, [selectedNetwork, evmAddress, stacksAddress])
 
     const networkOptions: { value: NetworkFilter; label: string; icon: string }[] = [
         { value: 'all', label: 'All Networks', icon: '🌐' },
@@ -118,6 +103,14 @@ export default function Leaderboard() {
     ]
 
     const selectedOption = networkOptions.find(opt => opt.value === selectedNetwork)
+
+    // Check if current user is in the leaderboard
+    const currentUserAddress = getConnectedAddress()
+    const isCurrentUser = (address: string) => {
+        if (!currentUserAddress) return false
+        return address.toLowerCase() === currentUserAddress.toLowerCase() ||
+            address === currentUserAddress
+    }
 
     return (
         <div className="w-full">
@@ -133,35 +126,47 @@ export default function Leaderboard() {
                     </div>
                 </div>
 
-                {/* Network Filter Dropdown */}
-                <div className="relative">
+                <div className="flex items-center gap-2">
+                    {/* Refresh Button */}
                     <button
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-gray-300 transition-all min-w-[160px]"
+                        onClick={() => loadLeaderboard(true)}
+                        disabled={isRefreshing}
+                        className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-all disabled:opacity-50"
+                        title="Refresh leaderboard"
                     >
-                        <span className="text-lg">{selectedOption?.icon}</span>
-                        <span className="font-medium text-gray-700">{selectedOption?.label}</span>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 ml-auto transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                        <RefreshCw className={`w-4 h-4 text-gray-600 ${isRefreshing ? 'animate-spin' : ''}`} />
                     </button>
 
-                    {isDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-full min-w-[160px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
-                            {networkOptions.map((option) => (
-                                <button
-                                    key={option.value}
-                                    onClick={() => {
-                                        setSelectedNetwork(option.value)
-                                        setIsDropdownOpen(false)
-                                    }}
-                                    className={`w-full flex items-center gap-2 px-4 py-3 hover:bg-gray-50 transition-colors ${selectedNetwork === option.value ? 'bg-orange-50 text-[#FF6B00]' : 'text-gray-700'
-                                        }`}
-                                >
-                                    <span className="text-lg">{option.icon}</span>
-                                    <span className="font-medium">{option.label}</span>
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    {/* Network Filter Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-gray-300 transition-all min-w-[160px]"
+                        >
+                            <span className="text-lg">{selectedOption?.icon}</span>
+                            <span className="font-medium text-gray-700">{selectedOption?.label}</span>
+                            <ChevronDown className={`w-4 h-4 text-gray-400 ml-auto transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {isDropdownOpen && (
+                            <div className="absolute right-0 mt-2 w-full min-w-[160px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                                {networkOptions.map((option) => (
+                                    <button
+                                        key={option.value}
+                                        onClick={() => {
+                                            setSelectedNetwork(option.value)
+                                            setIsDropdownOpen(false)
+                                        }}
+                                        className={`w-full flex items-center gap-2 px-4 py-3 hover:bg-gray-50 transition-colors ${selectedNetwork === option.value ? 'bg-orange-50 text-[#FF6B00]' : 'text-gray-700'
+                                            }`}
+                                    >
+                                        <span className="text-lg">{option.icon}</span>
+                                        <span className="font-medium">{option.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -179,8 +184,9 @@ export default function Leaderboard() {
 
                 {/* Loading State */}
                 {isLoading && (
-                    <div className="flex items-center justify-center py-12">
-                        <Loader2 className="w-8 h-8 text-[#FF6B00] animate-spin" />
+                    <div className="flex flex-col items-center justify-center py-12">
+                        <Loader2 className="w-8 h-8 text-[#FF6B00] animate-spin mb-3" />
+                        <p className="text-gray-500">Loading leaderboard...</p>
                     </div>
                 )}
 
@@ -191,18 +197,22 @@ export default function Leaderboard() {
                             <div
                                 key={`${entry.network}-${entry.address}`}
                                 className={`grid grid-cols-2 md:grid-cols-12 gap-3 md:gap-4 px-4 md:px-6 py-4 hover:bg-gray-50 transition-colors ${index < 3 ? 'bg-gradient-to-r from-orange-50/50 to-transparent' : ''
-                                    }`}
+                                    } ${isCurrentUser(entry.address) ? 'ring-2 ring-[#FF6B00] ring-inset bg-orange-50' : ''}`}
                             >
                                 {/* Rank */}
                                 <div className="col-span-1 flex items-center">
                                     <RankBadge rank={entry.rank} />
                                 </div>
 
-                                {/* Address - Mobile shows network badge too */}
+                                {/* Address */}
                                 <div className="col-span-1 md:col-span-4 flex items-center gap-2">
                                     <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-                                        <code className="text-sm md:text-base font-mono text-gray-800 bg-gray-100 px-2 py-1 rounded">
+                                        <code className={`text-sm md:text-base font-mono px-2 py-1 rounded ${isCurrentUser(entry.address)
+                                                ? 'bg-[#FF6B00] text-white'
+                                                : 'bg-gray-100 text-gray-800'
+                                            }`}>
                                             {entry.displayAddress}
+                                            {isCurrentUser(entry.address) && ' (You)'}
                                         </code>
                                         <span className="md:hidden">
                                             <NetworkBadge network={entry.network} />
@@ -249,6 +259,7 @@ export default function Leaderboard() {
                         <Users className="w-12 h-12 mb-4 text-gray-300" />
                         <p className="text-lg font-medium">No data available</p>
                         <p className="text-sm">Be the first to join the leaderboard!</p>
+                        <p className="text-xs text-gray-400 mt-2">Complete quests to appear here</p>
                     </div>
                 )}
             </div>
@@ -257,25 +268,25 @@ export default function Leaderboard() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-6">
                 <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
                     <p className="text-sm text-gray-500 mb-1">Total Pulsers</p>
-                    <p className="text-2xl font-bold text-gray-900">1,234</p>
+                    <p className="text-2xl font-bold text-gray-900">{formatNumber(stats.totalUsers)}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
                     <p className="text-sm text-gray-500 mb-1">Total Points</p>
-                    <p className="text-2xl font-bold text-[#FF6B00]">2.5M</p>
+                    <p className="text-2xl font-bold text-[#FF6B00]">{formatNumber(stats.totalPoints)}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
                     <p className="text-sm text-gray-500 mb-1">Highest Streak</p>
-                    <p className="text-2xl font-bold text-gray-900">52 🔥</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.highestStreak} 🔥</p>
                 </div>
                 <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
                     <p className="text-sm text-gray-500 mb-1">Avg Level</p>
-                    <p className="text-2xl font-bold text-gray-900">4.2</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.avgLevel}</p>
                 </div>
             </div>
 
             {/* Footer note */}
             <p className="text-center text-sm text-gray-400 mt-6">
-                Leaderboard updates every 5 minutes • Rankings based on total Pulse Points
+                Live data from Base and Stacks contracts • Rankings based on total Pulse Points
             </p>
         </div>
     )
