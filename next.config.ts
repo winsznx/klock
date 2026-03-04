@@ -4,11 +4,15 @@ import path from "path";
 const nextConfig: NextConfig = {
   transpilePackages: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-adapter-bitcoin', 'wagmi', 'viem'],
   webpack: (config) => {
+    config.resolve = config.resolve ?? {}
+    config.resolve.alias = {
+      ...(config.resolve.alias ?? {}),
+      '@react-native-async-storage/async-storage': path.resolve(__dirname, 'src/shims/async-storage.ts'),
+    }
     config.externals.push('pino-pretty', 'lokijs', 'encoding')
     return config
   },
   output: 'standalone',
-  outputFileTracingRoot: path.join(__dirname, '../../'),
 };
 
 export default nextConfig;
