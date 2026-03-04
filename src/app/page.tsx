@@ -1,7 +1,14 @@
+import type { Metadata } from 'next'
 import ConnectButton from '@/components/ConnectButton'
 import HeroActions from '@/components/HeroActions'
 import { Zap, Globe, Users, TrendingUp, Shield, Sparkles, ArrowRight, Trophy } from 'lucide-react'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  other: {
+    'talentapp:project_verification': 'c9ff538e6138bc8aef0c36857fde0b09898c5a172892dc0fb0dced82482f743eca25147a92021b9c4cb757a39463f49abcf85eca01c70b6972cb4a7e811d5ff3',
+  },
+}
 
 export default function Home() {
   return (
