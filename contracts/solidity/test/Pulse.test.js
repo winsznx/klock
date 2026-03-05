@@ -6,9 +6,10 @@ describe("Pulse", function () {
     let owner;
     let user1;
     let user2;
+    let user3;
 
     beforeEach(async function () {
-        [owner, user1, user2] = await ethers.getSigners();
+        [owner, user1, user2, user3] = await ethers.getSigners();
 
         const Pulse = await ethers.getContractFactory("Pulse");
         pulse = await Pulse.deploy();
@@ -98,9 +99,21 @@ describe("Pulse", function () {
             expect(message.content).to.equal("Hello PULSE!");
         });
 
+        it("Should not allow commit message quest twice in one day", async function () {
+            await pulse.connect(user1).commitMessage("Hello PULSE!");
+            await expect(pulse.connect(user1).commitMessage("Second message"))
+                .to.be.revertedWith("Quest already completed");
+        });
+
         it("Should complete predict pulse quest", async function () {
             await expect(pulse.connect(user1).predictPulse(7))
                 .to.emit(pulse, "PredictionMade");
+        });
+
+        it("Should not allow predict pulse quest twice in one day", async function () {
+            await pulse.connect(user1).predictPulse(7);
+            await expect(pulse.connect(user1).predictPulse(8))
+                .to.be.revertedWith("Quest already completed");
         });
 
         it("Should reject invalid prediction level", async function () {
@@ -115,6 +128,7 @@ describe("Pulse", function () {
         beforeEach(async function () {
             await pulse.connect(user1).dailyCheckin();
             await pulse.connect(user2).dailyCheckin();
+            await pulse.connect(user3).dailyCheckin();
         });
 
         it("Should nudge a friend", async function () {
@@ -136,7 +150,13 @@ describe("Pulse", function () {
         it("Should not nudge same friend twice in one day", async function () {
             await pulse.connect(user1).nudgeFriend(user2.address);
             await expect(pulse.connect(user1).nudgeFriend(user2.address))
-                .to.be.revertedWith("Already nudged this friend today");
+                .to.be.revertedWith("Quest already completed");
+        });
+
+        it("Should not nudge multiple friends in one day", async function () {
+            await pulse.connect(user1).nudgeFriend(user2.address);
+            await expect(pulse.connect(user1).nudgeFriend(user3.address))
+                .to.be.revertedWith("Quest already completed");
         });
     });
 
