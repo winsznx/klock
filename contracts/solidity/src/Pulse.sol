@@ -354,12 +354,14 @@ contract Pulse is Ownable, ReentrancyGuard, Pausable {
         address user = msg.sender;
         uint256 day = _getCurrentDay();
         
+        DailyQuestStatus storage status = dailyQuests[user][day];
+        require(!_isQuestCompleted(status.completedQuests, QUEST_NUDGE_FRIEND), "Quest already completed");
+        
         bytes32 nudgeKey = keccak256(abi.encodePacked(user, friend, day));
         require(!nudges[nudgeKey], "Already nudged this friend today");
         
         nudges[nudgeKey] = true;
-        
-        DailyQuestStatus storage status = dailyQuests[user][day];
+
         if (status.completedQuests == 0) status.firstQuestTime = block.timestamp;
         status.completedQuests = _setQuestCompleted(status.completedQuests, QUEST_NUDGE_FRIEND);
         
@@ -379,6 +381,9 @@ contract Pulse is Ownable, ReentrancyGuard, Pausable {
         
         address user = msg.sender;
         uint256 day = _getCurrentDay();
+        DailyQuestStatus storage status = dailyQuests[user][day];
+        require(!_isQuestCompleted(status.completedQuests, QUEST_COMMIT_MESSAGE), "Quest already completed");
+
         uint256 messageId = userMessageCount[user];
         
         userMessages[user][messageId] = Message({
@@ -386,8 +391,7 @@ contract Pulse is Ownable, ReentrancyGuard, Pausable {
             timestamp: block.timestamp
         });
         userMessageCount[user]++;
-        
-        DailyQuestStatus storage status = dailyQuests[user][day];
+
         if (status.completedQuests == 0) status.firstQuestTime = block.timestamp;
         status.completedQuests = _setQuestCompleted(status.completedQuests, QUEST_COMMIT_MESSAGE);
         
@@ -407,13 +411,14 @@ contract Pulse is Ownable, ReentrancyGuard, Pausable {
         
         address user = msg.sender;
         uint256 day = _getCurrentDay();
+        DailyQuestStatus storage status = dailyQuests[user][day];
+        require(!_isQuestCompleted(status.completedQuests, QUEST_PREDICT_PULSE), "Quest already completed");
         
         predictions[user][day] = Prediction({
             predictedActivity: predictedLevel,
             predictionTime: block.timestamp
         });
-        
-        DailyQuestStatus storage status = dailyQuests[user][day];
+
         if (status.completedQuests == 0) status.firstQuestTime = block.timestamp;
         status.completedQuests = _setQuestCompleted(status.completedQuests, QUEST_PREDICT_PULSE);
         
