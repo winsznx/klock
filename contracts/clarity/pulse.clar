@@ -401,6 +401,9 @@
                 (map-get? daily-quests { user: user, day: day })
             ))
         )
+            (asserts! (not (is-quest-completed (get completed-quests daily-data) QUEST-NUDGE-FRIEND))
+                ERR-QUEST-ALREADY-COMPLETED)
+
             (map-set daily-quests { user: user, day: day } (merge daily-data {
                 completed-quests: (set-quest-completed (get completed-quests daily-data) QUEST-NUDGE-FRIEND)
             }))
@@ -440,6 +443,9 @@
                 (map-get? daily-quests { user: user, day: day })
             ))
         )
+            (asserts! (not (is-quest-completed (get completed-quests daily-data) QUEST-COMMIT-MESSAGE))
+                ERR-QUEST-ALREADY-COMPLETED)
+
             (map-set daily-quests { user: user, day: day } (merge daily-data {
                 completed-quests: (set-quest-completed (get completed-quests daily-data) QUEST-COMMIT-MESSAGE)
             }))
@@ -479,6 +485,9 @@
                 (map-get? daily-quests { user: user, day: day })
             ))
         )
+            (asserts! (not (is-quest-completed (get completed-quests daily-data) QUEST-PREDICT-PULSE))
+                ERR-QUEST-ALREADY-COMPLETED)
+
             (map-set daily-quests { user: user, day: day } (merge daily-data {
                 completed-quests: (set-quest-completed (get completed-quests daily-data) QUEST-PREDICT-PULSE)
             }))
