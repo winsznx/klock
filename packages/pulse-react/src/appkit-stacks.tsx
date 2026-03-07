@@ -8,7 +8,7 @@ import {
     isStacksMainnetAddress,
     isStacksQuestCompleted,
     type PulseQuestId,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 import type { PulseActionResult, StacksContractInfo, StacksUserProfile } from './types.js'
 import { fetchStacksWalletProfile } from './stacks.js'
 

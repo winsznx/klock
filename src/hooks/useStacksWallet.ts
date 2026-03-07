@@ -3,4 +3,4 @@ export {
     useStacksWallet,
     type StacksContractInfo,
     type StacksUserProfile,
-} from '@pulseprotocol/react'
+} from '@winsznx/react'

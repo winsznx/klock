@@ -12,7 +12,7 @@ import {
     readStacksDailyQuestStatus,
     readStacksUserProfile,
     type PulseQuestId,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 import type { PulseActionResult, StacksContractInfo, StacksUserProfile } from './types.js'
 
 export interface PulseStacksContextValue {

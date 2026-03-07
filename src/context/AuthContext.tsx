@@ -1,1 +1,1 @@
-export { AuthProvider, useAuth } from '@pulseprotocol/react'
+export { AuthProvider, useAuth } from '@winsznx/react'

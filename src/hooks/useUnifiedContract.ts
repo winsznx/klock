@@ -6,4 +6,4 @@ export {
     type UnifiedContractInfo,
     type UnifiedUserProfile,
     type UserProfile,
-} from '@pulseprotocol/react'
+} from '@winsznx/react'

@@ -8,7 +8,7 @@ import {
     getBaseContract,
     isBaseChain,
     isBaseTestnetChain,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 import type { Address } from 'viem'
 import type { ContractInfo, GlobalStats, PulseActionResult, UserProfile } from './types.js'
 

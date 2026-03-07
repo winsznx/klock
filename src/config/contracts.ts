@@ -11,7 +11,7 @@ import {
     getStacksContract as getSdkStacksContract,
     isBaseChain,
     isBaseTestnetChain,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 
 export {
     BASE_CONTRACTS,

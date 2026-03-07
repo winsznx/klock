@@ -4,4 +4,4 @@ export {
     type PulseStacksContextValue,
     type StacksContractInfo,
     type StacksUserProfile,
-} from '@pulseprotocol/react'
+} from '@winsznx/react'

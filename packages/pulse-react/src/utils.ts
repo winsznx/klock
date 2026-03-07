@@ -1,4 +1,4 @@
-import { QUEST_IDS, isStacksQuestCompleted, type BaseUserProfile } from '@pulseprotocol/sdk'
+import { QUEST_IDS, isStacksQuestCompleted, type BaseUserProfile } from '@winsznx/sdk'
 import type { PulseContractTarget, StacksUserProfile, UnifiedUserProfile } from './types.js'
 
 export const DAILY_COMBO_QUEST_IDS = [

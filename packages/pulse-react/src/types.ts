@@ -1,4 +1,4 @@
-import type { BaseGlobalStats, BaseUserProfile } from '@pulseprotocol/sdk'
+import type { BaseGlobalStats, BaseUserProfile } from '@winsznx/sdk'
 
 export type PulseContractTarget = 'base' | 'stacks' | 'none'
 

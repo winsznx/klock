@@ -7,7 +7,7 @@ import {
     readBaseGlobalStats,
     readBaseUserProfile,
     readStacksUserProfile,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 
 export type NetworkFilter =
     | 'all'

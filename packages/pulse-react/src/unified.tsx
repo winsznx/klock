@@ -1,7 +1,7 @@
 'use client'
 
 import { useAppKitAccount } from '@reown/appkit/react'
-import { QUEST_IDS, QUEST_POINTS } from '@pulseprotocol/sdk'
+import { QUEST_IDS, QUEST_POINTS } from '@winsznx/sdk'
 import { useCallback, useMemo } from 'react'
 import { useBasePulseContract } from './base.js'
 import { usePulseStacks } from './stacks.js'
