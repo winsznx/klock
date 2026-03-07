@@ -1,4 +1,4 @@
-import { cookieStorage, createStorage, http } from '@wagmi/core'
+import { cookieStorage, createStorage } from '@wagmi/core'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import {
     mainnet,
@@ -24,10 +24,10 @@ import {
 } from '@reown/appkit/networks'
 
 // Get projectId from https://cloud.reown.com
-export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID || 'b56e18d47c72ab683b10814fe9495694' // Using a potentially valid public test ID or fallback
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
 if (!projectId) {
-    throw new Error('Project ID is not defined')
+    throw new Error('NEXT_PUBLIC_PROJECT_ID is not defined')
 }
 
 // Comprehensive network support for multiple chains
