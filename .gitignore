@@ -25,6 +25,7 @@ out
 # Production
 /build
 /dist
+packages/*/dist/
 
 # Misc
 .DS_Store
@@ -55,6 +56,9 @@ lerna-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 *.d.ts.map
+packages/*/src/*.d.ts
+packages/*/src/*.js
+packages/*/src/*.js.map
 
 # IDE / Editor
 .vscode/*
