@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "baseUrl": ".",
+    "paths": {
+      "@pulseprotocol/sdk": [
+        "../pulse-sdk/dist/index.d.ts"
+      ],
+      "@pulseprotocol/sdk/*": [
+        "../pulse-sdk/dist/*"
+      ]
+    },
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "incremental": false,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
