@@ -4,13 +4,12 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAccount, useChainId, usePublicClient, useWalletClient } from 'wagmi'
 import {
     getBaseContract,
-    isBaseNetwork,
-    isTestnet,
     PULSE_ABI,
     QUEST_IDS,
-    BASE_CONTRACTS,
-    STACKS_CONTRACTS,
-} from '@/config/contracts'
+    getStacksContract,
+    isBaseChain,
+    isBaseTestnetChain,
+} from '@pulseprotocol/sdk'
 import type { Address } from 'viem'
 
 // Types
@@ -66,11 +65,11 @@ export function usePulseContract() {
             }
         }
 
-        if (isBaseNetwork(chainId)) {
+        if (isBaseChain(chainId)) {
             const contract = getBaseContract(chainId)
             return {
                 chainType: 'base',
-                network: isTestnet(chainId) ? 'testnet' : 'mainnet',
+                network: isBaseTestnetChain(chainId) ? 'testnet' : 'mainnet',
                 contractAddress: contract.address,
                 explorerUrl: contract.explorerUrl,
             }
@@ -86,11 +85,11 @@ export function usePulseContract() {
     }, [chainId])
 
     const contractInfo = getContractInfo()
-    const contract = chainId ? getBaseContract(chainId) : null
+    const contract = chainId && isBaseChain(chainId) ? getBaseContract(chainId) : null
 
     // Fetch user profile
     const fetchUserProfile = useCallback(async () => {
-        if (!address || !publicClient || !contract || !isBaseNetwork(chainId)) {
+        if (!address || !publicClient || !contract || !isBaseChain(chainId)) {
             return
         }
 
@@ -112,7 +111,7 @@ export function usePulseContract() {
 
     // Fetch global stats
     const fetchGlobalStats = useCallback(async () => {
-        if (!publicClient || !contract || !isBaseNetwork(chainId)) {
+        if (!publicClient || !contract || !isBaseChain(chainId)) {
             return
         }
 
@@ -134,7 +133,7 @@ export function usePulseContract() {
 
     // Check which quests are completed today
     const fetchCompletedQuests = useCallback(async () => {
-        if (!address || !publicClient || !contract || !isBaseNetwork(chainId)) {
+        if (!address || !publicClient || !contract || !isBaseChain(chainId)) {
             return
         }
 
@@ -184,7 +183,7 @@ export function usePulseContract() {
         functionName: string,
         args: unknown[] = []
     ): Promise<{ success: boolean; hash?: string; error?: string }> => {
-        if (!walletClient || !contract || !isBaseNetwork(chainId)) {
+        if (!walletClient || !contract || !isBaseChain(chainId)) {
             return { success: false, error: 'Wallet not connected or unsupported network' }
         }
 
@@ -233,7 +232,7 @@ export function usePulseContract() {
 
     // Check if combo is available
     const checkComboAvailable = useCallback(async (): Promise<boolean> => {
-        if (!address || !publicClient || !contract || !isBaseNetwork(chainId)) {
+        if (!address || !publicClient || !contract || !isBaseChain(chainId)) {
             return false
         }
 
@@ -253,7 +252,7 @@ export function usePulseContract() {
 
     // Initial data fetch
     useEffect(() => {
-        if (isConnected && address && isBaseNetwork(chainId)) {
+        if (isConnected && address && isBaseChain(chainId)) {
             refreshData()
         }
     }, [isConnected, address, chainId, refreshData])
@@ -268,8 +267,8 @@ export function usePulseContract() {
         contractInfo,
 
         // Contract info
-        isBaseNetwork: isBaseNetwork(chainId),
-        isTestnet: isTestnet(chainId),
+        isBaseNetwork: isBaseChain(chainId),
+        isTestnet: isBaseTestnetChain(chainId),
         contractAddress: contract?.address || null,
 
         // Actions
@@ -293,7 +292,7 @@ export function usePulseContract() {
  * Actual Stacks contract interaction would require @stacks/connect integration
  */
 export function useStacksContractInfo(isMainnet: boolean = false) {
-    const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
+    const contract = getStacksContract(isMainnet ? 'mainnet' : 'testnet')
 
     return {
         contractAddress: contract.contractAddress,
