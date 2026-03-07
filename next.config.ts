@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ['@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-adapter-bitcoin', 'wagmi', 'viem'],
+  transpilePackages: ['@pulseprotocol/sdk', '@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-adapter-bitcoin', 'wagmi', 'viem'],
   webpack: (config) => {
     config.resolve = config.resolve ?? {}
     config.resolve.alias = {
