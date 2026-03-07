@@ -7,7 +7,7 @@ export {
     QUEST_IDS,
     QUEST_POINTS,
     PULSE_ABI,
-} from './constants'
+} from './constants.js'
 
 export {
     type BaseReadOptions,
@@ -21,7 +21,7 @@ export {
     readBaseGlobalStats,
     readBaseQuestCompletion,
     readBaseUserProfile,
-} from './base'
+} from './base.js'
 
 export {
     getStacksCompletedQuests,
@@ -35,7 +35,7 @@ export {
     readStacksCurrentDay,
     readStacksDailyQuestStatus,
     readStacksUserProfile,
-} from './stacks'
+} from './stacks.js'
 
 export type {
     BaseContractConfig,
@@ -49,4 +49,4 @@ export type {
     StacksReadOnlyResponse,
     StacksUserProfile,
     SupportedBaseChainId,
-} from './types'
+} from './types.js'
