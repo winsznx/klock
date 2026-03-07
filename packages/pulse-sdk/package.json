@@ -18,7 +18,8 @@
   "sideEffects": false,
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "node \"$npm_execpath\" run build && node --test test/**/*.test.mjs"
   },
   "keywords": [
     "pulse",
