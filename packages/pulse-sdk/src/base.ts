@@ -1,6 +1,6 @@
 import { createPublicClient, http, type Address, type PublicClient } from 'viem'
 import { base, baseSepolia } from 'viem/chains'
-import { BASE_CONTRACTS, PULSE_ABI, QUEST_IDS } from './constants'
+import { BASE_CONTRACTS, PULSE_ABI, QUEST_IDS } from './constants.js'
 import type {
     BaseContractConfig,
     BaseGlobalStats,
@@ -8,7 +8,7 @@ import type {
     PulseBaseNetwork,
     PulseQuestId,
     SupportedBaseChainId,
-} from './types'
+} from './types.js'
 
 export interface BaseReadOptions {
     client?: PublicClient
