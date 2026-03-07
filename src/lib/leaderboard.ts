@@ -4,7 +4,6 @@
  */
 
 import {
-    createBasePublicClient,
     readBaseGlobalStats,
     readBaseUserProfile,
     readStacksUserProfile,
@@ -51,11 +50,6 @@ const KNOWN_ADDRESSES = {
     ],
 }
 
-// Create Base public clients for reading contracts
-const baseMainnetClient = createBasePublicClient('mainnet')
-
-const baseTestnetClient = createBasePublicClient('testnet')
-
 /**
  * Fetch user profile from Base contract
  */
@@ -64,9 +58,7 @@ async function fetchBaseUserProfile(
     isTestnet: boolean
 ): Promise<LeaderboardEntry | null> {
     try {
-        const client = isTestnet ? baseTestnetClient : baseMainnetClient
         const result = await readBaseUserProfile(address as `0x${string}`, {
-            client,
             network: isTestnet ? 'testnet' : 'mainnet',
         })
 
@@ -124,9 +116,7 @@ async function fetchStacksUserProfile(
  */
 async function fetchBaseGlobalStats(isTestnet: boolean): Promise<{ totalUsers: number; totalPoints: number } | null> {
     try {
-        const client = isTestnet ? baseTestnetClient : baseMainnetClient
         const result = await readBaseGlobalStats({
-            client,
             network: isTestnet ? 'testnet' : 'mainnet',
         })
 
