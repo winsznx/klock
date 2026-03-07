@@ -1,6 +1,6 @@
 'use client'
 
-import { useUnifiedContract } from '@pulseprotocol/react'
+import { useUnifiedContract } from '@winsznx/react'
 
 export function PulseDashboard() {
   const {

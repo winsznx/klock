@@ -1,4 +1,4 @@
-import { readBaseGlobalStats } from '@pulseprotocol/sdk'
+import { readBaseGlobalStats } from '@winsznx/sdk'
 
 const network = process.argv[2] === 'testnet' ? 'testnet' : 'mainnet'
 const stats = await readBaseGlobalStats({ network })

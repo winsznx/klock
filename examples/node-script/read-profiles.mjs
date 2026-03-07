@@ -1,4 +1,4 @@
-import { readBaseUserProfile, readStacksUserProfile } from '@pulseprotocol/sdk'
+import { readBaseUserProfile, readStacksUserProfile } from '@winsznx/sdk'
 
 const [baseAddress, stacksAddress] = process.argv.slice(2)
 

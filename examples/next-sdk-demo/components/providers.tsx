@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import { base, baseSepolia } from '@reown/appkit/networks'
-import { PulseAuthProvider, PulseStacksProvider } from '@pulseprotocol/react'
+import { PulseAuthProvider, PulseStacksProvider } from '@winsznx/react'
 import { WagmiProvider } from 'wagmi'
 import { wagmiAdapter, projectId } from '../lib/pulse-config'
 

@@ -2,7 +2,7 @@ import {
   readStacksCompletedQuests,
   readStacksCurrentDay,
   readStacksDailyQuestStatus,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 
 const [address] = process.argv.slice(2)
 

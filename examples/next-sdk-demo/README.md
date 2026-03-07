@@ -1,6 +1,6 @@
 # Next.js SDK Demo
 
-This example shows how to wire `@pulseprotocol/sdk` and `@pulseprotocol/react` into a standalone Next.js app.
+This example shows how to wire `@winsznx/sdk` and `@winsznx/react` into a standalone Next.js app.
 
 ## Install
 

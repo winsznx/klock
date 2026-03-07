@@ -1,4 +1,4 @@
-import { readBaseGlobalStats } from '@pulseprotocol/sdk'
+import { readBaseGlobalStats } from '@winsznx/sdk'
 import { PulseDashboard } from '../components/pulse-dashboard'
 
 export default async function HomePage() {
