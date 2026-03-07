@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@pulseprotocol/sdk": ["./packages/pulse-sdk/src/index.ts"],
+      "@pulseprotocol/sdk/*": ["./packages/pulse-sdk/src/*"]
     }
   },
   "include": [

@@ -77,6 +77,9 @@ klock/
 │   └── hooks/
 │       └── usePulseContract.ts # Contract interaction hook
 │
+├── packages/
+│   └── pulse-sdk/              # Publishable TypeScript SDK for Base + Stacks integration
+│
 ├── contracts/
 │   ├── clarity/                # Stacks smart contracts
 │   │   ├── pulse.clar          # Main Clarity contract
@@ -91,6 +94,49 @@ klock/
 │       └── hardhat.config.js   # Hardhat configuration
 │
 └── public/                     # Static assets
+```
+
+---
+
+## SDK Package
+
+This repository now includes a publishable SDK in `packages/pulse-sdk`.
+
+### What the SDK exposes
+
+- PULSE contract addresses and ABI
+- Quest IDs and points constants
+- Base network helpers and read clients
+- Stacks read-only helpers and quest bitmap utilities
+
+### Install
+
+```bash
+npm install @pulseprotocol/sdk
+```
+
+### Example
+
+```ts
+import { readBaseUserProfile, readStacksUserProfile } from '@pulseprotocol/sdk'
+
+const baseProfile = await readBaseUserProfile('0xYourAddress', {
+  network: 'mainnet',
+})
+
+const stacksProfile = await readStacksUserProfile('SPYourAddress', {
+  network: 'mainnet',
+})
+```
+
+### Publishing
+
+```bash
+# Build the SDK
+npm run build:sdk
+
+# Publish the package from the workspace
+npm publish --workspace @pulseprotocol/sdk
 ```
 
 ---
@@ -396,7 +442,7 @@ const {
 
 ### Contract Functions
 
-See `src/config/contracts.ts` for the complete ABI and function signatures.
+See `packages/pulse-sdk/src/constants.ts` for the complete ABI and function signatures.
 
 ---
 

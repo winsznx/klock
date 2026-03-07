@@ -1,8 +1,17 @@
 'use client'
 
-import { useCallback, useState, useMemo, useEffect } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import { useAppKitAccount, modal } from '@reown/appkit/react'
-import { STACKS_CONTRACTS } from '@/config/contracts'
+import {
+    getStacksContractByAddress,
+    isStacksAddress,
+    isStacksMainnetAddress,
+    isStacksQuestCompleted,
+    readStacksCurrentDay,
+    readStacksDailyQuestStatus,
+    readStacksUserProfile,
+    type PulseQuestId,
+} from '@pulseprotocol/sdk'
 
 // Types
 export interface StacksUserProfile {
@@ -23,20 +32,30 @@ export interface StacksContractInfo {
     explorerUrl: string
 }
 
-/**
- * Helper to detect if an address is a Stacks address
- */
-function isStacksAddress(address: string | undefined): boolean {
-    if (!address) return false
-    return address.startsWith('SP') || address.startsWith('ST')
-}
+async function fetchStacksWalletProfile(address: string): Promise<StacksUserProfile | null> {
+    const network = isStacksMainnetAddress(address) ? 'mainnet' : 'testnet'
+    const [profile, currentDay] = await Promise.all([
+        readStacksUserProfile(address, { network, sender: address }),
+        readStacksCurrentDay({ network, sender: address }),
+    ])
 
-/**
- * Helper to detect if address is mainnet Stacks
- */
-function isStacksMainnet(address: string | undefined): boolean {
-    if (!address) return false
-    return address.startsWith('SP')
+    if (!profile) {
+        return null
+    }
+
+    const dailyQuestStatus = currentDay > 0
+        ? await readStacksDailyQuestStatus(address, currentDay, { network, sender: address })
+        : null
+
+    return {
+        totalPoints: profile.totalPoints,
+        currentStreak: profile.currentStreak,
+        longestStreak: profile.longestStreak,
+        lastCheckinDay: profile.lastCheckinBlock,
+        questBitmap: dailyQuestStatus?.completedQuests ?? 0,
+        level: profile.level,
+        totalCheckins: profile.totalCheckins,
+    }
 }
 
 /**
@@ -54,16 +73,16 @@ export function useStacksWallet() {
 
     // Check if this is a Stacks connection (address starts with SP/ST)
     const isStacksConnected = isConnected && isStacksAddress(address)
-    const isMainnet = isStacksMainnet(address)
+    const isMainnet = isStacksMainnetAddress(address)
 
     // Get contract info based on network
     const contractInfo: StacksContractInfo = useMemo(() => {
-        const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
+        const contract = getStacksContractByAddress(address)
         return {
             ...contract,
             network: isMainnet ? 'mainnet' as const : 'testnet' as const,
         }
-    }, [isMainnet])
+    }, [address, isMainnet])
 
     /**
      * Execute a contract call using the Universal Provider
@@ -81,7 +100,7 @@ export function useStacksWallet() {
             return { success: false, error: 'AppKit not initialized' }
         }
 
-        const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
+        const contract = getStacksContractByAddress(address)
 
         setIsLoading(true)
         setError(null)
@@ -184,7 +203,7 @@ export function useStacksWallet() {
             setIsLoading(false)
             return { success: false, error: errorMessage }
         }
-    }, [isStacksConnected, address, isMainnet])
+    }, [isStacksConnected, address])
 
     // Quest functions - pass Clarity-formatted arguments
     const dailyCheckin = useCallback(() =>
@@ -211,87 +230,23 @@ export function useStacksWallet() {
     // Check if quest is completed (using bitmap)
     const isQuestCompleted = useCallback((questId: number): boolean => {
         if (!userProfile) return false
-        return (userProfile.questBitmap & (1 << (questId - 1))) !== 0
+        return isStacksQuestCompleted(userProfile.questBitmap, questId as PulseQuestId)
     }, [userProfile])
 
     // Fetch user profile from Stacks API
     const refreshData = useCallback(async () => {
         if (!address || !isStacksConnected) return
 
-        const contract = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
-
         try {
             setIsLoading(true)
-
-            const response = await fetch(
-                `${contract.apiUrl}/v2/contracts/call-read/${contract.contractAddress}/${contract.contractName}/get-user-profile`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sender: address,
-                        arguments: [`0x${Buffer.from(address).toString('hex')}`],
-                    }),
-                }
-            )
-
-            if (response.ok) {
-                const data = await response.json()
-                if (data.okay && data.result) {
-                    console.log('[Stacks] User profile raw:', data.result)
-
-                    // Parse Clarity tuple response into StacksUserProfile
-                    // Clarity API returns hex-encoded values that need to be parsed
-                    try {
-                        const clarityValue = data.result
-
-                        // Helper to parse Clarity uint from hex
-                        const parseUint = (hexStr: string): number => {
-                            if (!hexStr || hexStr === '0x') return 0
-                            // Remove '0x' prefix and convert hex to decimal
-                            const cleaned = hexStr.startsWith('0x') ? hexStr.slice(2) : hexStr
-                            return parseInt(cleaned, 16)
-                        }
-
-                        // The response is a Clarity tuple (optional)
-                        // Format: (some { total-points: u123, current-streak: u5, ... })
-                        // or: none
-                        if (clarityValue.includes('none')) {
-                            console.log('[Stacks] User profile not found')
-                            setUserProfile(null)
-                        } else {
-                            // Parse the tuple fields from the Clarity response
-                            // The API returns a structured object with type information
-                            const tupleData = typeof clarityValue === 'string'
-                                ? JSON.parse(clarityValue)
-                                : clarityValue
-
-                            // Extract values based on Clarity tuple structure
-                            const profile: StacksUserProfile = {
-                                totalPoints: parseUint(tupleData['total-points']?.value || tupleData.totalPoints || '0x0'),
-                                currentStreak: parseUint(tupleData['current-streak']?.value || tupleData.currentStreak || '0x0'),
-                                longestStreak: parseUint(tupleData['longest-streak']?.value || tupleData.longestStreak || '0x0'),
-                                lastCheckinDay: parseUint(tupleData['last-checkin-block']?.value || tupleData.lastCheckinBlock || '0x0'),
-                                questBitmap: parseUint(tupleData['completed-quests']?.value || tupleData.questBitmap || '0x0'),
-                                level: parseUint(tupleData.level?.value || tupleData.level || '0x1'),
-                                totalCheckins: parseUint(tupleData['total-checkins']?.value || tupleData.totalCheckins || '0x0'),
-                            }
-
-                            console.log('[Stacks] Parsed user profile:', profile)
-                            setUserProfile(profile)
-                        }
-                    } catch (parseErr) {
-                        console.error('[Stacks] Error parsing Clarity response:', parseErr)
-                        console.error('[Stacks] Raw data:', data.result)
-                    }
-                }
-            }
+            const profile = await fetchStacksWalletProfile(address)
+            setUserProfile(profile)
         } catch (err) {
             console.error('[Stacks] Error fetching user profile:', err)
         } finally {
             setIsLoading(false)
         }
-    }, [address, isStacksConnected, isMainnet])
+    }, [address, isStacksConnected])
 
     return {
         // Connection state

@@ -2,8 +2,16 @@
 
 import React, { createContext, useContext, useCallback, useState, useEffect, ReactNode } from 'react'
 import { connect, request, isConnected, disconnect as stacksDisconnect, getLocalStorage } from '@stacks/connect'
-import { uintCV, stringUtf8CV, principalCV, cvToHex, hexToCV, ClarityType } from '@stacks/transactions'
-import { STACKS_CONTRACTS } from '@/config/contracts'
+import { uintCV, stringUtf8CV, principalCV } from '@stacks/transactions'
+import {
+    getStacksContractByAddress,
+    isStacksMainnetAddress,
+    isStacksQuestCompleted,
+    readStacksCurrentDay,
+    readStacksDailyQuestStatus,
+    readStacksUserProfile,
+    type PulseQuestId,
+} from '@pulseprotocol/sdk'
 
 // Types
 export interface StacksUserProfile {
@@ -16,132 +24,35 @@ export interface StacksUserProfile {
     totalCheckins: number
 }
 
-// Helper to fetch quest statuses from the contract
-async function fetchQuestStatuses(
-    address: string,
-    contractInfo: { apiUrl: string; contractAddress: string; contractName: string }
-): Promise<StacksUserProfile | null> {
-    let profile: StacksUserProfile = {
-        totalPoints: 0,
-        currentStreak: 0,
-        longestStreak: 0,
-        lastCheckinDay: 0,
-        questBitmap: 0,
-        level: 1,
-        totalCheckins: 0,
-    }
+async function fetchStacksProfile(address: string): Promise<StacksUserProfile | null> {
+    const network = isStacksMainnetAddress(address) ? 'mainnet' : 'testnet'
 
     try {
-        // First, get the current day from the contract
-        const dayResponse = await fetch(
-            `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-day`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    sender: address,
-                    arguments: [],
-                }),
-            }
-        )
+        const [profile, currentDay] = await Promise.all([
+            readStacksUserProfile(address, { network, sender: address }),
+            readStacksCurrentDay({ network, sender: address }),
+        ])
 
-        let currentDay = 0
-        if (dayResponse.ok) {
-            const dayData = await dayResponse.json()
-            if (dayData.okay && dayData.result) {
-                const dayCv = hexToCV(dayData.result) as any
-                currentDay = Number(dayCv.value || 0)
-                console.log('[Stacks] Current day:', currentDay)
-            }
+        if (!profile) {
+            return null
         }
 
-        // Use get-daily-quest-status to get the completed-quests bitmap in ONE call
-        if (currentDay > 0) {
-            const questStatusResponse = await fetch(
-                `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-daily-quest-status`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sender: address,
-                        arguments: [
-                            cvToHex(principalCV(address)),
-                            cvToHex(uintCV(currentDay))
-                        ],
-                    }),
-                }
-            )
+        const dailyQuestStatus = currentDay > 0
+            ? await readStacksDailyQuestStatus(address, currentDay, { network, sender: address })
+            : null
 
-            if (questStatusResponse.ok) {
-                const questData = await questStatusResponse.json()
-
-                if (questData.okay && questData.result && questData.result !== '0x09') {
-                    try {
-                        const cv = hexToCV(questData.result) as any
-                        // Structure: { type: 'some', value: { type: 'tuple', value: {...} } }
-                        if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
-                            const tuple = cv.value
-                            const data = tuple.value || tuple.data
-                            if (data && data['completed-quests']) {
-                                profile.questBitmap = Number(data['completed-quests'].value || 0)
-                                console.log('[Stacks] Quest bitmap:', profile.questBitmap.toString(2).padStart(10, '0'))
-                            }
-                        }
-                    } catch (err) {
-                        console.error('[Stacks] Error parsing quest status:', err)
-                    }
-                }
-            }
+        return {
+            totalPoints: profile.totalPoints,
+            currentStreak: profile.currentStreak,
+            longestStreak: profile.longestStreak,
+            lastCheckinDay: profile.lastCheckinBlock,
+            questBitmap: dailyQuestStatus?.completedQuests ?? 0,
+            level: profile.level,
+            totalCheckins: profile.totalCheckins,
         }
-
-        // Fetch user profile for points/streak data
-        const profileResponse = await fetch(
-            `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    sender: address,
-                    arguments: [
-                        cvToHex(principalCV(address))
-                    ],
-                }),
-            }
-        )
-
-        if (profileResponse.ok) {
-            const profileData = await profileResponse.json()
-
-            // Parse the Clarity tuple response
-            if (profileData.okay && profileData.result && profileData.result !== '0x09') {
-                try {
-                    const cv = hexToCV(profileData.result) as any
-
-                    // Structure is: { type: 'some', value: { type: 'tuple', value: { field: { type, value } } } }
-                    if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
-                        const tuple = cv.value
-                        // The actual data is in tuple.value, not tuple.data!
-                        const data = tuple.value || tuple.data
-
-                        if (data) {
-                            profile.totalPoints = Number(data['total-points']?.value ?? 0)
-                            profile.currentStreak = Number(data['current-streak']?.value ?? 0)
-                            profile.longestStreak = Number(data['longest-streak']?.value ?? 0)
-                            profile.level = Number(data['level']?.value ?? 1)
-                            profile.totalCheckins = Number(data['total-checkins']?.value ?? 0)
-                            console.log('[Stacks] Parsed profile:', profile)
-                        }
-                    }
-                } catch (parseErr) {
-                    console.error('[Stacks] Error parsing profile CV:', parseErr)
-                }
-            }
-        }
-
-        return profile
     } catch (err) {
         console.error('[Stacks] Error fetching data:', err)
-        return profile  // Return default profile instead of null
+        return null
     }
 }
 
@@ -191,10 +102,10 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     const [userProfile, setUserProfile] = useState<StacksUserProfile | null>(null)
 
     // Determine network from address
-    const isMainnet = address?.startsWith('SP') ?? false
+    const isMainnet = isStacksMainnetAddress(address)
 
     // Get contract info
-    const contractInfo = isMainnet ? STACKS_CONTRACTS.mainnet : STACKS_CONTRACTS.testnet
+    const contractInfo = getStacksContractByAddress(address)
 
     // Check if already connected on mount
     useEffect(() => {
@@ -322,7 +233,7 @@ export function StacksProvider({ children }: { children: ReactNode }) {
     // Check if quest is completed
     const isQuestCompletedFn = useCallback((questId: number): boolean => {
         if (!userProfile) return false
-        return (userProfile.questBitmap & (1 << (questId - 1))) !== 0
+        return isStacksQuestCompleted(userProfile.questBitmap, questId as PulseQuestId)
     }, [userProfile])
 
     // Fetch user profile
@@ -331,48 +242,14 @@ export function StacksProvider({ children }: { children: ReactNode }) {
 
         try {
             setIsLoading(true)
-
-            // For Stacks, we need to call the read-only function get-user-profile
-            // The contract returns a tuple with user stats
-            const response = await fetch(
-                `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        sender: address,
-                        arguments: [
-                            // Principal argument needs to be CV hex encoded
-                            `0x0516${Buffer.from(address.slice(2)).toString('hex').padStart(40, '0')}`
-                        ],
-                    }),
-                }
-            )
-
-            if (response.ok) {
-                const data = await response.json()
-                console.log('[Stacks] User profile API response:', data)
-
-                if (data.okay && data.result) {
-                    // Parse the Clarity hex response
-                    // For now, let's try a simpler approach - check today's quest status
-                    // by calling get-quest-status for each quest
-                    try {
-                        const questStatuses = await fetchQuestStatuses(address, contractInfo)
-                        if (questStatuses) {
-                            setUserProfile(questStatuses)
-                        }
-                    } catch (parseErr) {
-                        console.error('[Stacks] Error parsing profile:', parseErr)
-                    }
-                }
-            }
+            const profile = await fetchStacksProfile(address)
+            setUserProfile(profile)
         } catch (err) {
             console.error('[Stacks] Error fetching profile:', err)
         } finally {
             setIsLoading(false)
         }
-    }, [address, contractInfo])
+    }, [address])
 
     // Fetch data when connected
     useEffect(() => {

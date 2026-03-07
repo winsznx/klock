@@ -4,7 +4,7 @@ import { useCallback, useMemo } from 'react'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { usePulseContract } from './usePulseContract'
 import { useStacks } from '@/context/StacksContext'
-import { QUEST_IDS, QUEST_POINTS } from '@/config/contracts'
+import { QUEST_IDS, QUEST_POINTS } from '@pulseprotocol/sdk'
 
 // Re-export types
 export type { UserProfile, GlobalStats, ContractInfo } from './usePulseContract'

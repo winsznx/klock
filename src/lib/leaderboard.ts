@@ -3,10 +3,12 @@
  * Fetches user data from Base and Stacks contracts to build leaderboard
  */
 
-import { BASE_CONTRACTS, STACKS_CONTRACTS, PULSE_ABI } from '@/config/contracts'
-import { createPublicClient, http } from 'viem'
-import { base, baseSepolia } from 'viem/chains'
-import { cvToHex, principalCV, hexToCV, ClarityType } from '@stacks/transactions'
+import {
+    createBasePublicClient,
+    readBaseGlobalStats,
+    readBaseUserProfile,
+    readStacksUserProfile,
+} from '@pulseprotocol/sdk'
 
 export type NetworkFilter =
     | 'all'
@@ -50,15 +52,9 @@ const KNOWN_ADDRESSES = {
 }
 
 // Create Base public clients for reading contracts
-const baseMainnetClient = createPublicClient({
-    chain: base,
-    transport: http(BASE_CONTRACTS.mainnet.rpcUrl),
-})
+const baseMainnetClient = createBasePublicClient('mainnet')
 
-const baseTestnetClient = createPublicClient({
-    chain: baseSepolia,
-    transport: http(BASE_CONTRACTS.testnet.rpcUrl),
-})
+const baseTestnetClient = createBasePublicClient('testnet')
 
 /**
  * Fetch user profile from Base contract
@@ -69,16 +65,10 @@ async function fetchBaseUserProfile(
 ): Promise<LeaderboardEntry | null> {
     try {
         const client = isTestnet ? baseTestnetClient : baseMainnetClient
-        const contractAddress = isTestnet
-            ? BASE_CONTRACTS.testnet.address
-            : BASE_CONTRACTS.mainnet.address
-
-        const result = await client.readContract({
-            address: contractAddress,
-            abi: PULSE_ABI,
-            functionName: 'getUserProfile',
-            args: [address as `0x${string}`],
-        }) as any
+        const result = await readBaseUserProfile(address as `0x${string}`, {
+            client,
+            network: isTestnet ? 'testnet' : 'mainnet',
+        })
 
         if (!result || !result.exists) return null
 
@@ -106,47 +96,23 @@ async function fetchStacksUserProfile(
     isTestnet: boolean
 ): Promise<LeaderboardEntry | null> {
     try {
-        const contractInfo = isTestnet
-            ? STACKS_CONTRACTS.testnet
-            : STACKS_CONTRACTS.mainnet
+        const profile = await readStacksUserProfile(address, {
+            network: isTestnet ? 'testnet' : 'mainnet',
+            sender: address,
+        })
 
-        const response = await fetch(
-            `${contractInfo.apiUrl}/v2/contracts/call-read/${contractInfo.contractAddress}/${contractInfo.contractName}/get-user-profile`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    sender: address,
-                    arguments: [cvToHex(principalCV(address))],
-                }),
-            }
-        )
+        if (!profile || !profile.exists) return null
 
-        if (!response.ok) return null
-
-        const data = await response.json()
-        if (!data.okay || data.result === '0x09') return null
-
-        const cv = hexToCV(data.result) as any
-        if ((cv.type === 'some' || cv.type === ClarityType.OptionalSome) && cv.value) {
-            const tuple = cv.value
-            const profileData = tuple.value || tuple.data
-
-            if (profileData) {
-                return {
-                    rank: 0,
-                    address: address,
-                    displayAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
-                    totalPoints: Number(profileData['total-points']?.value ?? 0),
-                    level: Number(profileData['level']?.value ?? 1),
-                    streak: Number(profileData['current-streak']?.value ?? 0),
-                    network: 'stacks',
-                    isTestnet,
-                }
-            }
+        return {
+            rank: 0,
+            address: address,
+            displayAddress: `${address.slice(0, 6)}...${address.slice(-4)}`,
+            totalPoints: profile.totalPoints,
+            level: profile.level,
+            streak: profile.currentStreak,
+            network: 'stacks',
+            isTestnet,
         }
-
-        return null
     } catch (err) {
         console.error(`[Leaderboard] Error fetching Stacks profile for ${address}:`, err)
         return null
@@ -159,20 +125,14 @@ async function fetchStacksUserProfile(
 async function fetchBaseGlobalStats(isTestnet: boolean): Promise<{ totalUsers: number; totalPoints: number } | null> {
     try {
         const client = isTestnet ? baseTestnetClient : baseMainnetClient
-        const contractAddress = isTestnet
-            ? BASE_CONTRACTS.testnet.address
-            : BASE_CONTRACTS.mainnet.address
-
-        const result = await client.readContract({
-            address: contractAddress,
-            abi: PULSE_ABI,
-            functionName: 'getGlobalStats',
-            args: [],
-        }) as any
+        const result = await readBaseGlobalStats({
+            client,
+            network: isTestnet ? 'testnet' : 'mainnet',
+        })
 
         return {
-            totalUsers: Number(result[0] || 0),
-            totalPoints: Number(result[2] || 0),
+            totalUsers: Number(result.totalUsers || 0),
+            totalPoints: Number(result.totalPointsDistributed || 0),
         }
     } catch (err) {
         console.error('[Leaderboard] Error fetching Base global stats:', err)
