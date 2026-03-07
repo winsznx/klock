@@ -1,11 +1,11 @@
-# @pulseprotocol/react
+# @winsznx/react
 
 React hooks and providers for PULSE apps built with AppKit, wagmi, and Stacks wallets.
 
 ## Install
 
 ```bash
-npm install @pulseprotocol/sdk @pulseprotocol/react
+npm install @winsznx/sdk @winsznx/react
 ```
 
 ## Included

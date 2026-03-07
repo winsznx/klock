@@ -9,7 +9,7 @@ import {
   readStacksCurrentDay,
   readStacksDailyQuestStatus,
   readStacksUserProfile,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 
 const currentDay = await readStacksCurrentDay({
   network: 'mainnet',

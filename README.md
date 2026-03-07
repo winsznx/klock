@@ -2,6 +2,8 @@
 
 PULSE is a multi-chain social ritual product spanning a reference Next.js app, a TypeScript SDK, and a React integration package for Base and Stacks.
 
+Published packages use the GitHub Packages scope `@winsznx`.
+
 ## Workspace
 
 - `packages/pulse-sdk`: typed contract constants, Base readers, and Stacks read-only helpers.
@@ -12,14 +14,14 @@ PULSE is a multi-chain social ritual product spanning a reference Next.js app, a
 
 ## Packages
 
-### `@pulseprotocol/sdk`
+### `@winsznx/sdk`
 
 ```bash
-npm install @pulseprotocol/sdk
+npm install @winsznx/sdk
 ```
 
 ```ts
-import { readBaseUserProfile, readStacksUserProfile } from '@pulseprotocol/sdk'
+import { readBaseUserProfile, readStacksUserProfile } from '@winsznx/sdk'
 
 const baseProfile = await readBaseUserProfile('0xYourAddress', {
   network: 'mainnet',
@@ -31,16 +33,16 @@ const stacksProfile = await readStacksUserProfile('SPYourAddress', {
 })
 ```
 
-### `@pulseprotocol/react`
+### `@winsznx/react`
 
 ```bash
-npm install @pulseprotocol/sdk @pulseprotocol/react
+npm install @winsznx/sdk @winsznx/react
 ```
 
 ```tsx
 'use client'
 
-import { PulseAuthProvider, PulseStacksProvider, useUnifiedContract } from '@pulseprotocol/react'
+import { PulseAuthProvider, PulseStacksProvider, useUnifiedContract } from '@winsznx/react'
 
 function PulseDashboard() {
   const { userProfile, dailyCheckin } = useUnifiedContract()

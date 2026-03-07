@@ -8,7 +8,7 @@ import {
   readBaseCompletedQuests,
   readBaseGlobalStats,
   readBaseUserProfile,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 
 const client = createBasePublicClient('mainnet')
 
@@ -27,4 +27,4 @@ const [profile, stats, quests] = await Promise.all([
 ## Recommended pattern
 
 - Use the SDK in server code for reads.
-- Use `@pulseprotocol/react` in client code for writes and wallet-aware UI.
+- Use `@winsznx/react` in client code for writes and wallet-aware UI.

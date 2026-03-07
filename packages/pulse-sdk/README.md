@@ -1,11 +1,11 @@
-# @pulseprotocol/sdk
+# @winsznx/sdk
 
 TypeScript SDK for integrating with the PULSE protocol on Base and Stacks.
 
 ## Install
 
 ```bash
-npm install @pulseprotocol/sdk
+npm install @winsznx/sdk
 ```
 
 ## Usage
@@ -15,7 +15,7 @@ import {
   createBasePublicClient,
   readBaseUserProfile,
   readStacksUserProfile,
-} from '@pulseprotocol/sdk'
+} from '@winsznx/sdk'
 
 const baseClient = createBasePublicClient('mainnet')
 

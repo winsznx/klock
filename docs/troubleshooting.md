@@ -13,7 +13,7 @@ npm run build:sdk
 npm run build:react
 ```
 
-`@pulseprotocol/react` compiles against the built SDK declarations.
+`@winsznx/react` compiles against the built SDK declarations.
 
 ## Stacks session is connected but writes fail
 

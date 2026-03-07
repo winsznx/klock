@@ -1,6 +1,6 @@
 # React Guide
 
-`@pulseprotocol/react` packages the reusable app-facing integration layer.
+`@winsznx/react` packages the reusable app-facing integration layer.
 
 ## Providers
 
@@ -18,7 +18,7 @@
 ```tsx
 'use client'
 
-import { PulseAuthProvider, PulseStacksProvider } from '@pulseprotocol/react'
+import { PulseAuthProvider, PulseStacksProvider } from '@winsznx/react'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (

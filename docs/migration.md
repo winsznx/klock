@@ -13,7 +13,7 @@ import { QUEST_IDS } from '@/config/contracts'
 After:
 
 ```ts
-import { QUEST_IDS } from '@pulseprotocol/sdk'
+import { QUEST_IDS } from '@winsznx/sdk'
 ```
 
 ## App hooks to React package
@@ -27,7 +27,7 @@ import { useUnifiedContract } from '@/hooks/useUnifiedContract'
 After:
 
 ```ts
-import { useUnifiedContract } from '@pulseprotocol/react'
+import { useUnifiedContract } from '@winsznx/react'
 ```
 
 The app keeps compatibility wrappers, so migrations can be incremental.
