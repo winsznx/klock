@@ -1,5 +1,5 @@
 import { ClarityType, cvToHex, hexToCV, principalCV, uintCV } from '@stacks/transactions'
-import { QUEST_IDS, STACKS_CONTRACTS } from './constants'
+import { QUEST_IDS, STACKS_CONTRACTS } from './constants.js'
 import type {
     PulseQuestId,
     PulseStacksNetwork,
@@ -7,7 +7,7 @@ import type {
     StacksDailyQuestStatus,
     StacksReadOnlyResponse,
     StacksUserProfile,
-} from './types'
+} from './types.js'
 
 export interface StacksReadOptions {
     network?: PulseStacksNetwork
@@ -87,7 +87,7 @@ async function callStacksReadOnly(
 
 function parseClarityUInt(result: string): number {
     const clarityValue = hexToCV(result) as { value?: bigint }
-    return Number(clarityValue.value ?? 0n)
+    return Number(clarityValue.value ?? BigInt(0))
 }
 
 function parseClarityOptionalTuple(result: string): Record<string, ClarityTupleField> | null {
@@ -120,8 +120,21 @@ function parseTupleBoolean(data: Record<string, ClarityTupleField> | null, key: 
         return fallback
     }
 
-    const value = data[key]?.value
-    return typeof value === 'boolean' ? value : fallback
+    const field = data[key] as ClarityTupleField & { type?: string } | undefined
+    const value = field?.value
+    if (typeof value === 'boolean') {
+        return value
+    }
+
+    if (field?.type === 'true') {
+        return true
+    }
+
+    if (field?.type === 'false') {
+        return false
+    }
+
+    return fallback
 }
 
 export async function readStacksCurrentDay(options: StacksReadOptions = {}): Promise<number> {
