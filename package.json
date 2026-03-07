@@ -8,10 +8,16 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
-    "build:sdk": "npm --workspace @pulseprotocol/sdk run build",
+    "build:sdk": "node \"$npm_execpath\" --workspace @pulseprotocol/sdk run build",
+    "build:react": "node \"$npm_execpath\" --workspace @pulseprotocol/react run build",
+    "build:packages": "node \"$npm_execpath\" run build:sdk && node \"$npm_execpath\" run build:react",
     "start": "next start",
     "lint": "eslint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:sdk": "node \"$npm_execpath\" --workspace @pulseprotocol/sdk run test",
+    "test:react": "node \"$npm_execpath\" --workspace @pulseprotocol/react run test",
+    "test:packages": "node \"$npm_execpath\" run test:sdk && node \"$npm_execpath\" run test:react",
+    "release:check": "node \"$npm_execpath\" run build:packages && node \"$npm_execpath\" run test:packages && node \"$npm_execpath\" run type-check"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^4.3.7",
