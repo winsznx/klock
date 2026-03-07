@@ -11,14 +11,22 @@ npm install @pulseprotocol/sdk
 ## Usage
 
 ```ts
-import { readBaseUserProfile, readStacksUserProfile } from '@pulseprotocol/sdk'
+import {
+  createBasePublicClient,
+  readBaseUserProfile,
+  readStacksUserProfile,
+} from '@pulseprotocol/sdk'
+
+const baseClient = createBasePublicClient('mainnet')
 
 const baseProfile = await readBaseUserProfile('0xYourAddress', {
+  client: baseClient,
   network: 'mainnet',
 })
 
 const stacksProfile = await readStacksUserProfile('SPYourAddress', {
   network: 'mainnet',
+  sender: 'SPYourAddress',
 })
 ```
 
