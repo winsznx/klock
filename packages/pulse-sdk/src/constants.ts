@@ -1,4 +1,4 @@
-import type { BaseContractConfig, PulseBaseNetwork, PulseQuestId, PulseStacksNetwork, StacksContractConfig } from './types'
+import type { BaseContractConfig, PulseBaseNetwork, PulseQuestId, PulseStacksNetwork, StacksContractConfig } from './types.js'
 
 export const BASE_CONTRACTS = {
     testnet: {
