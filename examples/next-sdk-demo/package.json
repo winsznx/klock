@@ -1,0 +1,29 @@
+{
+  "name": "pulse-next-sdk-demo",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@pulseprotocol/react": "^0.1.0",
+    "@pulseprotocol/sdk": "^0.1.0",
+    "@reown/appkit": "^1.8.15",
+    "@reown/appkit-adapter-wagmi": "^1.8.15",
+    "@tanstack/react-query": "^5.90.12",
+    "@stacks/connect": "^8.2.4",
+    "@stacks/transactions": "^7.3.1",
+    "next": "16.1.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "viem": "^2.43.3",
+    "wagmi": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}
