@@ -1,0 +1,33 @@
+# Migration
+
+If you previously imported protocol constants or hooks from the app source directly, move to the package entry points.
+
+## App-internal to SDK
+
+Before:
+
+```ts
+import { QUEST_IDS } from '@/config/contracts'
+```
+
+After:
+
+```ts
+import { QUEST_IDS } from '@pulseprotocol/sdk'
+```
+
+## App hooks to React package
+
+Before:
+
+```ts
+import { useUnifiedContract } from '@/hooks/useUnifiedContract'
+```
+
+After:
+
+```ts
+import { useUnifiedContract } from '@pulseprotocol/react'
+```
+
+The app keeps compatibility wrappers, so migrations can be incremental.
