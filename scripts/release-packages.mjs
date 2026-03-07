@@ -4,8 +4,8 @@ import { spawnSync } from 'node:child_process'
 
 const dryRun = process.argv.includes('--dry-run')
 const workspaces = [
-  '@pulseprotocol/sdk',
-  '@pulseprotocol/react',
+  '@winsznx/sdk',
+  '@winsznx/react',
 ]
 
 for (const workspace of workspaces) {

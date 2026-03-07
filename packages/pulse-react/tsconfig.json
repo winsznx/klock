@@ -4,10 +4,10 @@
     "target": "ES2020",
     "baseUrl": ".",
     "paths": {
-      "@pulseprotocol/sdk": [
+      "@winsznx/sdk": [
         "../pulse-sdk/dist/index.d.ts"
       ],
-      "@pulseprotocol/sdk/*": [
+      "@winsznx/sdk/*": [
         "../pulse-sdk/dist/*"
       ]
     },

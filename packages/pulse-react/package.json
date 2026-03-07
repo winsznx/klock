@@ -1,5 +1,5 @@
 {
-  "name": "@pulseprotocol/react",
+  "name": "@winsznx/react",
   "version": "0.1.0",
   "description": "React hooks and providers for integrating PULSE into AppKit, wagmi, and Stacks apps.",
   "type": "module",
@@ -17,7 +17,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "prebuild": "node \"$npm_execpath\" --workspace @pulseprotocol/sdk run build",
+    "prebuild": "node \"$npm_execpath\" --workspace @winsznx/sdk run build",
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
     "test": "node \"$npm_execpath\" run build && node --test test/**/*.test.mjs"
@@ -31,11 +31,13 @@
   ],
   "author": "PULSE Team",
   "license": "MIT",
+  "repository": "https://github.com/winsznx/klock.git",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@pulseprotocol/sdk": "^0.1.0"
+    "@winsznx/sdk": "^0.1.0"
   },
   "peerDependencies": {
     "@reown/appkit": "^1.8.15",

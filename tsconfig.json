@@ -20,10 +20,10 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@pulseprotocol/sdk": ["./packages/pulse-sdk/src/index.ts"],
-      "@pulseprotocol/sdk/*": ["./packages/pulse-sdk/src/*"],
-      "@pulseprotocol/react": ["./packages/pulse-react/src/index.ts"],
-      "@pulseprotocol/react/*": ["./packages/pulse-react/src/*"]
+      "@winsznx/sdk": ["./packages/pulse-sdk/src/index.ts"],
+      "@winsznx/sdk/*": ["./packages/pulse-sdk/src/*"],
+      "@winsznx/react": ["./packages/pulse-react/src/index.ts"],
+      "@winsznx/react/*": ["./packages/pulse-react/src/*"]
     }
   },
   "include": [

@@ -1,5 +1,5 @@
 {
-  "name": "@pulseprotocol/sdk",
+  "name": "@winsznx/sdk",
   "version": "0.1.0",
   "description": "Official TypeScript SDK for integrating with the PULSE protocol on Base and Stacks.",
   "type": "module",
@@ -30,8 +30,10 @@
   ],
   "author": "PULSE Team",
   "license": "MIT",
+  "repository": "https://github.com/winsznx/klock.git",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@stacks/transactions": "^7.3.1",
