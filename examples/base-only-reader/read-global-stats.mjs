@@ -2,7 +2,7 @@ import { readBaseGlobalStats } from '@winsznx/sdk'
 
 const network = process.argv[2] === 'testnet' ? 'testnet' : 'mainnet'
 
-if (process.argv[2] === '--help') {
+if (process.argv[2] === '--help' || process.argv[2] === '-h') {
   console.log('Usage: node read-global-stats.mjs [mainnet|testnet]')
   console.log('Defaults to mainnet when no network is provided')
   process.exit(0)
