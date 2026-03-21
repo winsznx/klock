@@ -4,6 +4,7 @@ const network = process.argv[2] === 'testnet' ? 'testnet' : 'mainnet'
 
 if (process.argv[2] === '--help') {
   console.log('Usage: node read-global-stats.mjs [mainnet|testnet]')
+  console.log('Defaults to mainnet when no network is provided')
   process.exit(0)
 }
 
