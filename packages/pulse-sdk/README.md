@@ -32,6 +32,8 @@ const stacksProfile = await readStacksUserProfile('SPYourAddress', {
 })
 ```
 
+Pass a custom Base client only when you need custom transport or chain configuration. Otherwise, the helpers can create the correct client from `network`.
+
 ## Included
 
 - Contract addresses and ABI
