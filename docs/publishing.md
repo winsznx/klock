@@ -62,3 +62,5 @@ Packages are published in this order:
 
 1. `@winsznx/sdk`
 2. `@winsznx/react`
+
+Keep that order when both versions change, because `@winsznx/react` depends on the SDK package version range.
