@@ -35,6 +35,10 @@ Selection notes:
 
 - `PulseAccessGate`
 
+Component note:
+
+- `PulseAccessGate` expects the surrounding tree to already include `PulseAuthProvider` and `PulseStacksProvider`
+
 ## Utilities
 
 - `createPulseAuthStorageKey(namespace?)`
