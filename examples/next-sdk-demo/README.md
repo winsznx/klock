@@ -26,6 +26,8 @@ Set `NEXT_PUBLIC_PROJECT_ID` before running the demo.
 npm run dev
 ```
 
+Run the command from the `examples/next-sdk-demo` directory after setting the project id.
+
 The example includes:
 
 - AppKit and wagmi wiring
