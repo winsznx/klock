@@ -6,3 +6,4 @@
 - `stacks-only-reader`: focused Stacks read example.
 
 Use the Node-based examples when you want to validate package reads without setting up a browser app.
+The Next.js demo additionally requires `NEXT_PUBLIC_PROJECT_ID`.
