@@ -42,3 +42,5 @@ npm install @reown/appkit @stacks/connect @stacks/transactions viem wagmi
 npm install
 npm run build:packages
 ```
+
+Standalone example apps like `examples/next-sdk-demo` keep their own `package.json`, so install inside that directory separately when you want to run them.
