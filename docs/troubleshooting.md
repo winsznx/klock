@@ -15,6 +15,11 @@ npm run build:react
 
 `@winsznx/react` compiles against the built SDK declarations.
 
+## Next example cannot resolve dependencies
+
+- Run `npm install` inside `examples/next-sdk-demo`.
+- The standalone example is not part of the root workspace package list.
+
 ## Package tests fail in CI because the test glob is not found
 
 - Prefer explicit `node --test test/*.test.mjs` patterns for the package-level test scripts.
