@@ -40,6 +40,7 @@ Use a classic personal access token with package write access.
 
 ```bash
 npm login --scope=@winsznx --auth-type=legacy --registry=https://npm.pkg.github.com
+npm whoami --registry=https://npm.pkg.github.com
 ```
 
 ```bash
@@ -52,6 +53,7 @@ Authenticate to npmjs on this machine, then run:
 
 ```bash
 npm login --registry=https://registry.npmjs.org
+npm whoami --registry=https://registry.npmjs.org
 ```
 
 ```bash
