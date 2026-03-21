@@ -26,6 +26,8 @@ npm install @winsznx/sdk @winsznx/react
 npm run build:packages
 ```
 
+Consumer apps that install `@winsznx/sdk` or `@winsznx/react` from a registry do not need this workspace build step.
+
 ## Run the reference app
 
 ```bash
