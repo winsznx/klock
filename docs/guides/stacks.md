@@ -30,6 +30,7 @@ const profile = await readStacksUserProfile('SPYourAddress', {
 ## Wallet-driven flows
 
 Wrap your UI with `PulseStacksProvider`, then call `useStacks()` or `useUnifiedContract()`.
+`useStacks()` is the short alias for `usePulseStacks()`.
 
 Use `useUnifiedContract()` when the same surface needs to support either Base or Stacks sessions without separate UI branches.
 
