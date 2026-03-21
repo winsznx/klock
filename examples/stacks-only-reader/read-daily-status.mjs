@@ -16,4 +16,4 @@ const currentDay = await readStacksCurrentDay({ network, sender: address })
 const status = await readStacksDailyQuestStatus(address, currentDay, { network, sender: address })
 const quests = await readStacksCompletedQuests(address, { network, sender: address })
 
-console.log({ network, currentDay, status, quests })
+console.log(JSON.stringify({ network, currentDay, status, quests }, null, 2))
