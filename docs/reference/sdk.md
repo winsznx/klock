@@ -24,6 +24,11 @@
 - `readBaseCompletedQuests(address, options?)`
 - `readBaseComboAvailability(address, options?)`
 
+Base read helpers accept an optional `options` object with:
+
+- `network`: `'mainnet' | 'testnet'`
+- `client`: custom viem public client for the target Base network
+
 ## Stacks helpers
 
 - `getStacksContract(network?)`
@@ -36,3 +41,8 @@
 - `readStacksDailyQuestStatus(address, day, options?)`
 - `readStacksUserProfile(address, options?)`
 - `readStacksCompletedQuests(address, options?)`
+
+Stacks read helpers accept an optional `options` object with:
+
+- `network`: `'mainnet' | 'testnet'`
+- `sender`: Stacks address used as the read-only call sender
