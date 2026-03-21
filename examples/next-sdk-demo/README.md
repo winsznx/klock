@@ -34,3 +34,4 @@ The example includes:
 - a client-side `useUnifiedContract()` integration
 
 The home page reads Base mainnet stats on the server before rendering the dashboard.
+Provider setup lives in `components/providers.tsx`.
