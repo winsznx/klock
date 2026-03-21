@@ -33,8 +33,7 @@
   "license": "MIT",
   "repository": "https://github.com/winsznx/klock.git",
   "publishConfig": {
-    "access": "public",
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "dependencies": {
     "@winsznx/sdk": "^0.1.0"
