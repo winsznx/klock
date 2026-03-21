@@ -7,6 +7,8 @@
 - `PulseAuthProvider`: local login state keyed to the active AppKit address.
 - `PulseStacksProvider`: Stacks wallet connection, profile reads, and transaction helpers.
 
+`PulseAuthProvider` also accepts an optional `namespace` or explicit `storageKey` when multiple apps need separate local auth state in the same browser.
+
 ## Hooks
 
 - `usePulseContract()`: Base contract reads and writes.
