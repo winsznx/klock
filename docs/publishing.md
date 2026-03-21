@@ -8,6 +8,13 @@ node scripts/release-packages.mjs --registry github --dry-run
 node scripts/release-packages.mjs --registry npm --dry-run
 ```
 
+Before publishing to npmjs, confirm the target version does not already exist. If it does, bump the package version first.
+
+```bash
+npm view @winsznx/sdk version --registry=https://registry.npmjs.org
+npm view @winsznx/react version --registry=https://registry.npmjs.org
+```
+
 ## CI publish targets
 
 The repository includes two publish workflows:
