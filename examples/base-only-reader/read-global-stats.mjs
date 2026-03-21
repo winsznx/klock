@@ -10,8 +10,8 @@ if (process.argv[2] === '--help') {
 const stats = await readBaseGlobalStats({ network })
 
 console.log(`Base ${network} stats`)
-console.log({
+console.log(JSON.stringify({
   totalUsers: stats.totalUsers.toString(),
   totalCheckins: stats.totalCheckins.toString(),
   totalPointsDistributed: stats.totalPointsDistributed.toString(),
-})
+}, null, 2))
