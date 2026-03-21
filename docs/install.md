@@ -1,8 +1,16 @@
 # Install
 
-These packages publish to GitHub Packages under the `@winsznx` scope.
+These packages publish to npmjs and GitHub Packages under the `@winsznx` scope.
 
-If you are installing outside this repo, add a scope mapping first:
+The simplest path for external consumers is npmjs:
+
+```bash
+npm install @winsznx/sdk
+```
+
+Use GitHub Packages only if you specifically want installs from `npm.pkg.github.com`.
+
+If you are installing from GitHub Packages, add a scope mapping first:
 
 ```bash
 echo "@winsznx:registry=https://npm.pkg.github.com" >> ~/.npmrc
