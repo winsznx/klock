@@ -26,6 +26,11 @@ Hook roles:
 - `useUnifiedContract()` routes between Base and Stacks based on the active wallet session
 - `useStacksWallet()` targets AppKit-backed Stacks sessions
 
+Selection notes:
+
+- `usePulseContract()` is Base-only
+- `useUnifiedContract()` is the best default when the UI may run on either chain
+
 ## Components
 
 - `PulseAccessGate`
