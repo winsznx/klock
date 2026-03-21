@@ -2,6 +2,8 @@
 
 TypeScript SDK for integrating with the PULSE protocol on Base and Stacks.
 
+The package is published to npmjs and GitHub Packages under the `@winsznx` scope.
+
 ## Install
 
 ```bash
