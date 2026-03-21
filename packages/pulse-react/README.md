@@ -27,4 +27,6 @@ npm install @reown/appkit @stacks/connect @stacks/transactions viem wagmi
 - `useStacksWallet` for AppKit-based Stacks sessions
 - `PulseAccessGate` for simple auth-aware UI gating
 
+`useStacks()` is available as a short alias of `usePulseStacks()`.
+
 For mixed-chain UI, start with `useUnifiedContract()` and only drop to the chain-specific hooks when you need network-specific behavior.
