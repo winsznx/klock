@@ -31,6 +31,8 @@ const profile = await readStacksUserProfile('SPYourAddress', {
 
 Wrap your UI with `PulseStacksProvider`, then call `useStacks()` or `useUnifiedContract()`.
 
+Use `useUnifiedContract()` when the same surface needs to support either Base or Stacks sessions without separate UI branches.
+
 ## Notes
 
 - Mainnet addresses start with `SP`.
