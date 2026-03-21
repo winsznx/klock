@@ -4,6 +4,12 @@ const [baseAddress, stacksAddress, baseNetworkArg, stacksNetworkArg] = process.a
 const baseNetwork = baseNetworkArg === 'testnet' ? 'testnet' : 'mainnet'
 const stacksNetwork = stacksNetworkArg === 'testnet' ? 'testnet' : 'mainnet'
 
+if (baseAddress === '--help' || baseAddress === '-h') {
+  console.log('Usage: node read-profiles.mjs <base-address> <stacks-address> [base-network] [stacks-network]')
+  console.log('Defaults: base-network=mainnet, stacks-network=mainnet')
+  process.exit(0)
+}
+
 if (!baseAddress || !stacksAddress) {
   console.error('Usage: node read-profiles.mjs <base-address> <stacks-address> [base-network] [stacks-network]')
   process.exit(1)
