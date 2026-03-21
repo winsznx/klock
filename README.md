@@ -2,7 +2,7 @@
 
 PULSE is a multi-chain social ritual product spanning a reference Next.js app, a TypeScript SDK, and a React integration package for Base and Stacks.
 
-Published packages use the GitHub Packages scope `@winsznx`.
+Published packages are available on npmjs and GitHub Packages under the `@winsznx` scope.
 
 ## Workspace
 
@@ -79,7 +79,7 @@ Useful commands:
 - `npm run build:packages`
 - `npm run test:packages`
 - `npm run type-check`
-- `node scripts/release-packages.mjs --dry-run`
+- `node scripts/release-packages.mjs --registry npm --dry-run`
 
 ## Documentation
 
