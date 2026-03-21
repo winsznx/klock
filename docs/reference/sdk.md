@@ -52,3 +52,10 @@ Stacks read helpers accept an optional `options` object with:
 
 - `network`: `'mainnet' | 'testnet'`
 - `sender`: Stacks address used as the read-only call sender
+
+Return notes:
+
+- `readStacksCurrentDay()` resolves to the current contract day number
+- `readStacksDailyQuestStatus()` resolves to the stored daily quest tuple or `null`
+- `readStacksUserProfile()` resolves to the stored profile tuple or `null`
+- `readStacksCompletedQuests()` resolves to an array of completed quest ids for the active day
