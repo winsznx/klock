@@ -2,6 +2,8 @@
 
 React hooks and providers for PULSE apps built with AppKit, wagmi, and Stacks wallets.
 
+The package is published to npmjs and GitHub Packages under the `@winsznx` scope.
+
 ## Install
 
 ```bash
