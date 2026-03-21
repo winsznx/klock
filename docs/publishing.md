@@ -4,20 +4,23 @@
 
 ```bash
 npm run release:check
-node scripts/release-packages.mjs --dry-run
+node scripts/release-packages.mjs --registry github --dry-run
+node scripts/release-packages.mjs --registry npm --dry-run
 ```
 
-## CI publish
+## CI publish targets
 
-The repository includes `.github/workflows/publish-packages.yml` for manual or release-triggered publication to GitHub Packages with `GITHUB_TOKEN`.
+The repository includes two publish workflows:
 
-The workflow expects:
+- `.github/workflows/publish-packages.yml` publishes to GitHub Packages with `GITHUB_TOKEN`
+- `.github/workflows/publish-npmjs.yml` publishes to npmjs with `NPM_TOKEN`
+
+The package manifests expect:
 
 - package names under the `@winsznx` scope
-- `publishConfig.registry` set to `https://npm.pkg.github.com`
 - `repository` set to `https://github.com/winsznx/klock.git`
 
-## Local publish
+## Local publish to GitHub Packages
 
 Create or reuse an `.npmrc` entry for the scope:
 
@@ -29,7 +32,15 @@ echo "//npm.pkg.github.com/:_authToken=YOUR_CLASSIC_PAT" >> ~/.npmrc
 Use a classic personal access token with package write access.
 
 ```bash
-node scripts/release-packages.mjs
+node scripts/release-packages.mjs --registry github
+```
+
+## Local publish to npmjs
+
+Authenticate to npmjs on this machine, then run:
+
+```bash
+node scripts/release-packages.mjs --registry npm
 ```
 
 Packages are published in this order:
