@@ -26,3 +26,8 @@ npm run build:react
 - Check the target network (`mainnet` vs `testnet`).
 - Confirm the user address is a valid `0x...` EVM address.
 - Avoid passing your own `PublicClient` unless you need custom transport behavior.
+
+## npmjs publish targets GitHub Packages instead
+
+- Check `~/.npmrc` for an `@winsznx:registry=https://npm.pkg.github.com` mapping.
+- Override the scope registry explicitly when publishing to npmjs if your user config still points the scope at GitHub Packages.
