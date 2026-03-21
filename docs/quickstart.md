@@ -12,6 +12,8 @@
 npm install
 ```
 
+In this workspace, that install links the local `@winsznx/sdk` and `@winsznx/react` packages for development and CI.
+
 ## Install the published packages
 
 For a consumer project outside this workspace:
