@@ -37,4 +37,5 @@ Use `useUnifiedContract()` when the same surface needs to support either Base or
 
 - Mainnet addresses start with `SP`.
 - Testnet addresses start with `ST`.
+- Pass `sender` in SDK read calls so the read-only request executes with the expected Stacks caller context.
 - The React helpers treat Stacks as the preferred active contract when both Base and Stacks sessions are present.
