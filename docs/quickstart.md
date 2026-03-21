@@ -12,6 +12,14 @@
 npm install
 ```
 
+## Install the published packages
+
+For a consumer project outside this workspace:
+
+```bash
+npm install @winsznx/sdk @winsznx/react
+```
+
 ## Build the packages
 
 ```bash
