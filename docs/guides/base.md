@@ -30,3 +30,4 @@ Use `testnet` when you are pointed at Base Sepolia and `mainnet` for the product
 
 - Use the SDK in server code for reads.
 - Use `@winsznx/react` in client code for writes and wallet-aware UI.
+- Prefer calling the Base read helpers from route handlers, server actions, or other server-only modules.
