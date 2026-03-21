@@ -10,6 +10,12 @@ cd examples/next-sdk-demo
 npm install
 ```
 
+For a standalone consumer app, install the published packages directly:
+
+```bash
+npm install @winsznx/sdk@^0.1.1 @winsznx/react@^0.1.1
+```
+
 ## Environment
 
 Set `NEXT_PUBLIC_PROJECT_ID` before running the demo.
