@@ -48,3 +48,8 @@ Component note:
 - `normalizeStacksUserProfile(profile)`
 - `hasDailyCombo(checkQuest)`
 - `hasStacksDailyCombo(bitmap)`
+
+Utility notes:
+
+- `createPulseAuthStorageKey()` helps isolate auth state when multiple demos or apps share one browser
+- `truncateAddress()` is a display helper only and should not be used for identity comparisons
