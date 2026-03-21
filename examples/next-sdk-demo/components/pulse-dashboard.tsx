@@ -14,6 +14,9 @@ export function PulseDashboard() {
   return (
     <section style={{ display: 'grid', gap: 16, padding: 24, border: '1px solid #ddd', borderRadius: 16 }}>
       <div>
+        <strong>Connected:</strong> {isConnected ? 'yes' : 'no'}
+      </div>
+      <div>
         <strong>Active contract:</strong> {activeContract}
       </div>
       <div>
@@ -25,7 +28,7 @@ export function PulseDashboard() {
       <button disabled={!isConnected} onClick={() => void dailyCheckin()}>
         Trigger daily check-in
       </button>
-      <pre>{JSON.stringify(userProfile, null, 2)}</pre>
+      <pre>{JSON.stringify(userProfile ?? { message: 'Connect a supported wallet session to load a profile.' }, null, 2)}</pre>
     </section>
   )
 }
