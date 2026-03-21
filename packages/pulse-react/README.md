@@ -10,6 +10,8 @@ The package is published to npmjs and GitHub Packages under the `@winsznx` scope
 npm install @winsznx/sdk @winsznx/react
 ```
 
+Create your provider wrapper in a client component so the wallet and auth hooks can read browser session state.
+
 For AppKit and wallet-aware flows, install the matching peer dependencies in the consuming app:
 
 ```bash
