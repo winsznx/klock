@@ -15,7 +15,7 @@ const [baseProfile, stacksProfile] = await Promise.all([
 ])
 
 console.log(`Base profile (${baseNetwork})`)
-console.log(baseProfile)
+console.log(JSON.stringify(baseProfile, null, 2))
 console.log('')
 console.log(`Stacks profile (${stacksNetwork})`)
-console.log(stacksProfile)
+console.log(JSON.stringify(stacksProfile, null, 2))
