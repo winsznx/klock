@@ -24,6 +24,8 @@ const [profile, stats, quests] = await Promise.all([
 - `mainnet`
 - `testnet`
 
+Use `testnet` when you are pointed at Base Sepolia and `mainnet` for the production Base deployment.
+
 ## Recommended pattern
 
 - Use the SDK in server code for reads.
