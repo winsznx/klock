@@ -1,6 +1,6 @@
 {
   "name": "@winsznx/react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React hooks and providers for integrating PULSE into AppKit, wagmi, and Stacks apps.",
   "type": "module",
   "main": "./dist/index.js",
@@ -20,7 +20,7 @@
     "prebuild": "node \"$npm_execpath\" --workspace @winsznx/sdk run build",
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "test": "node \"$npm_execpath\" run build && node --test test/**/*.test.mjs"
+    "test": "node \"$npm_execpath\" run build && node --test test/*.test.mjs"
   },
   "keywords": [
     "pulse",
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@winsznx/sdk": "^0.1.0"
+    "@winsznx/sdk": "^0.1.1"
   },
   "peerDependencies": {
     "@reown/appkit": "^1.8.15",

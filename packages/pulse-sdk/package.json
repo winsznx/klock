@@ -1,6 +1,6 @@
 {
   "name": "@winsznx/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official TypeScript SDK for integrating with the PULSE protocol on Base and Stacks.",
   "type": "module",
   "main": "./dist/index.js",
@@ -19,7 +19,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "test": "node \"$npm_execpath\" run build && node --test test/**/*.test.mjs"
+    "test": "node \"$npm_execpath\" run build && node --test test/*.test.mjs"
   },
   "keywords": [
     "pulse",
