@@ -30,6 +30,7 @@ Selection notes:
 
 - `usePulseContract()` is Base-only
 - `useUnifiedContract()` is the best default when the UI may run on either chain
+- `useStacks()` is an alias of `usePulseStacks()`
 
 ## Components
 
