@@ -32,3 +32,5 @@ The example includes:
 - `PulseAuthProvider` and `PulseStacksProvider`
 - a read-only server-side SDK call
 - a client-side `useUnifiedContract()` integration
+
+The home page reads Base mainnet stats on the server before rendering the dashboard.
