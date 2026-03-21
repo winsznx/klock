@@ -31,6 +31,7 @@ Selection notes:
 - `usePulseContract()` is Base-only
 - `useUnifiedContract()` is the best default when the UI may run on either chain
 - `useStacks()` is an alias of `usePulseStacks()`
+- `useStacksContractInfo()` returns testnet contract details unless you pass `true` for mainnet
 
 ## Components
 
