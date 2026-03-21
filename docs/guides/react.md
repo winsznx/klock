@@ -29,6 +29,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
+Place the providers near the top of your app tree so wallet state and auth state stay available to every route that uses protocol hooks.
+
 ## Access gating
 
 Use `PulseAccessGate` when you only need a simple “connected or logged in” boundary.
