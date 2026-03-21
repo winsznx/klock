@@ -10,6 +10,12 @@ The package is published to npmjs and GitHub Packages under the `@winsznx` scope
 npm install @winsznx/sdk @winsznx/react
 ```
 
+For AppKit and wallet-aware flows, install the matching peer dependencies in the consuming app:
+
+```bash
+npm install @reown/appkit @stacks/connect @stacks/transactions viem wagmi
+```
+
 ## Included
 
 - `PulseAuthProvider` and `usePulseAuth`
