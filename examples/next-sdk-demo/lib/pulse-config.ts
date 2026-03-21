@@ -7,7 +7,7 @@ import { base, baseSepolia } from '@reown/appkit/networks'
 const projectIdValue = process.env.NEXT_PUBLIC_PROJECT_ID
 
 if (!projectIdValue) {
-  throw new Error('NEXT_PUBLIC_PROJECT_ID is required')
+  throw new Error('NEXT_PUBLIC_PROJECT_ID is required for the Next.js SDK demo')
 }
 
 export const projectId = projectIdValue
