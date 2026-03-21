@@ -29,6 +29,12 @@ Base read helpers accept an optional `options` object with:
 - `network`: `'mainnet' | 'testnet'`
 - `client`: custom viem public client for the target Base network
 
+Return notes:
+
+- `readBaseQuestCompletion()` resolves to a boolean
+- `readBaseCompletedQuests()` resolves to an array of quest ids
+- `readBaseComboAvailability()` resolves to a boolean
+
 ## Stacks helpers
 
 - `getStacksContract(network?)`
