@@ -6,6 +6,12 @@ import {
 
 const [address] = process.argv.slice(2)
 
+if (address === '--help' || address === '-h') {
+  console.log('Usage: node read-daily-status.mjs <stacks-address>')
+  console.log('Network is inferred from the address prefix (SP=mainnet, ST=testnet)')
+  process.exit(0)
+}
+
 if (!address) {
   console.error('Usage: node read-daily-status.mjs <stacks-address>')
   process.exit(1)
