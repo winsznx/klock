@@ -41,3 +41,5 @@ Pass a custom Base client only when you need custom transport or chain configura
 - Base RPC read helpers
 - Stacks read-only API helpers
 - Network detection helpers
+
+Use `@winsznx/sdk` directly for server-side reads, scripts, and other non-React consumers.
