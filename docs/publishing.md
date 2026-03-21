@@ -39,6 +39,10 @@ echo "//npm.pkg.github.com/:_authToken=YOUR_CLASSIC_PAT" >> ~/.npmrc
 Use a classic personal access token with package write access.
 
 ```bash
+npm login --scope=@winsznx --auth-type=legacy --registry=https://npm.pkg.github.com
+```
+
+```bash
 node scripts/release-packages.mjs --registry github
 ```
 
