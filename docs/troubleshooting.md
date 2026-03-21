@@ -15,6 +15,11 @@ npm run build:react
 
 `@winsznx/react` compiles against the built SDK declarations.
 
+## Package tests fail in CI because the test glob is not found
+
+- Prefer explicit `node --test test/*.test.mjs` patterns for the package-level test scripts.
+- Do not assume the CI shell will expand `**` globs the same way as your local shell.
+
 ## Stacks session is connected but writes fail
 
 - Confirm the wallet exposes `stx_callContract`.
