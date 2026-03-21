@@ -47,6 +47,10 @@ node scripts/release-packages.mjs --registry github
 Authenticate to npmjs on this machine, then run:
 
 ```bash
+npm login --registry=https://registry.npmjs.org
+```
+
+```bash
 node scripts/release-packages.mjs --registry npm
 ```
 
