@@ -29,6 +29,11 @@ Base read helpers accept an optional `options` object with:
 - `network`: `'mainnet' | 'testnet'`
 - `client`: custom viem public client for the target Base network
 
+Contract notes:
+
+- `getBaseContract()` is useful when you already have the active Base chain id from wallet state
+- `getBaseContractByNetwork()` is simpler in server code where the target network is already known
+
 Return notes:
 
 - `readBaseQuestCompletion()` resolves to a boolean
@@ -52,6 +57,11 @@ Stacks read helpers accept an optional `options` object with:
 
 - `network`: `'mainnet' | 'testnet'`
 - `sender`: Stacks address used as the read-only call sender
+
+Contract notes:
+
+- `getStacksContract()` resolves from an explicit environment choice
+- `getStacksContractByAddress()` infers mainnet or testnet from the address prefix
 
 Return notes:
 
