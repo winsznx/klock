@@ -134,6 +134,7 @@ export default function Leaderboard() {
                 <div className="flex items-center gap-2">
                     {/* Refresh Button */}
                     <button
+                        type="button"
                         onClick={() => loadLeaderboard(true)}
                         disabled={isRefreshing}
                         className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-all disabled:opacity-50"
@@ -145,6 +146,7 @@ export default function Leaderboard() {
                     {/* Network Filter Dropdown */}
                     <div className="relative">
                         <button
+                            type="button"
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-gray-300 transition-all min-w-[160px]"
                         >
@@ -158,6 +160,7 @@ export default function Leaderboard() {
                                 {NETWORK_OPTIONS.map((option) => (
                                     <button
                                         key={option.value}
+                                        type="button"
                                         onClick={() => {
                                             setSelectedNetwork(option.value)
                                             setIsDropdownOpen(false)
