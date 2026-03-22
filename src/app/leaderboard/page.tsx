@@ -66,6 +66,7 @@ export default function LeaderboardPage() {
 
                         <Link
                             href="/"
+                            aria-label="Go to home page"
                             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                             title="Home"
                         >
