@@ -52,6 +52,7 @@ export default function ConnectButton() {
                     <button
                         type="button"
                         onClick={() => disconnect()}
+                        aria-label="Disconnect wallet"
                         className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
                         title="Disconnect"
                     >
@@ -87,6 +88,7 @@ export default function ConnectButton() {
                     logout()
                     disconnect()
                 }}
+                aria-label="Logout and disconnect wallet"
                 className="p-1 rounded-full text-green-500 hover:text-green-700 hover:bg-green-100 transition-colors"
                 title="Logout & Disconnect"
             >
