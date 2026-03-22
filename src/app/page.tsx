@@ -60,9 +60,12 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <HeroActions />
-                <button className="px-6 py-3 bg-white border-2 border-gray-200 rounded-full font-semibold text-gray-900 hover:border-[#FF6B00] hover:text-[#FF6B00] transition-all duration-200 shadow-sm">
+                <Link
+                  href="#features"
+                  className="px-6 py-3 bg-white border-2 border-gray-200 rounded-full font-semibold text-gray-900 hover:border-[#FF6B00] hover:text-[#FF6B00] transition-all duration-200 shadow-sm"
+                >
                   Learn More ↓
-                </button>
+                </Link>
               </div>
 
               {/* Stats */}
@@ -130,7 +133,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 md:py-20 px-4 md:px-8 bg-white">
+      <section id="features" className="py-12 md:py-20 px-4 md:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
