@@ -2,11 +2,13 @@ import { readBaseUserProfile, readStacksUserProfile } from '@winsznx/sdk'
 
 const [baseAddress, stacksAddress, baseNetworkArg, stacksNetworkArg] = process.argv.slice(2)
 const baseNetwork = baseNetworkArg === 'testnet' ? 'testnet' : 'mainnet'
-const stacksNetwork = stacksNetworkArg === 'testnet' ? 'testnet' : 'mainnet'
+const stacksNetwork = stacksNetworkArg
+  ? (stacksNetworkArg === 'testnet' ? 'testnet' : 'mainnet')
+  : (stacksAddress?.startsWith('ST') ? 'testnet' : 'mainnet')
 
 if (baseAddress === '--help' || baseAddress === '-h') {
   console.log('Usage: node read-profiles.mjs <base-address> <stacks-address> [base-network] [stacks-network]')
-  console.log('Defaults: base-network=mainnet, stacks-network=mainnet')
+  console.log('Defaults: base-network=mainnet, stacks-network=inferred from the Stacks address')
   process.exit(0)
 }
 
