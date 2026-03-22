@@ -32,6 +32,7 @@ Selection notes:
 - `useUnifiedContract()` is the best default when the UI may run on either chain
 - `useStacks()` is an alias of `usePulseStacks()`
 - `useStacksContractInfo()` returns testnet contract details unless you pass `true` for mainnet
+- `useStacksWallet()` exposes `isStacksConnected` so AppKit sessions can be filtered to actual Stacks accounts
 
 ## Components
 
