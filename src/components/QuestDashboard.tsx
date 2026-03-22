@@ -263,6 +263,7 @@ export default function QuestDashboard() {
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
+                    role="alert"
                     className="mb-6 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center gap-3"
                 >
                     <AlertCircle className="w-5 h-5" />
