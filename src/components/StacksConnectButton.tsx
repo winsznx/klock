@@ -32,6 +32,7 @@ export default function StacksConnectButton({
             <button
                 type="button"
                 onClick={disconnect}
+                aria-label="Disconnect Stacks wallet"
                 className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg ${className}`}
             >
                 <div className="w-2 h-2 bg-green-400 rounded-full"></div>
