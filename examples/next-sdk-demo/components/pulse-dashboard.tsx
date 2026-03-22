@@ -28,7 +28,7 @@ export function PulseDashboard() {
       <button type="button" disabled={!isConnected} onClick={() => void dailyCheckin()}>
         Trigger daily check-in
       </button>
-      <pre>{JSON.stringify(userProfile ?? { message: 'Connect a supported wallet session to load a profile.' }, null, 2)}</pre>
+      <pre aria-live="polite">{JSON.stringify(userProfile ?? { message: 'Connect a supported wallet session to load a profile.' }, null, 2)}</pre>
     </section>
   )
 }
