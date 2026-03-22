@@ -31,6 +31,7 @@ import { useUnifiedContract } from '@winsznx/react'
 ```
 
 The app keeps compatibility wrappers, so migrations can be incremental.
+Those wrappers are app-local migration aids, not public package entry points for external consumers.
 
 New consumers should import from `@winsznx/sdk` and `@winsznx/react` directly instead of starting from the app wrapper files.
 When migrating consumer apps, upgrade both packages together so the React package stays aligned with the SDK version it expects.
