@@ -137,6 +137,7 @@ export default function Leaderboard() {
                         type="button"
                         onClick={() => loadLeaderboard(true)}
                         disabled={isRefreshing}
+                        aria-label="Refresh leaderboard"
                         className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-gray-300 transition-all disabled:opacity-50"
                         title="Refresh leaderboard"
                     >
