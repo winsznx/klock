@@ -19,6 +19,8 @@ const [profile, stats, quests] = await Promise.all([
 ])
 ```
 
+Reuse one `PublicClient` across related reads when you are making multiple calls to the same Base network.
+
 ## Supported networks
 
 - `mainnet`
