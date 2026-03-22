@@ -30,6 +30,7 @@ export default function ConnectButton() {
     if (!isConnected || !address) {
         return (
             <button
+                type="button"
                 onClick={() => open()}
                 className="flex items-center gap-2 bg-gradient-to-r from-[#FF6B00] to-[#ff8533] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200"
             >
@@ -45,10 +46,11 @@ export default function ConnectButton() {
             <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
                     <Wallet size={16} className="text-gray-500" />
-                    <button onClick={() => open()} className="text-sm font-medium text-gray-700 hover:underline">
+                    <button type="button" onClick={() => open()} className="text-sm font-medium text-gray-700 hover:underline">
                         {address.slice(0, 6)}...{address.slice(-4)}
                     </button>
                     <button
+                        type="button"
                         onClick={() => disconnect()}
                         className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-200 transition-colors"
                         title="Disconnect"
@@ -57,6 +59,7 @@ export default function ConnectButton() {
                     </button>
                 </div>
                 <button
+                    type="button"
                     onClick={handleLoginAndNavigate}
                     className="flex items-center gap-2 bg-gradient-to-r from-[#FF6B00] to-[#ff8533] text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200"
                 >
@@ -74,11 +77,12 @@ export default function ConnectButton() {
                 <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
                     <User size={12} className="text-white" />
                 </div>
-                <button onClick={() => open()} className="text-sm font-medium text-green-900 hover:underline">
+                <button type="button" onClick={() => open()} className="text-sm font-medium text-green-900 hover:underline">
                     {address.slice(0, 6)}...{address.slice(-4)}
                 </button>
             </div>
             <button
+                type="button"
                 onClick={() => {
                     logout()
                     disconnect()
