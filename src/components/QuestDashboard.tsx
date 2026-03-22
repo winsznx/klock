@@ -199,6 +199,7 @@ export default function QuestDashboard() {
                         </div>
                     </div>
                     <button
+                        type="button"
                         onClick={refreshData}
                         disabled={isLoading}
                         className="text-sm text-[#FF6B00] hover:underline disabled:opacity-50"
@@ -267,6 +268,7 @@ export default function QuestDashboard() {
                     <AlertCircle className="w-5 h-5" />
                     <p>{error || localError}</p>
                     <button
+                        type="button"
                         onClick={() => setLocalError(null)}
                         className="ml-auto text-sm underline"
                     >
@@ -287,6 +289,7 @@ export default function QuestDashboard() {
                         <p className="text-orange-100">Complete Check-In, Atmosphere & Message for +200 bonus points.</p>
                     </div>
                     <button
+                        type="button"
                         onClick={handleClaimCombo}
                         disabled={pendingQuest === -1}
                         className="bg-white text-orange-600 px-6 py-3 rounded-xl font-bold hover:bg-orange-50 disabled:opacity-50"
@@ -314,6 +317,7 @@ export default function QuestDashboard() {
                     />
                     <div className="flex gap-3">
                         <button
+                            type="button"
                             onClick={() => handleInteraction(6, 'commitMessage')}
                             disabled={!message || pendingQuest === 6}
                             className="bg-[#FF6B00] text-white px-6 py-2 rounded-xl font-medium disabled:opacity-50"
@@ -321,6 +325,7 @@ export default function QuestDashboard() {
                             {pendingQuest === 6 ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit'}
                         </button>
                         <button
+                            type="button"
                             onClick={() => { setShowMessageInput(false); setMessage('') }}
                             className="text-gray-500 px-6 py-2"
                         >
@@ -347,6 +352,7 @@ export default function QuestDashboard() {
                     />
                     <div className="flex gap-3">
                         <button
+                            type="button"
                             onClick={() => handleInteraction(4, 'nudgeFriend')}
                             disabled={!friendAddress || pendingQuest === 4}
                             className="bg-[#FF6B00] text-white px-6 py-2 rounded-xl font-medium disabled:opacity-50"
@@ -354,6 +360,7 @@ export default function QuestDashboard() {
                             {pendingQuest === 4 ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Nudge'}
                         </button>
                         <button
+                            type="button"
                             onClick={() => { setShowFriendInput(false); setFriendAddress('') }}
                             className="text-gray-500 px-6 py-2"
                         >
