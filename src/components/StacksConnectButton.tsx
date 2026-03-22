@@ -17,6 +17,7 @@ export default function StacksConnectButton({
     if (isLoading) {
         return (
             <button
+                type="button"
                 disabled
                 className={`flex items-center gap-2 px-6 py-3 bg-gray-300 text-gray-500 rounded-full font-semibold cursor-not-allowed ${className}`}
             >
@@ -29,6 +30,7 @@ export default function StacksConnectButton({
     if (isConnected && address) {
         return (
             <button
+                type="button"
                 onClick={disconnect}
                 className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg ${className}`}
             >
@@ -42,6 +44,7 @@ export default function StacksConnectButton({
     if (variant === 'primary') {
         return (
             <button
+                type="button"
                 onClick={connect}
                 className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg transform hover:-translate-y-0.5 ${className}`}
             >
@@ -54,6 +57,7 @@ export default function StacksConnectButton({
     // Secondary variant - outlined
     return (
         <button
+            type="button"
             onClick={connect}
             className={`flex items-center gap-2 px-6 py-3 bg-white border-2 border-purple-600 text-purple-600 rounded-full font-semibold hover:bg-purple-50 transition-all duration-200 ${className}`}
         >
