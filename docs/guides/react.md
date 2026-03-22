@@ -15,6 +15,8 @@
 - `useUnifiedContract()`: routes to Base or Stacks based on the current session.
 - `useStacksWallet()`: AppKit-based Stacks hook for WalletConnect flows.
 
+Reach for `useStacksWallet()` when you specifically need the AppKit-facing `isStacksConnected` guard before showing Stacks-only actions.
+
 ## Minimal setup
 
 ```tsx
