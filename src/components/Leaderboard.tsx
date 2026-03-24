@@ -159,7 +159,7 @@ export default function Leaderboard() {
                         </button>
 
                         {isDropdownOpen && (
-                            <div className="absolute right-0 mt-2 w-full min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                            <div role="listbox" className="absolute right-0 mt-2 w-full min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
                                 {NETWORK_OPTIONS.map((option) => (
                                     <button
                                         key={option.value}
