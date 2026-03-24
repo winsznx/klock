@@ -179,7 +179,7 @@ export default function QuestDashboard() {
         <div className="w-full">
             {/* Network Info Banner */}
             {isConnected && (
-                <div className="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between">
+                <div role="status" className="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div aria-hidden="true" className={`w-3 h-3 rounded-full ${activeContract === 'none' ? 'bg-red-500' : 'bg-green-500'
                             }`} />
