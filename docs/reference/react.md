@@ -33,6 +33,7 @@ Selection notes:
 - `useStacks()` is an alias of `usePulseStacks()`
 - `useStacksContractInfo()` returns testnet contract details unless you pass `true` for mainnet
 - `useStacksWallet()` exposes `isStacksConnected` so AppKit sessions can be filtered to actual Stacks accounts
+- `useStacksWallet()` also exposes `isMainnet` when the UI needs network-specific labels or explorer links
 
 ## Components
 
