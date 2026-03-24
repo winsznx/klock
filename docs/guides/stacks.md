@@ -36,6 +36,7 @@ Use `useUnifiedContract()` when the same surface needs to support either Base or
 
 ## Notes
 
+- `getStacksContractByAddress()` is useful when you only have the connected Stacks address and want the matching contract config.
 - Mainnet addresses start with `SP`.
 - Testnet addresses start with `ST`.
 - Pass `sender` in SDK read calls so the read-only request executes with the expected Stacks caller context.
