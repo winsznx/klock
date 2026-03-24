@@ -222,7 +222,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="py-12 md:py-20 px-4 md:px-8 bg-gradient-to-br from-gray-50 to-white">
+      <section id="how-it-works" className="py-12 md:py-20 px-4 md:px-8 bg-gradient-to-br from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -319,7 +319,7 @@ export default function Home() {
               <h4 className="font-bold text-lg mb-4">Quick Links</h4>
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-[#FF6B00] transition-colors">How It Works</a></li>
+                <li><a href="#how-it-works" className="hover:text-[#FF6B00] transition-colors">How It Works</a></li>
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">Rewards</a></li>
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">FAQ</a></li>
               </ul>
