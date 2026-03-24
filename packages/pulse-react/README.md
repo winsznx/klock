@@ -18,6 +18,8 @@ For AppKit and wallet-aware flows, install the matching peer dependencies in the
 npm install @reown/appkit @stacks/connect @stacks/transactions viem wagmi
 ```
 
+These packages stay as peers so the consuming app keeps control of its wallet adapter versions.
+
 ## Included
 
 - `PulseAuthProvider` and `usePulseAuth`
