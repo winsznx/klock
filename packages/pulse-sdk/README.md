@@ -33,6 +33,7 @@ const stacksProfile = await readStacksUserProfile('SPYourAddress', {
 ```
 
 `createBasePublicClient()` defaults to `mainnet`, so pass `testnet` explicitly when targeting Base Sepolia.
+`readBaseGlobalStats()` is a good first smoke test because it does not require a user address.
 
 Pass a custom Base client only when you need custom transport or chain configuration. Otherwise, the helpers can create the correct client from `network`.
 For Stacks reads, pass `sender` when the contract behavior depends on caller context. If omitted, the SDK falls back to the contract address for the selected network.
