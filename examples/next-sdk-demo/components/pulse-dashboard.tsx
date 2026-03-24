@@ -12,7 +12,8 @@ export function PulseDashboard() {
   } = useUnifiedContract()
 
   return (
-    <section style={{ display: 'grid', gap: 16, padding: 24, border: '1px solid #ddd', borderRadius: 16 }}>
+    <section aria-labelledby="pulse-dashboard-heading" style={{ display: 'grid', gap: 16, padding: 24, border: '1px solid #ddd', borderRadius: 16 }}>
+      <h2 id="pulse-dashboard-heading" style={{ margin: 0, fontSize: 18 }}>Pulse dashboard</h2>
       <div>
         <strong>Connected:</strong> {isConnected ? 'yes' : 'no'}
       </div>
