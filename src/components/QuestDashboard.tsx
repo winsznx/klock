@@ -311,8 +311,9 @@ export default function QuestDashboard() {
                     animate={{ opacity: 1 }}
                     className="mb-6 bg-white border border-gray-200 p-6 rounded-2xl shadow-lg"
                 >
-                    <h3 className="font-bold text-gray-900 mb-3">Commit Your Message</h3>
+                    <label htmlFor="quest-message-input" className="font-bold text-gray-900 mb-3 block">Commit Your Message</label>
                     <input
+                        id="quest-message-input"
                         autoFocus
                         type="text"
                         value={message}
