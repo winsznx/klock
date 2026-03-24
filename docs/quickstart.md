@@ -22,6 +22,8 @@ For a consumer project outside this workspace:
 npm install @winsznx/sdk @winsznx/react
 ```
 
+That command targets npmjs by default, which is the lowest-friction install path for public consumers.
+
 ## Build the packages
 
 ```bash
