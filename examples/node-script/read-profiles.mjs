@@ -9,6 +9,7 @@ const stacksNetwork = stacksNetworkArg
 if (baseAddress === '--help' || baseAddress === '-h') {
   console.log('Usage: node read-profiles.mjs <base-address> <stacks-address> [base-network] [stacks-network]')
   console.log('Defaults: base-network=mainnet, stacks-network=inferred from the Stacks address')
+  console.log('Example: node read-profiles.mjs 0xabc... SP123...')
   process.exit(0)
 }
 
