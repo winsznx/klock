@@ -19,6 +19,7 @@ export default function StacksConnectButton({
             <button
                 type="button"
                 disabled
+                aria-busy="true"
                 className={`flex items-center gap-2 px-6 py-3 bg-gray-300 text-gray-500 rounded-full font-semibold cursor-not-allowed ${className}`}
             >
                 <Loader2 className="animate-spin" size={20} />
