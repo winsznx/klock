@@ -202,6 +202,7 @@ export default function QuestDashboard() {
                         type="button"
                         onClick={refreshData}
                         disabled={isLoading}
+                        aria-label="Refresh quest data"
                         className="text-sm text-[#FF6B00] hover:underline disabled:opacity-50"
                     >
                         {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh'}
