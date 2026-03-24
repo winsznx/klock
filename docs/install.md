@@ -8,6 +8,8 @@ The simplest path for external consumers is npmjs:
 npm install @winsznx/sdk
 ```
 
+npmjs installs do not require the `@winsznx` scope mapping in `~/.npmrc`.
+
 Use GitHub Packages only if you specifically want installs from `npm.pkg.github.com`.
 GitHub Packages installs still require GitHub-authenticated npm access on the machine that runs `npm install`.
 
