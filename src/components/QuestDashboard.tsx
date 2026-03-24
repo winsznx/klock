@@ -285,6 +285,7 @@ export default function QuestDashboard() {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
+                    role="status"
                     className="mb-8 bg-gradient-to-r from-orange-500 to-red-500 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
                 >
                     <div>
