@@ -164,6 +164,8 @@ export default function Leaderboard() {
                                     <button
                                         key={option.value}
                                         type="button"
+                                        role="option"
+                                        aria-selected={selectedNetwork === option.value}
                                         onClick={() => {
                                             setSelectedNetwork(option.value)
                                             setIsDropdownOpen(false)
