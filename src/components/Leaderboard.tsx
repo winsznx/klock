@@ -268,7 +268,7 @@ export default function Leaderboard() {
 
                 {/* Empty State */}
                 {!isLoading && leaderboardData.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                    <div role="status" className="flex flex-col items-center justify-center py-12 text-gray-500">
                         <Users className="w-12 h-12 mb-4 text-gray-300" />
                         <p className="text-lg font-medium">No data available</p>
                         <p className="text-sm">Be the first to join the leaderboard!</p>
