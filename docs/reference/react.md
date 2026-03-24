@@ -35,6 +35,7 @@ Selection notes:
 - `useStacksWallet()` exposes `isStacksConnected` so AppKit sessions can be filtered to actual Stacks accounts
 - `useStacksWallet()` also exposes `isMainnet` when the UI needs network-specific labels or explorer links
 - `useStacksWallet()` surfaces `isLoading` and `error` for AppKit-driven connection and transaction state
+- `usePulseAuth()` also exposes the resolved `storageKey`, which is useful when you need to debug or isolate browser login state
 
 ## Components
 
