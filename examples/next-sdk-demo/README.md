@@ -42,3 +42,4 @@ Provider setup lives in `components/providers.tsx`.
 That provider wrapper also owns the shared `QueryClientProvider` and `WagmiProvider` setup for the demo.
 The daily check-in button stays disabled until a supported wallet session is connected.
 AppKit in this demo is configured for both Base and Base Sepolia.
+The demo defaults AppKit to Base mainnet, then lets the wallet switch to Base Sepolia when needed.
