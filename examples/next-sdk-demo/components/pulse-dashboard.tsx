@@ -26,7 +26,7 @@ export function PulseDashboard() {
       <div>
         <strong>Contract:</strong> {contractInfo.contractAddress || 'No supported session'}
       </div>
-      <button type="button" disabled={!isConnected} onClick={() => void dailyCheckin()}>
+      <button type="button" disabled={!isConnected} aria-label="Trigger daily check-in" onClick={() => void dailyCheckin()}>
         Trigger daily check-in
       </button>
       <pre aria-live="polite">{JSON.stringify(userProfile ?? { message: 'Connect a supported wallet session to load a profile.' }, null, 2)}</pre>
