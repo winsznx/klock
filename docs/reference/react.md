@@ -44,6 +44,7 @@ Selection notes:
 Component note:
 
 - `PulseAccessGate` expects the surrounding tree to already include `PulseAuthProvider` and `PulseStacksProvider`
+- `usePulseAuth()` throws if it is called outside `PulseAuthProvider`
 
 ## Utilities
 
