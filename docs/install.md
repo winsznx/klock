@@ -9,6 +9,7 @@ npm install @winsznx/sdk
 ```
 
 Use GitHub Packages only if you specifically want installs from `npm.pkg.github.com`.
+GitHub Packages installs still require GitHub-authenticated npm access on the machine that runs `npm install`.
 
 If you are installing from GitHub Packages, add a scope mapping first:
 
