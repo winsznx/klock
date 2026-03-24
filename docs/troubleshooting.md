@@ -41,3 +41,7 @@ npm run build:react
 
 - Check `~/.npmrc` for an `@winsznx:registry=https://npm.pkg.github.com` mapping.
 - Override the scope registry explicitly when publishing to npmjs if your user config still points the scope at GitHub Packages.
+
+## GitHub Packages still shows the old repository source
+
+- Confirm the latest package version was published from the intended repo, not from a local machine or the former monorepo.
