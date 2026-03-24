@@ -31,5 +31,6 @@ These packages stay as peers so the consuming app keeps control of its wallet ad
 
 `useStacks()` is available as a short alias of `usePulseStacks()`.
 `useStacksWallet()` is useful when you need an AppKit-specific `isStacksConnected` guard for Stacks-only actions.
+`PulseAuthProvider` can also scope its browser login state with `namespace` or `storageKey` when multiple apps share one origin.
 
 For mixed-chain UI, start with `useUnifiedContract()` and only drop to the chain-specific hooks when you need network-specific behavior.
