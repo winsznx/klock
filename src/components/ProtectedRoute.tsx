@@ -25,7 +25,7 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
 
     // Default fallback: Prompt to connect or login
     return (
-        <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+        <div role="status" className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
             <div className="bg-gradient-to-br from-orange-100 to-orange-50 p-8 rounded-3xl border border-orange-200 shadow-xl max-w-md">
                 <div aria-hidden="true" className="bg-gradient-to-br from-[#FF6B00] to-[#FF8533] p-4 rounded-2xl mb-6 inline-block shadow-lg">
                     {isConnected ? (
