@@ -45,3 +45,4 @@ npm run build:react
 ## GitHub Packages still shows the old repository source
 
 - Confirm the latest package version was published from the intended repo, not from a local machine or the former monorepo.
+- In the package settings page, make sure the target repository is listed under `Manage Actions access` before rerunning the publish workflow.
