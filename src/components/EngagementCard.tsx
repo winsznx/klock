@@ -43,7 +43,16 @@ export default function EngagementCard({
                 isCompleted && 'border-green-500 bg-green-50',
                 isLoading && 'border-orange-300 bg-orange-50'
             )}
+            role={isInteractive ? 'button' : undefined}
+            tabIndex={isInteractive ? 0 : -1}
+            aria-disabled={!isInteractive || undefined}
             onClick={isInteractive ? onClick : undefined}
+            onKeyDown={isInteractive && onClick ? (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    onClick()
+                }
+            } : undefined}
         >
             <div className="flex justify-between items-start">
                 <div className={clsx(
