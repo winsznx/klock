@@ -37,6 +37,7 @@ Contract notes:
 Return notes:
 
 - `readBaseUserProfile()` returns the raw contract tuple, including the `exists` flag from the Base profile
+- `readBaseGlobalStats()` returns bigint fields and should usually be formatted before direct JSON serialization
 - `readBaseQuestCompletion()` resolves to a boolean
 - `readBaseCompletedQuests()` resolves to an array of quest ids
 - `readBaseComboAvailability()` resolves to a boolean
