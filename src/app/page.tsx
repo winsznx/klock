@@ -207,7 +207,7 @@ export default function Home() {
             </div>
 
             {/* Feature 6 */}
-            <div className="bg-gradient-to-br from-yellow-50 to-white p-6 md:p-8 rounded-2xl border border-yellow-100 hover:shadow-xl transition-all duration-300">
+            <div id="rewards" className="bg-gradient-to-br from-yellow-50 to-white p-6 md:p-8 rounded-2xl border border-yellow-100 hover:shadow-xl transition-all duration-300">
               <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mb-4">
                 <Sparkles className="text-white" size={24} />
               </div>
@@ -320,7 +320,7 @@ export default function Home() {
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#features" className="hover:text-[#FF6B00] transition-colors">About</a></li>
                 <li><a href="#how-it-works" className="hover:text-[#FF6B00] transition-colors">How It Works</a></li>
-                <li><a href="#" className="hover:text-[#FF6B00] transition-colors">Rewards</a></li>
+                <li><a href="#rewards" className="hover:text-[#FF6B00] transition-colors">Rewards</a></li>
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">FAQ</a></li>
               </ul>
             </div>
