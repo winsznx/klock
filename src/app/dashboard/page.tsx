@@ -39,7 +39,7 @@ export default function DashboardPage() {
     if (!isAuthenticated) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-[#F5F5F5] via-[#FFF0E6] to-[#F5F5F5] flex items-center justify-center">
-                <div className="text-center">
+                <div className="text-center" aria-live="polite">
                     <div className="w-16 h-16 bg-gradient-to-br from-[#FF6B00] to-[#FF8533] rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
                         <Zap className="text-white" size={32} />
                     </div>
