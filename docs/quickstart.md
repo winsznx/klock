@@ -46,3 +46,5 @@ The app lives at `http://localhost:3000`.
 npm run test:packages
 npm run type-check
 ```
+
+The root install is also enough to run the Node-based examples under `examples/` when you want a quick registry-free validation path.
