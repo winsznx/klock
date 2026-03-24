@@ -9,6 +9,7 @@ const [address] = process.argv.slice(2)
 if (address === '--help' || address === '-h') {
   console.log('Usage: node read-daily-status.mjs <stacks-address>')
   console.log('Network is inferred from the address prefix (SP=mainnet, ST=testnet)')
+  console.log('The same address is used as the read-only sender for the Stacks helper calls')
   process.exit(0)
 }
 
