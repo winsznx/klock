@@ -346,6 +346,7 @@ export default function QuestDashboard() {
                 >
                     <h3 className="font-bold text-gray-900 mb-3">Nudge a Friend</h3>
                     <input
+                        autoFocus
                         type="text"
                         value={friendAddress}
                         onChange={(e) => setFriendAddress(e.target.value)}
