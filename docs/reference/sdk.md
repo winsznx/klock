@@ -63,6 +63,7 @@ Contract notes:
 - `getStacksContract()` resolves from an explicit environment choice
 - `getStacksContractByAddress()` infers mainnet or testnet from the address prefix
 - `isStacksQuestCompleted()` checks a local quest bitmap and does not make a network request
+- `getStacksCompletedQuests()` expands a local bitmap into quest ids without calling the network
 
 Return notes:
 
