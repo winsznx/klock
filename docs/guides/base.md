@@ -22,6 +22,7 @@ const [profile, stats, quests] = await Promise.all([
 Reuse one `PublicClient` across related reads when you are making multiple calls to the same Base network.
 `readBaseCompletedQuests()` checks each quest id under the hood, so it is best suited to grouped dashboard reads rather than hot-path polling.
 `readBaseGlobalStats()` is the simplest connectivity check when you want to validate the contract without a user address first.
+When you pass both `client` and `network`, keep them aligned so explorer links and contract selection match the actual RPC target.
 
 ## Supported networks
 
