@@ -39,5 +39,6 @@ The example includes:
 
 The home page reads Base mainnet stats on the server before rendering the dashboard.
 Provider setup lives in `components/providers.tsx`.
+That provider wrapper also owns the shared `QueryClientProvider` and `WagmiProvider` setup for the demo.
 The daily check-in button stays disabled until a supported wallet session is connected.
 AppKit in this demo is configured for both Base and Base Sepolia.
