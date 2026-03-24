@@ -309,6 +309,7 @@ export default function QuestDashboard() {
                 >
                     <h3 className="font-bold text-gray-900 mb-3">Commit Your Message</h3>
                     <input
+                        autoFocus
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
