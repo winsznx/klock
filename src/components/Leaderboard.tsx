@@ -149,6 +149,8 @@ export default function Leaderboard() {
                         <button
                             type="button"
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            aria-haspopup="listbox"
+                            aria-expanded={isDropdownOpen}
                             className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-gray-300 transition-all min-w-[160px]"
                         >
                             <span className="text-lg">{selectedOption?.icon}</span>
