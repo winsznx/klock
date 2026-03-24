@@ -36,6 +36,7 @@ const stacksProfile = await readStacksUserProfile('SPYourAddress', {
 `readBaseGlobalStats()` is a good first smoke test because it does not require a user address.
 
 Pass a custom Base client only when you need custom transport or chain configuration. Otherwise, the helpers can create the correct client from `network`.
+Base read helpers return bigint-heavy contract data, so convert those fields before direct JSON serialization in scripts or APIs.
 For Stacks reads, pass `sender` when the contract behavior depends on caller context. If omitted, the SDK falls back to the contract address for the selected network.
 
 ## Included
