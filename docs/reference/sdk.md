@@ -71,5 +71,5 @@ Return notes:
 
 - `readStacksCurrentDay()` resolves to the current contract day number, or `0` when the read fails
 - `readStacksDailyQuestStatus()` resolves to the stored daily quest tuple or `null`
-- `readStacksUserProfile()` resolves to the stored profile tuple or `null`
+- `readStacksUserProfile()` resolves to the stored profile tuple or `null` when the user has no stored profile yet
 - `readStacksCompletedQuests()` resolves to an array of completed quest ids for the active day, or an empty array when no day or status is available
