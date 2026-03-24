@@ -152,6 +152,7 @@ export default function Leaderboard() {
                             aria-haspopup="listbox"
                             aria-expanded={isDropdownOpen}
                             aria-label="Choose leaderboard network"
+                            aria-controls="leaderboard-network-filter"
                             className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl shadow-sm hover:border-gray-300 transition-all min-w-[160px]"
                         >
                             <span className="text-lg">{selectedOption?.icon}</span>
@@ -160,7 +161,7 @@ export default function Leaderboard() {
                         </button>
 
                         {isDropdownOpen && (
-                            <div role="listbox" className="absolute right-0 mt-2 w-full min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                            <div id="leaderboard-network-filter" role="listbox" className="absolute right-0 mt-2 w-full min-w-[180px] bg-white border border-gray-200 rounded-xl shadow-lg z-10 overflow-hidden">
                                 {NETWORK_OPTIONS.map((option) => (
                                     <button
                                         key={option.value}
