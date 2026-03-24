@@ -32,6 +32,7 @@ export default function ConnectButton() {
             <button
                 type="button"
                 onClick={() => open()}
+                aria-label="Open wallet selector"
                 className="flex items-center gap-2 bg-gradient-to-r from-[#FF6B00] to-[#ff8533] text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-orange-500/30 hover:shadow-orange-500/40 hover:-translate-y-0.5 transition-all duration-200"
             >
                 <Wallet size={18} />
