@@ -39,5 +39,6 @@ Use `useUnifiedContract()` when the same surface needs to support either Base or
 - Mainnet addresses start with `SP`.
 - Testnet addresses start with `ST`.
 - Pass `sender` in SDK read calls so the read-only request executes with the expected Stacks caller context.
+- If `readStacksCurrentDay()` returns `0`, skip the dependent daily status reads and treat the day lookup as unavailable.
 - `readStacksCompletedQuests()` can return an empty array when the current day is unavailable or no daily status has been stored yet.
 - The React helpers treat Stacks as the preferred active contract when both Base and Stacks sessions are present.
