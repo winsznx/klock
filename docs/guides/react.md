@@ -35,6 +35,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
+The wrapper itself must remain a client component because both providers depend on browser wallet state.
 Place the providers near the top of your app tree so wallet state and auth state stay available to every route that uses protocol hooks.
 
 ## Access gating
