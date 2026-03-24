@@ -16,6 +16,7 @@
 - `useStacksWallet()`: AppKit-based Stacks hook for WalletConnect flows.
 
 Reach for `useStacksWallet()` when you specifically need the AppKit-facing `isStacksConnected` guard before showing Stacks-only actions.
+It also exposes `isMainnet` when the same UI needs different labels or explorers for Stacks mainnet versus testnet.
 
 ## Minimal setup
 
