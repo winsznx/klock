@@ -79,7 +79,7 @@ export default function ConnectButton() {
                 <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
                     <User size={12} className="text-white" />
                 </div>
-                <button type="button" onClick={() => open()} className="text-sm font-medium text-green-900 hover:underline">
+                <button type="button" onClick={() => open()} aria-label="Open logged in wallet details" className="text-sm font-medium text-green-900 hover:underline">
                     {address.slice(0, 6)}...{address.slice(-4)}
                 </button>
             </div>
