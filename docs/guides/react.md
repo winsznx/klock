@@ -41,3 +41,4 @@ Place the providers near the top of your app tree so wallet state and auth state
 
 Use `PulseAccessGate` when you only need a simple “connected or logged in” boundary.
 It fits best around dashboard panels, action bars, and other UI that should stay hidden until a wallet session is active.
+Mount it inside the same provider tree so it can read both auth state and Stacks session state.
