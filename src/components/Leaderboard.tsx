@@ -193,7 +193,7 @@ export default function Leaderboard() {
 
                 {/* Loading State */}
                 {isLoading && (
-                    <div className="flex flex-col items-center justify-center py-12">
+                    <div role="status" className="flex flex-col items-center justify-center py-12">
                         <Loader2 className="w-8 h-8 text-[#FF6B00] animate-spin mb-3" />
                         <p className="text-gray-500">Loading leaderboard...</p>
                     </div>
