@@ -35,7 +35,7 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
                     )}
                 </div>
 
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                <h2 aria-live="polite" className="text-2xl font-bold text-gray-900 mb-3">
                     {isConnected ? 'Login Required' : 'Connect Your Wallet'}
                 </h2>
 
