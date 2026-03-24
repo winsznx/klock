@@ -358,6 +358,7 @@ export default function QuestDashboard() {
                         value={friendAddress}
                         onChange={(e) => setFriendAddress(e.target.value)}
                         placeholder={activeContract === 'stacks' ? 'SP... or ST...' : '0x...'}
+                        autoComplete="off"
                         className="w-full p-3 border border-gray-200 rounded-xl mb-4 font-mono text-sm"
                     />
                     <div className="flex gap-3">
