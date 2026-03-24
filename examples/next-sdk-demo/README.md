@@ -16,6 +16,8 @@ For a standalone consumer app, install the published packages directly:
 npm install @winsznx/sdk@^0.1.1 @winsznx/react@^0.1.1
 ```
 
+The example itself tracks those packages as normal dependencies, so `npm install` inside this directory is enough to keep the demo aligned.
+
 ## Environment
 
 Set `NEXT_PUBLIC_PROJECT_ID` before running the demo.
