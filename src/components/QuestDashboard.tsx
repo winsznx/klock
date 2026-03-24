@@ -296,6 +296,7 @@ export default function QuestDashboard() {
                         type="button"
                         onClick={handleClaimCombo}
                         disabled={pendingQuest === -1}
+                        aria-label="Claim daily combo bonus"
                         className="bg-white text-orange-600 px-6 py-3 rounded-xl font-bold hover:bg-orange-50 disabled:opacity-50"
                     >
                         {pendingQuest === -1 ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Claim Bonus'}
