@@ -17,6 +17,7 @@
 
 Reach for `useStacksWallet()` when you specifically need the AppKit-facing `isStacksConnected` guard before showing Stacks-only actions.
 It also exposes `isMainnet` when the same UI needs different labels or explorers for Stacks mainnet versus testnet.
+Use its `isLoading` and `error` fields when you need inline connection or transaction feedback from the AppKit flow.
 
 ## Minimal setup
 
