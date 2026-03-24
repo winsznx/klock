@@ -16,6 +16,7 @@ export default function HeroActions() {
         return (
             <Link
                 href="/dashboard"
+                aria-label="Enter the dashboard"
                 className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#FF6B00] to-[#FF8533] text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg transform hover:-translate-y-0.5"
             >
                 Enter Dashboard
