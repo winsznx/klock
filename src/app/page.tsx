@@ -330,7 +330,7 @@ export default function Home() {
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">Discord</a></li>
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-[#FF6B00] transition-colors">GitHub</a></li>
+                <li><a href="https://github.com/winsznx/klock" target="_blank" rel="noreferrer" className="hover:text-[#FF6B00] transition-colors">GitHub</a></li>
                 <li><a href="#" className="hover:text-[#FF6B00] transition-colors">Docs</a></li>
               </ul>
             </div>
