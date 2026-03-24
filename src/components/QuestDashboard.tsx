@@ -322,6 +322,7 @@ export default function QuestDashboard() {
                         maxLength={280}
                         className="w-full p-3 border border-gray-200 rounded-xl mb-4"
                     />
+                    <p className="text-xs text-gray-500 mb-4">{message.length} / 280 characters</p>
                     <div className="flex gap-3">
                         <button
                             type="button"
