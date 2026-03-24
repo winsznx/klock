@@ -24,7 +24,7 @@ export default function ConnectButton() {
         router.push('/dashboard')
     }
 
-    if (!mounted) return <div className="h-10 w-32 bg-gray-200 rounded-full animate-pulse" />
+    if (!mounted) return <div aria-hidden="true" className="h-10 w-32 bg-gray-200 rounded-full animate-pulse" />
 
     // State 1: Not connected - show Connect Wallet button
     if (!isConnected || !address) {
