@@ -36,6 +36,7 @@ Contract notes:
 
 Return notes:
 
+- `readBaseUserProfile()` returns the raw contract tuple, including the `exists` flag from the Base profile
 - `readBaseQuestCompletion()` resolves to a boolean
 - `readBaseCompletedQuests()` resolves to an array of quest ids
 - `readBaseComboAvailability()` resolves to a boolean
