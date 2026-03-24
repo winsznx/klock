@@ -350,8 +350,9 @@ export default function QuestDashboard() {
                     animate={{ opacity: 1 }}
                     className="mb-6 bg-white border border-gray-200 p-6 rounded-2xl shadow-lg"
                 >
-                    <h3 className="font-bold text-gray-900 mb-3">Nudge a Friend</h3>
+                    <label htmlFor="quest-friend-input" className="font-bold text-gray-900 mb-3 block">Nudge a Friend</label>
                     <input
+                        id="quest-friend-input"
                         autoFocus
                         type="text"
                         value={friendAddress}
