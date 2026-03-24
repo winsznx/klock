@@ -47,7 +47,7 @@ export default function ConnectButton() {
             <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-1.5 rounded-full border border-gray-200">
                     <Wallet size={16} className="text-gray-500" />
-                    <button type="button" onClick={() => open()} className="text-sm font-medium text-gray-700 hover:underline">
+                    <button type="button" onClick={() => open()} aria-label="Open connected wallet details" className="text-sm font-medium text-gray-700 hover:underline">
                         {address.slice(0, 6)}...{address.slice(-4)}
                     </button>
                     <button
