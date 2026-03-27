@@ -153,7 +153,7 @@ export async function fetchLeaderboard(
             addresses.push(connectedAddress)
         }
         fetchPromises.push(
-            Promise.all(addresses.map(addr => fetchBaseUserProfile(addr, false)))
+            Promise.all(addresses.map((addr) => fetchBaseUserProfile(addr, false)))
                 .then(profiles => {
                     entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
                 })
@@ -167,7 +167,7 @@ export async function fetchLeaderboard(
             addresses.push(connectedAddress)
         }
         fetchPromises.push(
-            Promise.all(addresses.map(addr => fetchBaseUserProfile(addr, true)))
+            Promise.all(addresses.map((addr) => fetchBaseUserProfile(addr, true)))
                 .then(profiles => {
                     entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
                 })
@@ -181,7 +181,7 @@ export async function fetchLeaderboard(
             addresses.push(connectedAddress)
         }
         fetchPromises.push(
-            Promise.all(addresses.map(addr => fetchStacksUserProfile(addr, false)))
+            Promise.all(addresses.map((addr) => fetchStacksUserProfile(addr, false)))
                 .then(profiles => {
                     entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
                 })
@@ -195,7 +195,7 @@ export async function fetchLeaderboard(
             addresses.push(connectedAddress)
         }
         fetchPromises.push(
-            Promise.all(addresses.map(addr => fetchStacksUserProfile(addr, true)))
+            Promise.all(addresses.map((addr) => fetchStacksUserProfile(addr, true)))
                 .then(profiles => {
                     entries.push(...profiles.filter((p): p is LeaderboardEntry => p !== null && p.totalPoints > 0))
                 })
@@ -217,7 +217,7 @@ export async function fetchLeaderboard(
     const stats: GlobalStats = {
         totalUsers: entries.length,
         totalPoints: entries.reduce((sum, e) => sum + e.totalPoints, 0),
-        highestStreak: Math.max(...entries.map(e => e.streak), 0),
+        highestStreak: Math.max(...entries.map((e) => e.streak), 0),
         avgLevel: entries.length > 0
             ? Math.round((entries.reduce((sum, e) => sum + e.level, 0) / entries.length) * 10) / 10
             : 0,
