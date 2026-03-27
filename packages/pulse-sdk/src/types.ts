@@ -61,3 +61,4 @@ export interface StacksReadOnlyResponse {
     result: string
     cause?: string
 }
+
