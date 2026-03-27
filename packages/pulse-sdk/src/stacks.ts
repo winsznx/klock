@@ -62,7 +62,7 @@ function resolveStacksOptions(options: StacksReadOptions = {}) {
 
 async function callStacksReadOnly(
     functionName: string,
-    args: string[],
+    args: Array<string>,
     options: StacksReadOptions = {},
 ): Promise<StacksReadOnlyResponse | null> {
     const { contract, sender } = resolveStacksOptions(options)
