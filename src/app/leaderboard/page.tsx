@@ -6,7 +6,7 @@ import { Zap, LogOut, Home, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import Leaderboard from '@/components/Leaderboard'
 
-export default function LeaderboardPage() {
+export default function LeaderboardPage(): React.ReactNode {
     const { isLoggedIn, address: evmAddress, logout: evmLogout } = useAuth()
     const { isConnected: isStacksConnected, address: stacksAddress, disconnect: stacksDisconnect } = useStacks()
 
