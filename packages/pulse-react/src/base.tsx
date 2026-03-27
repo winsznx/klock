@@ -43,7 +43,7 @@ export function useBasePulseContract(): UseBasePulseContractResult {
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
     const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null)
     const [completedQuests, setCompletedQuests] = useState<number[]>([])
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
 
     const contract = useMemo(() => {
