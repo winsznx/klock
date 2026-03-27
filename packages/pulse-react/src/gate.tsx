@@ -13,7 +13,7 @@ export function PulseAccessGate({ children, fallback = null }: PulseAccessGatePr
     const { isLoggedIn } = usePulseAuth()
     const { isConnected } = usePulseStacks()
 
-    if (isLoggedIn || isConnected) {
+    if (Boolean(isLoggedIn || isConnected)) {
         return <>{children}</>
     }
 
