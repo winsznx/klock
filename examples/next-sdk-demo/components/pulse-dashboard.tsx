@@ -2,7 +2,7 @@
 
 import { useUnifiedContract } from '@winsznx/react'
 
-export function PulseDashboard() {
+export function PulseDashboard(): React.ReactNode {
   const {
     activeContract,
     contractInfo,
