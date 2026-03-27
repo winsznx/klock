@@ -20,3 +20,4 @@ export const wagmiAdapter = new WagmiAdapter({
   projectId,
   networks: [base, baseSepolia],
 })
+
