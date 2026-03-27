@@ -285,3 +285,4 @@ export function useStacksContractInfo(isMainnet = false): StacksContractInfo {
 
 export const StacksProvider = PulseStacksProvider
 export const useStacks = usePulseStacks
+
