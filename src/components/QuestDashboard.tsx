@@ -50,10 +50,10 @@ export default function QuestDashboard() {
 
     const [pendingQuest, setPendingQuest] = useState<number | null>(null)
     const [localError, setLocalError] = useState<string | null>(null)
-    const [comboActive, setComboActive] = useState(false)
-    const [showMessageInput, setShowMessageInput] = useState(false)
+    const [comboActive, setComboActive] = useState<boolean>(false)
+    const [showMessageInput, setShowMessageInput] = useState<boolean>(false)
     const [message, setMessage] = useState('')
-    const [showFriendInput, setShowFriendInput] = useState(false)
+    const [showFriendInput, setShowFriendInput] = useState<boolean>(false)
     const [friendAddress, setFriendAddress] = useState('')
 
     // Check combo availability
