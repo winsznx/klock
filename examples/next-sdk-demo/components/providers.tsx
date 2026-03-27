@@ -15,7 +15,7 @@ createAppKit({
   metadata: {
     name: 'PULSE Next SDK Demo',
     description: 'Example app for the PULSE SDK and React package',
-    url: 'http://localhost:3000',
+    url: 'http://localhost: 3000',
     icons: ['https://avatars.githubusercontent.com/u/179229932'],
   },
   networks: [base, baseSepolia],
