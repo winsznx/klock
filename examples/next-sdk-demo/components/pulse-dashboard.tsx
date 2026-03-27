@@ -33,3 +33,4 @@ export function PulseDashboard(): React.ReactNode {
     </section>
   )
 }
+
