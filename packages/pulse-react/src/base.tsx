@@ -258,3 +258,4 @@ export function useBasePulseContract(): UseBasePulseContractResult {
 }
 
 export const usePulseContract = useBasePulseContract
+
