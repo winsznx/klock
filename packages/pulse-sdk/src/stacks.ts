@@ -215,3 +215,4 @@ export async function readStacksCompletedQuests(
 
     return getStacksCompletedQuests(status.completedQuests)
 }
+
