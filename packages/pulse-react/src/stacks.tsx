@@ -75,9 +75,9 @@ interface PulseStacksProviderProps {
 }
 
 export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
-    const [connected, setConnected] = useState(false)
+    const [connected, setConnected] = useState<boolean>(false)
     const [address, setAddress] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [userProfile, setUserProfile] = useState<StacksUserProfile | null>(null)
 
