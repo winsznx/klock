@@ -19,3 +19,4 @@ export function PulseAccessGate({ children, fallback = null }: PulseAccessGatePr
 
     return <>{fallback}</>
 }
+
