@@ -19,7 +19,7 @@ export function PulseAuthProvider({
     storageKey = createPulseAuthStorageKey(namespace),
 }: PulseAuthProviderProps) {
     const { address, isConnected } = useAppKitAccount()
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 
     useEffect(() => {
         if (typeof window === 'undefined' || !isConnected || !address) {
