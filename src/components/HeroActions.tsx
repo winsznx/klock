@@ -7,7 +7,7 @@ import ConnectButton from './ConnectButton'
 import StacksConnectButton from './StacksConnectButton'
 import { ArrowRight } from 'lucide-react'
 
-export default function HeroActions() {
+export default function HeroActions(): React.ReactNode {
     const { isLoggedIn } = useAuth()
     const { isConnected: isStacksConnected } = useStacks()
 
