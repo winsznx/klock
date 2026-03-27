@@ -57,3 +57,4 @@ export interface PulseAuthContextValue {
     logout: () => void
     storageKey: string
 }
+
