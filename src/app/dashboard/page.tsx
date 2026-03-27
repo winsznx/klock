@@ -8,7 +8,7 @@ import QuestDashboard from '@/components/QuestDashboard'
 import { Zap, LogOut, User, Home, Trophy } from 'lucide-react'
 import Link from 'next/link'
 
-export default function DashboardPage() {
+export default function DashboardPage(): React.ReactNode {
     const { isLoggedIn, address: evmAddress, logout: evmLogout } = useAuth()
     const { isConnected: isStacksConnected, address: stacksAddress, disconnect: stacksDisconnect } = useStacks()
     const router = useRouter()
