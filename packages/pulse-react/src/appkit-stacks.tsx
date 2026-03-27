@@ -35,7 +35,7 @@ function resolveStacksChainId(session: { namespaces?: Record<string, { accounts?
 export function useAppKitStacksWallet() {
     const { address, isConnected } = useAppKitAccount()
 
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [userProfile, setUserProfile] = useState<StacksUserProfile | null>(null)
 
