@@ -14,12 +14,12 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
     const { isLoggedIn, isConnected } = useAuth()
 
     // If logged in, show the protected content
-    if (isLoggedIn) {
+    if (Boolean(isLoggedIn)) {
         return <>{children}</>
     }
 
     // Custom fallback if provided
-    if (fallback) {
+    if (Boolean(fallback)) {
         return <>{fallback}</>
     }
 
