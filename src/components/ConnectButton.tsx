@@ -12,7 +12,7 @@ export default function ConnectButton() {
     const { disconnect } = useDisconnect()
     const { isConnected, address, isLoggedIn, login, logout } = useAuth()
     const router = useRouter()
-    const [mounted, setMounted] = useState(false)
+    const [mounted, setMounted] = useState<boolean>(false)
 
     // Prevent hydration mismatch
     useEffect(() => {
