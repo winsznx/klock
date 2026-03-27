@@ -76,3 +76,4 @@ export function hasDailyCombo(checkQuest: (questId: number) => boolean) {
 export function hasStacksDailyCombo(bitmap: number) {
     return DAILY_COMBO_QUEST_IDS.every((questId) => isStacksQuestCompleted(bitmap, questId))
 }
+
