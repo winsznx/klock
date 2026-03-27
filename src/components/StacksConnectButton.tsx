@@ -14,7 +14,7 @@ export default function StacksConnectButton({
 }: StacksConnectButtonProps) {
     const { isConnected, address, connect, disconnect, isLoading } = useStacks()
 
-    if (isLoading) {
+    if (Boolean(isLoading)) {
         return (
             <button
                 type="button"
@@ -28,7 +28,7 @@ export default function StacksConnectButton({
         )
     }
 
-    if (isConnected && address) {
+    if (Boolean(isConnected && address)) {
         return (
             <button
                 type="button"
