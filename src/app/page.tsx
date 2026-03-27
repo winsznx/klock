@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Home() {
+export default function Home(): React.ReactNode {
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#F5F5F5] via-[#FFF0E6] to-[#F5F5F5]">
       {/* Navigation */}
