@@ -15,15 +15,15 @@ export interface BaseReadOptions {
     network?: PulseBaseNetwork
 }
 
-export function isBaseChain(chainId: number | undefined): chainId is SupportedBaseChainId {
+export function isBaseChain (chainId: number | undefined): chainId is SupportedBaseChainId {
     return chainId === BASE_CONTRACTS.mainnet.chainId || chainId === BASE_CONTRACTS.testnet.chainId
 }
 
-export function isBaseTestnetChain(chainId: number | undefined): boolean {
+export function isBaseTestnetChain (chainId: number | undefined): boolean {
     return chainId === BASE_CONTRACTS.testnet.chainId
 }
 
-export function getBaseContract(chainId: number): BaseContractConfig {
+export function getBaseContract (chainId: number): BaseContractConfig {
     if (chainId === BASE_CONTRACTS.mainnet.chainId) {
         return BASE_CONTRACTS.mainnet
     }
@@ -35,26 +35,26 @@ export function getBaseContract(chainId: number): BaseContractConfig {
     throw new Error(`Unsupported Base chain ID: ${chainId}`)
 }
 
-export function getBaseContractByNetwork(network: PulseBaseNetwork = 'mainnet') {
+export function getBaseContractByNetwork (network: PulseBaseNetwork = 'mainnet') {
     return BASE_CONTRACTS[network]
 }
 
-export function createBasePublicClient(network: PulseBaseNetwork = 'mainnet') {
+export function createBasePublicClient (network: PulseBaseNetwork = 'mainnet') {
     return createPublicClient({
         chain: network === 'mainnet' ? base : baseSepolia,
         transport: http(BASE_CONTRACTS[network].rpcUrl),
     })
 }
 
-function resolveBaseClient(options: BaseReadOptions = {}) {
+function resolveBaseClient (options: BaseReadOptions = {}) {
     return options.client ?? createBasePublicClient(options.network ?? 'mainnet')
 }
 
-function resolveBaseNetwork(options: BaseReadOptions = {}) {
+function resolveBaseNetwork (options: BaseReadOptions = {}) {
     return options.network ?? 'mainnet'
 }
 
-export async function readBaseUserProfile(user: Address, options: BaseReadOptions = {}): Promise<BaseUserProfile> {
+export async function readBaseUserProfile (user: Address, options: BaseReadOptions = {}): Promise<BaseUserProfile> {
     const network = resolveBaseNetwork(options)
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
@@ -69,7 +69,7 @@ export async function readBaseUserProfile(user: Address, options: BaseReadOption
     return profile as BaseUserProfile
 }
 
-export async function readBaseGlobalStats(options: BaseReadOptions = {}): Promise<BaseGlobalStats> {
+export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promise<BaseGlobalStats> {
     const network = resolveBaseNetwork(options)
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
@@ -84,7 +84,7 @@ export async function readBaseGlobalStats(options: BaseReadOptions = {}): Promis
     return { totalUsers, totalCheckins, totalPointsDistributed }
 }
 
-export async function readBaseQuestCompletion(
+export async function readBaseQuestCompletion (
     user: Address,
     questId: PulseQuestId,
     options: BaseReadOptions = {},
@@ -103,7 +103,7 @@ export async function readBaseQuestCompletion(
     return completed as boolean
 }
 
-export async function readBaseCompletedQuests(user: Address, options: BaseReadOptions = {}): Promise<PulseQuestId[]> {
+export async function readBaseCompletedQuests (user: Address, options: BaseReadOptions = {}): Promise<PulseQuestId[]> {
     const questIds = Object.values(QUEST_IDS) as PulseQuestId[]
     const completed = await Promise.all(
         questIds.map(async (questId) => ({
@@ -115,7 +115,7 @@ export async function readBaseCompletedQuests(user: Address, options: BaseReadOp
     return completed.filter((entry) => entry.completed).map((entry) => entry.questId)
 }
 
-export async function readBaseComboAvailability(user: Address, options: BaseReadOptions = {}): Promise<boolean> {
+export async function readBaseComboAvailability (user: Address, options: BaseReadOptions = {}): Promise<boolean> {
     const network = resolveBaseNetwork(options)
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
