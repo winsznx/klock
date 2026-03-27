@@ -65,9 +65,9 @@ function RankBadge({ rank }: { rank: number }) {
 
 export default function Leaderboard() {
     const [selectedNetwork, setSelectedNetwork] = useState<NetworkFilter>('all')
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(true)
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
     const [stats, setStats] = useState<GlobalStats>({ totalUsers: 0, totalPoints: 0, highestStreak: 0, avgLevel: 0 })
 
