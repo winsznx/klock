@@ -14,7 +14,7 @@ function getStorage() {
 async function getItem(key: string): Promise<AsyncStorageValue> {
   const storage = getStorage()
 
-  if (storage) {
+  if (Boolean(storage)) {
     return storage.getItem(key)
   }
 
@@ -24,7 +24,7 @@ async function getItem(key: string): Promise<AsyncStorageValue> {
 async function setItem(key: string, value: string): Promise<void> {
   const storage = getStorage()
 
-  if (storage) {
+  if (Boolean(storage)) {
     storage.setItem(key, value)
     return
   }
@@ -35,7 +35,7 @@ async function setItem(key: string, value: string): Promise<void> {
 async function removeItem(key: string): Promise<void> {
   const storage = getStorage()
 
-  if (storage) {
+  if (Boolean(storage)) {
     storage.removeItem(key)
     return
   }
@@ -46,7 +46,7 @@ async function removeItem(key: string): Promise<void> {
 async function clear(): Promise<void> {
   const storage = getStorage()
 
-  if (storage) {
+  if (Boolean(storage)) {
     storage.clear()
     return
   }
@@ -57,7 +57,7 @@ async function clear(): Promise<void> {
 async function getAllKeys(): Promise<string[]> {
   const storage = getStorage()
 
-  if (storage) {
+  if (Boolean(storage)) {
     return Object.keys(storage)
   }
 
