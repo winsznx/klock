@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { useStacks } from '@/context/StacksContext'
 import { Loader2, Wallet } from 'lucide-react'
 
@@ -13,6 +14,13 @@ export default function StacksConnectButton({
     variant = 'primary'
 }: StacksConnectButtonProps) {
     const { isConnected, address, connect, disconnect, isLoading } = useStacks()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) return <div className={`h-12 w-48 bg-gray-200 rounded-full animate-pulse ${className}`} />
 
     if (isLoading) {
         return (
