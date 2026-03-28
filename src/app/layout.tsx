@@ -7,31 +7,32 @@ import { headers } from 'next/headers'
 const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PULSE - Social Ritual dApp | Daily On-Chain Engagement',
-  description: 'Join the global social heartbeat. Complete daily rituals, build streaks, and earn rewards across Base and Stacks networks. PULSE is a social coordination game where thousands sync their check-ins.',
-  keywords: ['Web3', 'dApp', 'Social', 'Blockchain', 'Daily Ritual', 'NFT', 'Multi-chain', 'Base', 'Stacks', 'Bitcoin L2'],
-  authors: [{ name: 'PULSE Team' }],
-  creator: 'PULSE',
-  publisher: 'PULSE',
+  title: 'PULSE | Social Ritual & Streak-Based Engagement Protocol',
+  description: 'Synchronize your daily rhythm with the global social heartbeat. Complete on-chain rituals, maintain streaks, and earn Pulse Points across the Base and Stacks ecosystems.',
+  keywords: [
+    'Web3', 'Social Protocol', 'Daily Rituals', 'Stacks', 'Bitcoin Layers', 'Base', 'Layer 2',
+    'Gamified Finance', 'On-chain Streaks', 'Social Coordination', 'Pulse Protocol'
+  ],
+  authors: [{ name: 'PULSE Protocol Team', url: 'https://pulse.social' }],
+  creator: 'PULSE Protocol',
+  publisher: 'PULSE Protocol',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://klock-jade.vercel.app',
-    title: 'PULSE - Social Ritual dApp',
-    description: 'Join thousands in daily on-chain rituals across 20+ blockchain networks.',
+    url: 'https://pulse.social',
+    title: 'PULSE | Social Ritual & Streak-Based Engagement',
+    description: 'The social coordination protocol for daily on-chain engagement across Base and Stacks.',
     siteName: 'PULSE',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PULSE - Social Ritual dApp',
-    description: 'Join the global social heartbeat. Complete daily rituals and earn rewards.',
+    title: 'PULSE Protocol',
+    description: 'Join the global on-chain social heartbeat on Base and Stacks.',
+    creator: '@pulsestatus',
   },
   robots: {
     index: true,
     follow: true,
-  },
-  icons: {
-    icon: '/icon.png',
   },
 }
 
