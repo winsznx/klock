@@ -25,14 +25,14 @@ export {
 }
 
 export function getBaseContract(chainId: number) {
-    if (Boolean(isBaseChain(chainId)) {
+    if (isBaseChain(chainId)) {
         return getSdkBaseContract(chainId)
     }
 
     return BASE_CONTRACTS.testnet
 }
 
-export function getStacksContract(isMainnet: boolean)) {
+export function getStacksContract(isMainnet: boolean) {
     return getSdkStacksContract(isMainnet ? 'mainnet' : 'testnet')
 }
 
