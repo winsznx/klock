@@ -1,7 +1,8 @@
 import type { Address } from 'viem'
 
-export type PulseBaseNetwork = 'mainnet' | 'testnet'
-export type PulseStacksNetwork = 'mainnet' | 'testnet'
+export type PulseNetwork = 'mainnet' | 'testnet'
+export type PulseBaseNetwork = PulseNetwork
+export type PulseStacksNetwork = PulseNetwork
 export type PulseQuestId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 export type SupportedBaseChainId = 8453 | 84532
 
@@ -59,6 +60,7 @@ export interface StacksDailyQuestStatus {
 export interface StacksReadOnlyResponse {
     okay: boolean
     result: string
-    cause?: string
+    cause?: string | undefined
+    error?: string | undefined
 }
 
