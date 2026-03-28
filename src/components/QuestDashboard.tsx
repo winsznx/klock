@@ -7,24 +7,25 @@ import {
     Zap, Globe, CloudSun, UserCheck, Clock,
     MessageSquare, Flame, Trophy, TrendingUp, Gift, AlertCircle, Loader2
 } from 'lucide-react'
+import { QUEST_IDS, COMBO_QUEST_IDS, type PulseContractFunction } from '@winsznx/sdk'
 import { useUnifiedContract } from '@/hooks/useUnifiedContract'
 
 // Quest definitions matching contract QUEST_IDS
 const INTERACTIONS = [
-    { id: 1, name: 'Daily Check-In', desc: 'Secure your streak & get Pulse Points.', icon: Zap, points: 50, action: 'dailyCheckin' },
-    { id: 2, name: 'Relay Signal', desc: 'Pass the torch to another timezone.', icon: Globe, points: 100, action: 'relaySignal' },
-    { id: 3, name: 'Update Atmosphere', desc: 'Sync local weather to chain.', icon: CloudSun, points: 30, action: 'updateAtmosphere' },
-    { id: 4, name: 'Nudge Friend', desc: 'Ping a friend to save their streak.', icon: UserCheck, points: 40, action: 'nudgeFriend' },
-    { id: 5, name: 'Mint Hour Badge', desc: 'Collect unique hour stamps.', icon: Clock, points: 60, action: 'mintHourBadge', disabled: true },
-    { id: 6, name: 'Commit Message', desc: 'Etch your mood on the ticker.', icon: MessageSquare, points: 20, action: 'commitMessage' },
-    { id: 7, name: 'Stake for Streak', desc: 'High risk, high reward.', icon: Flame, points: 200, risk: true, action: 'stakeStreak', disabled: true },
-    { id: 8, name: 'Claim Milestone', desc: 'Evolve your profile level.', icon: Trophy, points: 500, action: 'claimMilestone', disabled: true },
-    { id: 9, name: 'Predict Pulse', desc: "Vote on tomorrow's activity.", icon: TrendingUp, points: 80, action: 'predictPulse' },
-    { id: 10, name: 'Open Capsule', desc: 'Reveal long-term rewards.', icon: Gift, points: 1000, action: 'openCapsule', disabled: true },
+    { id: QUEST_IDS.DAILY_CHECKIN, name: 'Daily Check-In', desc: 'Secure your streak & get Pulse Points.', icon: Zap, points: 50, action: 'dailyCheckin' as PulseContractFunction },
+    { id: QUEST_IDS.RELAY_SIGNAL, name: 'Relay Signal', desc: 'Pass the torch to another timezone.', icon: Globe, points: 100, action: 'relaySignal' as PulseContractFunction },
+    { id: QUEST_IDS.UPDATE_ATMOSPHERE, name: 'Update Atmosphere', desc: 'Sync local weather to chain.', icon: CloudSun, points: 30, action: 'updateAtmosphere' as PulseContractFunction },
+    { id: QUEST_IDS.NUDGE_FRIEND, name: 'Nudge Friend', desc: 'Ping a friend to save their streak.', icon: UserCheck, points: 40, action: 'nudgeFriend' as PulseContractFunction },
+    { id: QUEST_IDS.MINT_HOUR_BADGE, name: 'Mint Hour Badge', desc: 'Collect unique hour stamps.', icon: Clock, points: 60, action: 'mintHourBadge' as any, disabled: true },
+    { id: QUEST_IDS.COMMIT_MESSAGE, name: 'Commit Message', desc: 'Etch your mood on the ticker.', icon: MessageSquare, points: 20, action: 'commitMessage' as PulseContractFunction },
+    { id: QUEST_IDS.STAKE_STREAK, name: 'Stake for Streak', desc: 'High risk, high reward.', icon: Flame, points: 200, risk: true, action: 'stakeStreak' as any, disabled: true },
+    { id: QUEST_IDS.CLAIM_MILESTONE, name: 'Claim Milestone', desc: 'Evolve your profile level.', icon: Trophy, points: 500, action: 'claimMilestone' as any, disabled: true },
+    { id: QUEST_IDS.PREDICT_PULSE, name: 'Predict Pulse', desc: "Vote on tomorrow's activity.", icon: TrendingUp, points: 80, action: 'predictPulse' as PulseContractFunction },
+    { id: QUEST_IDS.OPEN_CAPSULE, name: 'Open Capsule', desc: 'Reveal long-term rewards.', icon: Gift, points: 1000, action: 'openCapsule' as any, disabled: true },
 ]
 
 // Combo quest IDs for "Daily Triple"
-const COMBO_IDS = [1, 3, 6] // Daily Check-In, Update Atmosphere, Commit Message
+const COMBO_IDS = [...COMBO_QUEST_IDS]
 
 export default function QuestDashboard() {
     const {
@@ -72,7 +73,7 @@ export default function QuestDashboard() {
     const progress = (completedQuests.length / INTERACTIONS.length) * 100
 
     // Handle quest interaction
-    const handleInteraction = useCallback(async (questId: number, action: string) => {
+    const handleInteraction = useCallback(async (questId: number, action: PulseContractFunction) => {
         if (!isConnected || activeContract === 'none') {
             setLocalError('Please connect to a supported network (Base or Stacks)')
             return
