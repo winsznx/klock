@@ -26,8 +26,8 @@ type ClarityOptionalTuple = {
     }
 }
 
-export function isStacksAddress(address: string | null | undefined): boolean {
-    return Boolean(address && (address.startsWith('SP') || address.startsWith('ST')))
+export function isStacksAddress(address: string | null | undefined): address is string {
+    return typeof address === 'string' && (address.startsWith('SP') || address.startsWith('ST'))
 }
 
 export function isStacksMainnetAddress(address: string | null | undefined): boolean {
@@ -39,6 +39,10 @@ export function getStacksContract(network: PulseStacksNetwork = 'mainnet'): Stac
 }
 
 export function getStacksContractByAddress(address: string | null | undefined): StacksContractConfig {
+    if (!address) {
+        throw new Error('getStacksContractByAddress: address is required')
+    }
+
     return getStacksContract(isStacksMainnetAddress(address) ? 'mainnet' : 'testnet')
 }
 
