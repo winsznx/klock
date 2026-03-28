@@ -1,11 +1,5 @@
-import { QUEST_IDS, isStacksQuestCompleted, type BaseUserProfile } from '@winsznx/sdk'
+import { COMBO_QUEST_IDS, QUEST_IDS, isStacksQuestCompleted, type BaseUserProfile } from '@winsznx/sdk'
 import type { PulseContractTarget, StacksUserProfile, UnifiedUserProfile } from './types.js'
-
-export const DAILY_COMBO_QUEST_IDS = [
-    QUEST_IDS.DAILY_CHECKIN,
-    QUEST_IDS.UPDATE_ATMOSPHERE,
-    QUEST_IDS.COMMIT_MESSAGE,
-] as const
 
 export function createPulseAuthStorageKey(namespace = 'pulse') {
     return `${namespace}_logged_in_address`
@@ -24,11 +18,11 @@ export function resolveActivePulseContract(params: {
     appKitConnected: boolean
     baseNetwork: boolean
 }): PulseContractTarget {
-    if (Boolean(params.stacksConnected) {
+    if (Boolean(params.stacksConnected)) {
         return 'stacks'
     }
 
-    if (params.appKitConnected && params.baseNetwork)) {
+    if (params.appKitConnected && params.baseNetwork) {
         return 'base'
     }
 
@@ -70,10 +64,10 @@ export function normalizeStacksUserProfile(profile: StacksUserProfile): UnifiedU
 }
 
 export function hasDailyCombo(checkQuest: (questId: number) => boolean) {
-    return DAILY_COMBO_QUEST_IDS.every((questId) => checkQuest(questId))
+    return COMBO_QUEST_IDS.every((questId) => checkQuest(questId))
 }
 
 export function hasStacksDailyCombo(bitmap: number) {
-    return DAILY_COMBO_QUEST_IDS.every((questId) => isStacksQuestCompleted(bitmap, questId))
+    return COMBO_QUEST_IDS.every((questId) => isStacksQuestCompleted(bitmap, questId))
 }
 
