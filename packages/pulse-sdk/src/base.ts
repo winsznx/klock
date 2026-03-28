@@ -56,22 +56,32 @@ function resolveBaseNetwork (options: BaseReadOptions = {}) {
     return options.network ?? 'mainnet'
 }
 
+async function withRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Promise<T> {
+    try {
+        return await fn()
+    } catch (err) {
+        if (retries <= 1) throw err
+        await new Promise(resolve => setTimeout(resolve, delay))
+        return withRetry(fn, retries - 1, delay * 2)
+    }
+}
+
 export async function readBaseUserProfile (user: Address, options: BaseReadOptions = {}): Promise<BaseUserProfile> {
     const network = resolveBaseNetwork(options)
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
 
     try {
-        const profile = await client.readContract({
+        const profile = await withRetry(() => client.readContract({
             address: contract.address,
             abi: PULSE_ABI,
             functionName: 'getUserProfile',
             args: [user],
-        })
+        }))
 
         return profile as unknown as BaseUserProfile
     } catch (err) {
-        console.error(`[PulseSDK] Failed to read user profile for ${user}:`, err)
+        console.error(`[PulseSDK] Failed to read user profile for ${user} after retries:`, err)
         return {
             totalPoints: 0n,
             currentStreak: 0n,
@@ -85,6 +95,7 @@ export async function readBaseUserProfile (user: Address, options: BaseReadOptio
         }
     }
 }
+
 
 export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promise<BaseGlobalStats> {
     const network = resolveBaseNetwork(options)
