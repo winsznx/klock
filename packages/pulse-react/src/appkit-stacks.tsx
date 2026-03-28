@@ -155,10 +155,11 @@ export function useAppKitStacksWallet() {
         dailyCheckin: useCallback(() => executeContractCall('daily-checkin'), [executeContractCall]),
         relaySignal: useCallback(() => executeContractCall('relay-signal'), [executeContractCall]),
         updateAtmosphere: useCallback((weatherCode: number) => executeContractCall('update-atmosphere', [`u${weatherCode}`]), [executeContractCall]),
-        nudgeFriend: useCallback((friendAddress: string) => executeContractCall('nudge-friend', [`'${friendAddress}`]), [executeContractCall]),
-        commitMessage: useCallback((message: string) => executeContractCall('commit-message', [`"${message}"`]), [executeContractCall]),
-        predictPulse: useCallback((level: number) => executeContractCall('predict-pulse', [`u${level}`]), [executeContractCall]),
+        nudgeFriend: useCallback((friendAddressStr: string) => executeContractCall('nudge-friend', [friendAddressStr]), [executeContractCall]),
+        commitMessage: useCallback((msg: string) => executeContractCall('commit-message', [msg]), [executeContractCall]),
+        predictPulse: useCallback((lvl: number) => executeContractCall('predict-pulse', [`u${lvl}`]), [executeContractCall]),
         claimDailyCombo: useCallback(() => executeContractCall('claim-daily-combo'), [executeContractCall]),
+
 
         refreshData,
         isQuestCompleted,
