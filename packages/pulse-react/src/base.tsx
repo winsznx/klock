@@ -1,6 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
 import { useAccount, useChainId, usePublicClient, useWalletClient } from 'wagmi'
 import {
     PULSE_ABI,
@@ -169,9 +170,10 @@ export function useBasePulseContract(): UseBasePulseContractResult {
         }
     }, [contract, fetchCompletedQuests, fetchGlobalStats, fetchUserProfile])
 
-    const refreshOnConnect = useEffectEvent(async () => {
-        await refreshData()
-    })
+    const refreshRef = useRef(refreshData)
+    useEffect(() => {
+        refreshRef.current = refreshData
+    }, [refreshData])
 
     useEffect(() => {
         if (!isConnected || !address || !contract) {
@@ -182,8 +184,9 @@ export function useBasePulseContract(): UseBasePulseContractResult {
             return
         }
 
-        void refreshOnConnect()
-    }, [address, contract, isConnected, refreshOnConnect])
+        void refreshRef.current()
+    }, [address, contract, isConnected])
+
 
     const executeQuest = useCallback(async (
         functionName: PulseContractFunction,
