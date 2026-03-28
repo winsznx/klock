@@ -7,9 +7,18 @@ import ConnectButton from './ConnectButton'
 import StacksConnectButton from './StacksConnectButton'
 import { ArrowRight } from 'lucide-react'
 
+import { useEffect, useState } from 'react'
+
 export default function HeroActions(): React.ReactNode {
     const { isLoggedIn } = useAuth()
     const { isConnected: isStacksConnected } = useStacks()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) return <div className="h-12 w-40 bg-gray-200 rounded-full animate-pulse" />
 
     // If user is logged in (either EVM or Stacks), show Enter Dashboard
     if (isLoggedIn || isStacksConnected) {
