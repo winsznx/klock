@@ -81,17 +81,22 @@ export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promi
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
 
-    const stats = await client.readContract({
-        address: contract.address,
-        abi: PULSE_ABI,
-        functionName: 'getGlobalStats',
-    })
+    try {
+        const stats = await client.readContract({
+            address: contract.address,
+            abi: PULSE_ABI,
+            functionName: 'getGlobalStats',
+        })
 
-    const [totalUsers, totalCheckins, totalPointsDistributed] = stats as [bigint, bigint, bigint]
-    return {
-        totalUsers: totalUsers ?? 0n,
-        totalCheckins: totalCheckins ?? 0n,
-        totalPointsDistributed: totalPointsDistributed ?? 0n,
+        const [totalUsers, totalCheckins, totalPointsDistributed] = stats as [bigint, bigint, bigint]
+        return {
+            totalUsers: totalUsers ?? 0n,
+            totalCheckins: totalCheckins ?? 0n,
+            totalPointsDistributed: totalPointsDistributed ?? 0n,
+        }
+    } catch (err) {
+        console.error('[PulseSDK] Failed to read global stats:', err)
+        return { totalUsers: 0n, totalCheckins: 0n, totalPointsDistributed: 0n }
     }
 }
 
@@ -104,26 +109,51 @@ export async function readBaseQuestCompletion (
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
 
-    const completed = await client.readContract({
-        address: contract.address,
-        abi: PULSE_ABI,
-        functionName: 'hasCompletedQuestToday',
-        args: [user, questId],
-    })
+    try {
+        const completed = await client.readContract({
+            address: contract.address,
+            abi: PULSE_ABI,
+            functionName: 'hasCompletedQuestToday',
+            args: [user, questId],
+        })
 
-    return completed as boolean
+        return completed as boolean
+    } catch {
+        return false
+    }
 }
 
 export async function readBaseCompletedQuests (user: Address, options: BaseReadOptions = {}): Promise<PulseQuestId[]> {
+    const network = resolveBaseNetwork(options)
+    const client = resolveBaseClient(options)
+    const contract = getBaseContractByNetwork(network)
     const questIds = Object.values(QUEST_IDS) as PulseQuestId[]
-    const completed = await Promise.all(
-        questIds.map(async (questId) => ({
-            questId,
-            completed: await readBaseQuestCompletion(user, questId, options),
-        })),
-    )
 
-    return completed.filter((entry) => entry.completed).map((entry) => entry.questId)
+    try {
+        const results = await client.multicall({
+            contracts: questIds.map(questId => ({
+                address: contract.address as Address,
+                abi: PULSE_ABI,
+                functionName: 'hasCompletedQuestToday',
+                args: [user, questId],
+            })),
+            allowFailure: true
+        })
+
+        return questIds.filter((_, index) => {
+            const res = results[index]
+            return res?.status === 'success' && (res.result as any) === true
+        })
+    } catch {
+        // Fallback to sequential
+        const completed: PulseQuestId[] = []
+        for (const questId of questIds) {
+            if (await readBaseQuestCompletion(user, questId, options)) {
+                completed.push(questId)
+            }
+        }
+        return completed
+    }
 }
 
 export async function readBaseComboAvailability (user: Address, options: BaseReadOptions = {}): Promise<boolean> {
@@ -131,13 +161,16 @@ export async function readBaseComboAvailability (user: Address, options: BaseRea
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
 
-    const available = await client.readContract({
-        address: contract.address,
-        abi: PULSE_ABI,
-        functionName: 'isComboAvailable',
-        args: [user],
-    })
+    try {
+        const available = await client.readContract({
+            address: contract.address,
+            abi: PULSE_ABI,
+            functionName: 'isComboAvailable',
+            args: [user],
+        })
 
-    return available as boolean
+        return available as boolean
+    } catch {
+        return false
+    }
 }
-
