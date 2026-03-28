@@ -45,6 +45,7 @@ export type {
     PulseBaseNetwork,
     PulseQuestId,
     PulseStacksNetwork,
+    PulseContractFunction,
     StacksContractConfig,
     StacksDailyQuestStatus,
     StacksReadOnlyResponse,
