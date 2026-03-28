@@ -171,9 +171,9 @@ export const PULSE_ABI = [
         stateMutability: 'view',
         inputs: [],
         outputs: [
-            { name: '_totalUsers', type: 'uint256' },
-            { name: '_totalCheckins', type: 'uint256' },
-            { name: '_totalPointsDistributed', type: 'uint256' },
+            { name: 'totalUsers', type: 'uint256' },
+            { name: 'totalCheckins', type: 'uint256' },
+            { name: 'totalPointsDistributed', type: 'uint256' },
         ],
     },
     {
