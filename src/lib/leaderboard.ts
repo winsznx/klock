@@ -203,7 +203,12 @@ export async function fetchLeaderboard(
     }
 
     // Wait for all fetches
-    await Promise.all(fetchPromises)
+    const fetchResults = await Promise.allSettled(fetchPromises)
+    fetchResults.forEach((result, idx) => {
+        if (result.status === 'rejected') {
+            console.error(`[Leaderboard] Fetch promise ${idx} failed:`, result.reason)
+        }
+    })
 
     // Sort by total points descending
     entries.sort((a, b) => b.totalPoints - a.totalPoints)
