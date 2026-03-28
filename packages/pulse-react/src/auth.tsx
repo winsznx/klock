@@ -7,9 +7,30 @@ import { createPulseAuthStorageKey } from './utils.js'
 
 const PulseAuthContext = createContext<PulseAuthContextValue | undefined>(undefined)
 
-const safeGetItem = (key: string) => typeof window !== 'undefined' ? localStorage.getItem(key) : null
-const safeSetItem = (key: string, value: string) => { if (typeof window !== 'undefined') localStorage.setItem(key, value) }
-const safeRemoveItem = (key: string) => { if (typeof window !== 'undefined') localStorage.removeItem(key) }
+const safeGetItem = (key: string): string | null => {
+    if (typeof window === 'undefined') return null
+    try {
+        return localStorage.getItem(key)
+    } catch {
+        return null
+    }
+}
+const safeSetItem = (key: string, value: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+        localStorage.setItem(key, value)
+    } catch (e) {
+        console.warn('[PulseAuth] Failed to set storage item:', e)
+    }
+}
+const safeRemoveItem = (key: string): void => {
+    if (typeof window === 'undefined') return
+    try {
+        localStorage.removeItem(key)
+    } catch (e) {
+        console.warn('[PulseAuth] Failed to remove storage item:', e)
+    }
+}
 
 interface PulseAuthProviderProps {
     children: React.ReactNode
