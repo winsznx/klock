@@ -58,6 +58,7 @@ export function normalizeBaseUserProfile(profile: BaseUserProfile): UnifiedUserP
         longestStreak: toNumber(profile.longestStreak),
         level: toNumber(profile.level, 1),
         totalCheckins: toNumber(profile.totalCheckins),
+        questBitmap: 0, // Base uses individual calls, needs building if bitmap is required
         exists: profile.exists,
     }
 }
@@ -69,6 +70,7 @@ export function normalizeStacksUserProfile(profile: StacksUserProfile): UnifiedU
         longestStreak: toNumber(profile.longestStreak),
         level: toNumber(profile.level, 1),
         totalCheckins: toNumber(profile.totalCheckins),
+        questBitmap: profile.questBitmap ?? 0,
         exists: profile.exists,
     }
 }
