@@ -47,20 +47,12 @@ export function PulseAuthProvider({
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 
     useEffect(() => {
-        if (!isConnected || !address) {
-            return
-        }
-
-        setIsLoggedIn(safeGetItem(storageKey) === address)
-    }, [address, isConnected, storageKey])
-
-    useEffect(() => {
         if (isConnected && address) {
-            return
+            setIsLoggedIn(safeGetItem(storageKey) === address)
+        } else {
+            setIsLoggedIn(false)
+            safeRemoveItem(storageKey)
         }
-
-        setIsLoggedIn(false)
-        safeRemoveItem(storageKey)
     }, [address, isConnected, storageKey])
 
     const login = useCallback(() => {
