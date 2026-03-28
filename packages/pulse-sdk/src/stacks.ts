@@ -151,6 +151,29 @@ function parseTupleBoolean(data: Record<string, ClarityTupleField> | null, key: 
     return fallback
 }
 
+function parseClarityListUInt(result: string): bigint[] {
+    const clarityValue = hexToCV(result) as { list?: Array<{ value: bigint }> }
+    return clarityValue.list?.map(v => v.value) ?? []
+}
+
+export async function readStacksGlobalStats(options: StacksReadOptions = {}): Promise<{
+    totalUsers: bigint
+    totalCheckins: bigint
+    totalPointsDistributed: bigint
+}> {
+    const data = await callStacksReadOnly('get-global-stats', [], options)
+    if (!data?.okay || !data.result) {
+        return { totalUsers: 0n, totalCheckins: 0n, totalPointsDistributed: 0n }
+    }
+
+    const stats = parseClarityListUInt(data.result)
+    return {
+        totalUsers: stats[0] ?? 0n,
+        totalCheckins: stats[1] ?? 0n,
+        totalPointsDistributed: stats[2] ?? 0n,
+    }
+}
+
 export async function readStacksCurrentDay(options: StacksReadOptions = {}): Promise<number> {
     const data = await callStacksReadOnly('get-day', [], options)
     if (!data?.okay || !data.result) {
