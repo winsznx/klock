@@ -8,6 +8,7 @@ import {
     getBaseContract,
     isBaseChain,
     isBaseTestnetChain,
+    type PulseContractFunction,
 } from '@winsznx/sdk'
 import type { Address } from 'viem'
 import type { ContractInfo, GlobalStats, PulseActionResult, UserProfile } from './types.js'
@@ -165,7 +166,7 @@ export function useBasePulseContract(): UseBasePulseContractResult {
     }, [address, contract, isConnected, refreshOnConnect])
 
     const executeQuest = useCallback(async (
-        functionName: string,
+        functionName: PulseContractFunction,
         args: unknown[] = [],
     ): Promise<PulseActionResult> => {
         if (!walletClient || !contract) {
@@ -179,7 +180,7 @@ export function useBasePulseContract(): UseBasePulseContractResult {
             const hash = await walletClient.writeContract({
                 address: contract.address as Address,
                 abi: PULSE_ABI,
-                functionName: functionName as never,
+                functionName: functionName as any,
                 args: args as never,
             })
 
