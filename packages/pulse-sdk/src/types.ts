@@ -78,9 +78,13 @@ export interface StacksUserProfile {
     totalCheckins: number
     /** Current level based on points */
     level: number
+    /** Bitmask of completed quests for the current day */
+    questBitmap: number
     /** True if the user has a profile record on-chain */
     exists: boolean
 }
+
+
 
 /**
  * Status of daily quests for a user on Stacks
