@@ -66,7 +66,12 @@ export async function readBaseUserProfile (user: Address, options: BaseReadOptio
         args: [user],
     })
 
-    return profile as BaseUserProfile
+    const typed = profile as unknown as BaseUserProfile
+    if (!typed.exists) {
+        return typed
+    }
+
+    return typed
 }
 
 export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promise<BaseGlobalStats> {
