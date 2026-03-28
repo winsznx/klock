@@ -3,7 +3,7 @@
 import { useAppKit, useDisconnect } from '@reown/appkit/react'
 import { useRouter } from 'next/navigation'
 import { LogOut, Wallet, LogIn, User } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAuth } from '@/context/AuthContext'
 
 export default function ConnectButton() {
@@ -19,10 +19,11 @@ export default function ConnectButton() {
         setMounted(true)
     }, [])
 
-    const handleLoginAndNavigate = () => {
+    const handleLoginAndNavigate = useCallback(() => {
+        if (!address) return
         login()
         router.push('/dashboard')
-    }
+    }, [address, login, router])
 
     if (!mounted) return <div aria-hidden="true" className="h-10 w-32 bg-gray-200 rounded-full animate-pulse" />
 
