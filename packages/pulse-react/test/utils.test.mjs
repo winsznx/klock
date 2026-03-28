@@ -25,24 +25,29 @@ test('address utility truncates long addresses and preserves short values', () =
 })
 
 test('profile normalization creates unified shapes', () => {
-  assert.deepEqual(normalizeBaseUserProfile(baseProfile), {
-    totalPoints: 1250,
-    currentStreak: 5,
-    longestStreak: 9,
-    level: 3,
-    totalCheckins: 21,
-    exists: true,
-  })
+    // Test base normalization with completed quests
+    assert.deepEqual(normalizeBaseUserProfile(baseProfile, [QUEST_IDS.DAILY_CHECKIN, QUEST_IDS.COMMIT_MESSAGE]), {
+        totalPoints: 1250,
+        currentStreak: 5,
+        longestStreak: 9,
+        level: 3,
+        totalCheckins: 21,
+        exists: true,
+        questBitmap: 66, // (1 << 1) + (1 << 6) = 2 + 64 = 66
+    })
 
-  assert.deepEqual(normalizeStacksUserProfile(stacksProfile), {
-    totalPoints: 980,
-    currentStreak: 8,
-    longestStreak: 12,
-    level: 6,
-    totalCheckins: 30,
-    exists: true,
-  })
+    // Test stacks normalization
+    assert.deepEqual(normalizeStacksUserProfile(stacksProfile), {
+        totalPoints: 980,
+        currentStreak: 8,
+        longestStreak: 12,
+        level: 6,
+        totalCheckins: 30,
+        exists: true,
+        questBitmap: 74,
+    })
 })
+
 
 test('contract resolution prefers stacks over appkit base sessions', () => {
   assert.equal(resolveActivePulseContract({
