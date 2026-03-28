@@ -19,11 +19,19 @@ export default function ConnectButton() {
         setMounted(true)
     }, [])
 
-    const handleLoginAndNavigate = useCallback(() => {
+    const handleLoginAndNavigate = useCallback(async () => {
         if (!address) return
-        login()
-        router.push('/dashboard')
+        
+        try {
+            login()
+            // Add a small delay for visual feedback of the "login" action before redirect
+            await new Promise(resolve => setTimeout(resolve, 300))
+            router.push('/dashboard')
+        } catch (err) {
+            console.error('[ConnectButton] Login failed:', err)
+        }
     }, [address, login, router])
+
 
     if (!mounted) return <div aria-hidden="true" className="h-10 w-32 bg-gray-200 rounded-full animate-pulse" />
 
