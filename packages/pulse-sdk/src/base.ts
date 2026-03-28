@@ -61,19 +61,29 @@ export async function readBaseUserProfile (user: Address, options: BaseReadOptio
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
 
-    const profile = await client.readContract({
-        address: contract.address,
-        abi: PULSE_ABI,
-        functionName: 'getUserProfile',
-        args: [user],
-    })
+    try {
+        const profile = await client.readContract({
+            address: contract.address,
+            abi: PULSE_ABI,
+            functionName: 'getUserProfile',
+            args: [user],
+        })
 
-    const typed = profile as unknown as BaseUserProfile
-    if (!typed.exists) {
-        return typed
+        return profile as unknown as BaseUserProfile
+    } catch (err) {
+        console.error(`[PulseSDK] Failed to read user profile for ${user}:`, err)
+        return {
+            totalPoints: 0n,
+            currentStreak: 0n,
+            longestStreak: 0n,
+            lastCheckinTime: 0n,
+            totalCheckins: 0n,
+            level: 0n,
+            stakedAmount: 0n,
+            joinedTime: 0n,
+            exists: false,
+        }
     }
-
-    return typed
 }
 
 export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promise<BaseGlobalStats> {
