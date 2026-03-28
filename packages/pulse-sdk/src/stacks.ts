@@ -116,6 +116,10 @@ function parseTupleUInt(data: Record<string, ClarityTupleField> | null, key: str
         return Number(value)
     }
 
+    if (typeof value === 'number') {
+        return value
+    }
+
     return fallback
 }
 
