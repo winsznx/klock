@@ -184,7 +184,7 @@ export function useUnifiedPulseContract() {
         stacksAddress: stacksContext.address,
         contractInfo,
         userProfile,
-        globalStats: baseContract.globalStats,
+        globalStats: activeContract === 'base' ? baseContract.globalStats : activeContract === 'stacks' ? stacksContext.globalStats : null,
         isLoading: baseContract.isLoading || stacksContext.isLoading,
         error: baseContract.error || stacksContext.error,
         dailyCheckin,
