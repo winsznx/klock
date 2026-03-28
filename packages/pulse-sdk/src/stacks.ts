@@ -152,8 +152,12 @@ function parseTupleBoolean(data: Record<string, ClarityTupleField> | null, key: 
 }
 
 function parseClarityListUInt(result: string): bigint[] {
-    const clarityValue = hexToCV(result) as { list?: Array<{ value: bigint }> }
-    return clarityValue.list?.map(v => v.value) ?? []
+    try {
+        const clarityValue = hexToCV(result) as { list?: Array<{ value?: bigint }> }
+        return clarityValue.list?.map(v => v.value ?? 0n) ?? []
+    } catch {
+        return []
+    }
 }
 
 export async function readStacksGlobalStats(options: StacksReadOptions = {}): Promise<{
