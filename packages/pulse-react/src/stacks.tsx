@@ -66,7 +66,9 @@ export async function fetchStacksWalletProfile(address: string): Promise<StacksU
             questBitmap: dailyQuestStatus?.completedQuests ?? 0,
             level: profile.level,
             totalCheckins: profile.totalCheckins,
+            exists: profile.exists,
         }
+
     } catch (error) {
         console.error('[PULSE][Stacks] Failed to fetch profile', error)
         return null
@@ -219,8 +221,9 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
         executeContractCall('predict-pulse', [uintCV(level)])
     ), [executeContractCall])
     const claimDailyCombo = useCallback(() => (
-        executeContractCall('claim-daily-combo-bonus', [])
+        executeContractCall('claim-daily-combo', [])
     ), [executeContractCall])
+
 
     const isQuestCompleted = useCallback((questId: number) => {
         if (!userProfile) {
