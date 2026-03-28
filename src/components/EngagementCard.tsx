@@ -91,8 +91,16 @@ export default function EngagementCard({
                 <span className={isDisabled ? "text-gray-400" : "text-[#FF6B00]"}>
                     +{points} Pulse Points
                 </span>
-                {streakRisk && <span className='text-red-500'>Risk Item</span>}
+                {streakRisk && (
+                    <span 
+                        className='text-red-500 cursor-help flex items-center gap-1'
+                        title='Failing this ritual will cause your daily streak to reset. High risk, high reward.'
+                    >
+                        Risk Item
+                    </span>
+                )}
                 {isDisabled && !streakRisk && <span className='text-gray-400'>Coming Soon</span>}
+
             </div>
 
             {isCompleted && (
