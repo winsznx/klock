@@ -61,7 +61,8 @@ export async function fetchStacksWalletProfile(address: string): Promise<StacksU
             totalPoints: profile.totalPoints,
             currentStreak: profile.currentStreak,
             longestStreak: profile.longestStreak,
-            lastCheckinDay: profile.lastCheckinBlock,
+            lastCheckinBlock: profile.lastCheckinBlock,
+
             questBitmap: dailyQuestStatus?.completedQuests ?? 0,
             level: profile.level,
             totalCheckins: profile.totalCheckins,
@@ -296,8 +297,10 @@ export function useStacksContractInfo(isMainnet = false): StacksContractInfo {
         explorerUrl: contract.explorerUrl,
         fullContractId: contract.fullContractId,
         network: contract.network,
+        apiUrl: contract.apiUrl,
     }
 }
+
 
 export const StacksProvider = PulseStacksProvider
 export const useStacks = usePulseStacks
