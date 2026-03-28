@@ -63,4 +63,17 @@ export interface StacksReadOnlyResponse {
     cause?: string | undefined
     error?: string | undefined
 }
+export type PulseContractFunction =
+| 'dailyCheckin'
+| 'relaySignal'
+| 'updateAtmosphere'
+| 'nudgeFriend'
+| 'commitMessage'
+| 'predictPulse'
+| 'claimDailyCombo'
+| 'getUserProfile'
+| 'getGlobalStats'
+| 'hasCompletedQuestToday'
+| 'isComboAvailable'
+| 'getCurrentDay'
 
