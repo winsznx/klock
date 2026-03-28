@@ -134,10 +134,11 @@ export default function QuestDashboard() {
                     setMessage('')
                     break
                 case 'predictPulse':
-                    // Predict a random level 1-5
-                    const level = Math.floor(Math.random() * 5) + 1
+                    // Predict a random level 1-10 (matching stacks contract range)
+                    const level = Math.floor(Math.random() * 10) + 1
                     result = await predictPulse(level)
                     break
+
                 default:
                     result = { success: false, error: 'Quest not yet implemented' }
             }
