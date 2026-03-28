@@ -1,23 +1,10 @@
 'use client'
 
-import { wagmiAdapter, projectId } from '@/config'
+import { wagmiAdapter, projectId, networks } from '@/config'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createAppKit } from '@reown/appkit/react'
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin'
-import {
-    mainnet,
-    arbitrum,
-    base,
-    sepolia,
-    polygon,
-    optimism,
-    avalanche,
-    bsc,
-    celo,
-    baseSepolia,
-    bitcoin,
-    bitcoinTestnet,
-} from '@reown/appkit/networks'
+import { base } from '@reown/appkit/networks'
 import React, { type ReactNode } from 'react'
 import dynamic from 'next/dynamic'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
@@ -48,15 +35,7 @@ const bitcoinAdapter = new BitcoinAdapter({
 const modal = createAppKit({
     adapters: [wagmiAdapter, bitcoinAdapter],
     projectId,
-    networks: [
-        // Primary EVM Networks
-        base,
-        baseSepolia,
-        // Additional EVM Networks
-        mainnet, polygon, optimism, arbitrum, bsc, avalanche, celo, sepolia,
-        // Bitcoin Networks
-        bitcoin, bitcoinTestnet,
-    ],
+    networks: networks as [any, ...any[]],
     defaultNetwork: base,
     metadata: metadata,
     features: {
