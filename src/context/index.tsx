@@ -19,9 +19,9 @@ if (!projectId) {
 
 // Set up metadata
 const metadata = {
-    name: 'PULSE - Social Ritual dApp',
-    description: 'A daily social ritual engagement dApp on Base and Stacks',
-    url: typeof window !== 'undefined' ? window.location.origin : 'https://klock-jade.vercel.app',
+    name: 'PULSE Protocol',
+    description: 'The social coordination protocol for daily on-chain rituals.',
+    url: 'https://pulse.social',
     icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
