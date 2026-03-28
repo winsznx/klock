@@ -35,6 +35,7 @@ export {
     readStacksCurrentDay,
     readStacksDailyQuestStatus,
     readStacksUserProfile,
+    readStacksGlobalStats,
 } from './stacks.js'
 
 export type {
