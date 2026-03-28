@@ -159,9 +159,10 @@ export async function fetchLeaderboard(
     // Fetch Base Mainnet
     if (fetchBaseMainnet) {
         const addresses = [...KNOWN_ADDRESSES.baseMainnet]
-        if (connectedAddress?.startsWith('0x') && !addresses.includes(connectedAddress)) {
+        if (connectedAddress?.startsWith('0x') && !addresses.some(a => a.toLowerCase() === connectedAddress.toLowerCase())) {
             addresses.push(connectedAddress)
         }
+
         fetchPromises.push(
             Promise.all(addresses.map((addr) => fetchBaseUserProfile(addr, false)))
                 .then(profiles => {
@@ -173,9 +174,10 @@ export async function fetchLeaderboard(
     // Fetch Base Testnet
     if (fetchBaseTestnet) {
         const addresses = [...KNOWN_ADDRESSES.baseTestnet]
-        if (connectedAddress?.startsWith('0x') && !addresses.includes(connectedAddress)) {
+        if (connectedAddress?.startsWith('0x') && !addresses.some(a => a.toLowerCase() === connectedAddress.toLowerCase())) {
             addresses.push(connectedAddress)
         }
+
         fetchPromises.push(
             Promise.all(addresses.map((addr) => fetchBaseUserProfile(addr, true)))
                 .then(profiles => {
@@ -187,9 +189,10 @@ export async function fetchLeaderboard(
     // Fetch Stacks Mainnet
     if (fetchStacksMainnet) {
         const addresses = [...KNOWN_ADDRESSES.stacksMainnet]
-        if (connectedAddress?.startsWith('SP') && !addresses.includes(connectedAddress)) {
+        if (connectedAddress?.startsWith('SP') && !addresses.some(a => a.toLowerCase() === connectedAddress.toLowerCase())) {
             addresses.push(connectedAddress)
         }
+
         fetchPromises.push(
             Promise.all(addresses.map((addr) => fetchStacksUserProfile(addr, false)))
                 .then(profiles => {
@@ -201,9 +204,10 @@ export async function fetchLeaderboard(
     // Fetch Stacks Testnet
     if (fetchStacksTestnet) {
         const addresses = [...KNOWN_ADDRESSES.stacksTestnet]
-        if (connectedAddress?.startsWith('ST') && !addresses.includes(connectedAddress)) {
+        if (connectedAddress?.startsWith('ST') && !addresses.some(a => a.toLowerCase() === connectedAddress.toLowerCase())) {
             addresses.push(connectedAddress)
         }
+
         fetchPromises.push(
             Promise.all(addresses.map((addr) => fetchStacksUserProfile(addr, true)))
                 .then(profiles => {
