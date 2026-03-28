@@ -1,4 +1,4 @@
-import { COMBO_QUEST_IDS, QUEST_IDS, isStacksQuestCompleted, type BaseUserProfile } from '@winsznx/sdk'
+import { COMBO_QUEST_IDS, QUEST_IDS, isStacksQuestCompleted, type BaseUserProfile, type PulseQuestId } from '@winsznx/sdk'
 import type { PulseContractTarget, StacksUserProfile, UnifiedUserProfile } from './types.js'
 
 export function createPulseAuthStorageKey(namespace = 'pulse') {
@@ -29,13 +29,22 @@ export function resolveActivePulseContract(params: {
     return 'none'
 }
 
-function toNumber(value: bigint | number | undefined, fallback = 0) {
+function toNumber(value: bigint | number | string | null | undefined, fallback = 0): number {
+    if (value === null || value === undefined) {
+        return fallback
+    }
+
     if (typeof value === 'bigint') {
         return Number(value)
     }
 
     if (typeof value === 'number') {
-        return value
+        return Number.isNaN(value) ? fallback : value
+    }
+
+    if (typeof value === 'string') {
+        const parsed = Number(value)
+        return Number.isNaN(parsed) ? fallback : parsed
     }
 
     return fallback
@@ -63,11 +72,10 @@ export function normalizeStacksUserProfile(profile: StacksUserProfile): UnifiedU
     }
 }
 
-export function hasDailyCombo(checkQuest: (questId: number) => boolean) {
-    return COMBO_QUEST_IDS.every((questId) => checkQuest(questId))
+export function hasDailyCombo(checkQuest: (questId: PulseQuestId) => boolean) {
+    return COMBO_QUEST_IDS.every((questId: PulseQuestId) => checkQuest(questId))
 }
 
 export function hasStacksDailyCombo(bitmap: number) {
-    return COMBO_QUEST_IDS.every((questId) => isStacksQuestCompleted(bitmap, questId))
+    return COMBO_QUEST_IDS.every((questId: PulseQuestId) => isStacksQuestCompleted(bitmap, questId))
 }
-
