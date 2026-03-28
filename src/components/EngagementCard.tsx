@@ -19,6 +19,7 @@ interface EngagementCardProps {
 }
 
 export default function EngagementCard({
+    id,
     title,
     description,
     icon: Icon,
@@ -43,9 +44,11 @@ export default function EngagementCard({
                 isCompleted && 'border-green-500 bg-green-50',
                 isLoading && 'border-orange-300 bg-orange-50'
             )}
+            id={`engagement-card-${id}`}
             role={isInteractive ? 'button' : undefined}
             tabIndex={isInteractive ? 0 : -1}
             aria-disabled={!isInteractive || undefined}
+            aria-pressed={isCompleted}
             onClick={isInteractive ? onClick : undefined}
             onKeyDown={isInteractive && onClick ? (event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
