@@ -1,8 +1,11 @@
 {
   "name": "@winsznx/sdk",
   "version": "0.1.1",
-  "description": "Official TypeScript SDK for integrating with the PULSE protocol on Base and Stacks.",
+  "description": "The official Pulse Protocol SDK for Base and Stacks interaction.",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -13,13 +16,15 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "test": "node \"$npm_execpath\" run build && node --test test/*.test.mjs"
+    "prepublishOnly": "npm run build",
+    "test": "npm run build && node --test test/*.test.mjs"
   },
   "keywords": [
     "pulse",
