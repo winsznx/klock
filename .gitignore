@@ -132,3 +132,8 @@ contracts/clarity/history.txt
 contracts/clarity/settings/Devnet.toml
 contracts/clarity/settings/Testnet.toml
 contracts/clarity/settings/Mainnet.toml
+
+# Scripts - sensitive wallet data
+scripts/wallets.json
+scripts/wallets-addresses.csv
+scripts/interaction-log.json
