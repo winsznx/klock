@@ -1,5 +1,8 @@
 import type { BaseContractConfig, PulseBaseNetwork, PulseQuestId, PulseStacksNetwork, StacksContractConfig } from './types.js'
 
+export const SUPPORTED_NETWORKS = ['base', 'stacks'] as const
+export type SupportedNetwork = typeof SUPPORTED_NETWORKS[number]
+
 export const BASE_CONTRACTS = {
     mainnet: {
         chainId: 8453,
