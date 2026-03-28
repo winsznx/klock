@@ -158,7 +158,8 @@ export function useAppKitStacksWallet() {
         nudgeFriend: useCallback((friendAddress: string) => executeContractCall('nudge-friend', [`'${friendAddress}`]), [executeContractCall]),
         commitMessage: useCallback((message: string) => executeContractCall('commit-message', [`"${message}"`]), [executeContractCall]),
         predictPulse: useCallback((level: number) => executeContractCall('predict-pulse', [`u${level}`]), [executeContractCall]),
-        claimDailyCombo: useCallback(() => executeContractCall('claim-daily-combo-bonus'), [executeContractCall]),
+        claimDailyCombo: useCallback(() => executeContractCall('claim-daily-combo'), [executeContractCall]),
+
         refreshData,
         isQuestCompleted,
     }
