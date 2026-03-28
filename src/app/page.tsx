@@ -15,17 +15,17 @@ export default function Home(): React.ReactNode {
     <main className="min-h-screen bg-gradient-to-br from-[#F5F5F5] via-[#FFF0E6] to-[#F5F5F5]">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
-        <div className="flex justify-between items-center max-w-7xl mx-auto px-4 md: px-8 py-4">
+        <div className="flex justify-between items-center max-w-7xl mx-auto px-4 md:px-8 py-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 md: w-10 md: h-10 bg-gradient-to-br from-[#FF6B00] to-[#FF8533] rounded-lg flex items-center justify-center shadow-lg">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-[#FF6B00] to-[#FF8533] rounded-lg flex items-center justify-center shadow-lg">
                 <Zap className="text-white" size={20} />
               </div>
-              <span className="font-bold text-xl md: text-2xl tracking-tight text-gray-900">PULSE</span>
+              <span className="font-bold text-xl md:text-2xl tracking-tight text-gray-900">PULSE</span>
             </div>
             <Link
               href="/leaderboard"
-              className="hidden md: flex items-center gap-1 px-3 py-1.5 text-gray-600 hover: text-[#FF6B00] hover: bg-orange-50 text-sm font-medium rounded-full transition-colors"
+              className="hidden md:flex items-center gap-1 px-3 py-1.5 text-gray-600 hover:text-[#FF6B00] hover:bg-orange-50 text-sm font-medium rounded-full transition-colors"
             >
               <Trophy size={16} />
               Leaderboard
@@ -36,33 +36,33 @@ export default function Home(): React.ReactNode {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-12 md: py-20 px-4 md: px-8">
+      <section className="relative overflow-hidden py-12 md:py-20 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md: grid-cols-2 gap-8 md: gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Left Column - Text Content */}
-            <div className="space-y-6 md: space-y-8 text-center md: text-left">
+            <div className="space-y-6 md:space-y-8 text-center md:text-left">
               <div className="inline-flex items-center gap-2 bg-orange-100 text-[#FF6B00] px-4 py-2 rounded-full text-sm font-semibold">
                 <Sparkles size={16} />
                 <span>Join the Global Heartbeat</span>
               </div>
 
-              <h1 className="text-4xl md: text-6xl lg: text-7xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
                 Your Daily Ritual,
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-[#FF6B00] to-[#FF8533]">
                   On-Chain
                 </span>
               </h1>
 
-              <p className="text-lg md: text-xl text-gray-600 leading-relaxed max-w-2xl">
+              <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-2xl">
                 PULSE is a social coordination game where thousands sync their daily check-ins across timezones.
                 Complete rituals, build streaks, earn rewards, and become part of the world's first decentralized heartbeat.
               </p>
 
-              <div className="flex flex-col sm: flex-row gap-4 justify-center md: justify-start">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <HeroActions />
                 <Link
                   href="#features"
-                  className="px-6 py-3 bg-white border-2 border-gray-200 rounded-full font-semibold text-gray-900 hover: border-[#FF6B00] hover: text-[#FF6B00] transition-all duration-200 shadow-sm"
+                  className="px-6 py-3 bg-white border-2 border-gray-200 rounded-full font-semibold text-gray-900 hover:border-[#FF6B00] hover:text-[#FF6B00] transition-all duration-200 shadow-sm"
                 >
                   Learn More ↓
                 </Link>
@@ -70,24 +70,24 @@ export default function Home(): React.ReactNode {
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-4 pt-8">
-                <div className="text-center md: text-left">
-                  <div className="text-2xl md: text-3xl font-bold text-[#FF6B00]">12K+</div>
+                <div className="text-center md:text-left">
+                  <div className="text-2xl md:text-3xl font-bold text-[#FF6B00]">12K+</div>
                   <div className="text-sm text-gray-500">Active Users</div>
                 </div>
-                <div className="text-center md: text-left">
-                  <div className="text-2xl md: text-3xl font-bold text-[#FF6B00]">500K+</div>
+                <div className="text-center md:text-left">
+                  <div className="text-2xl md:text-3xl font-bold text-[#FF6B00]">500K+</div>
                   <div className="text-sm text-gray-500">Check-ins</div>
                 </div>
-                <div className="text-center md: text-left">
-                  <div className="text-2xl md: text-3xl font-bold text-[#FF6B00]">20+</div>
-                  <div className="text-sm text-gray-500">Networks</div>
+                <div className="text-center md:text-left">
+                  <div className="text-2xl md:text-3xl font-bold text-[#FF6B00]">Base + STX</div>
+                  <div className="text-sm text-gray-500">Dual Network</div>
                 </div>
               </div>
             </div>
-
+ 
             {/* Right Column - Visual */}
             <div className="relative">
-              <div className="relative bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 md: p-12 shadow-2xl">
+              <div className="relative bg-gradient-to-br from-orange-500 to-red-500 rounded-3xl p-8 md:p-12 shadow-2xl">
                 <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10"></div>
                 <div className="relative space-y-6">
                   <div className="flex items-center justify-between bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
