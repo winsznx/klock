@@ -187,13 +187,18 @@ export async function readStacksGlobalStats(options: StacksReadOptions = {}): Pr
 }
 
 export async function readStacksCurrentDay(options: StacksReadOptions = {}): Promise<number> {
-    const data = await callStacksReadOnly('get-day', [], options)
-    if (!data?.okay || !data.result) {
+    try {
+        const data = await callStacksReadOnly('get-day', [], options)
+        if (!data?.okay || !data.result) {
+            return 0
+        }
+        return parseClarityUInt(data.result)
+    } catch (err) {
+        console.error('[StacksSDK] Failed to read current day:', err)
         return 0
     }
-
-    return parseClarityUInt(data.result)
 }
+
 
 export async function readStacksDailyQuestStatus(
     user: string,
