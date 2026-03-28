@@ -31,7 +31,7 @@ export function isStacksAddress(address: string | null | undefined): address is 
 }
 
 export function isStacksMainnetAddress(address: string | null | undefined): boolean {
-    return Boolean(address && address.startsWith('SP'))
+    return address?.startsWith('SP') ?? false
 }
 
 export function getStacksContract(network: PulseStacksNetwork = 'mainnet'): StacksContractConfig {
