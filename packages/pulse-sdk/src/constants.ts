@@ -1,17 +1,17 @@
 import type { BaseContractConfig, PulseBaseNetwork, PulseQuestId, PulseStacksNetwork, StacksContractConfig } from './types.js'
 
 export const BASE_CONTRACTS = {
-    testnet: {
-        chainId: 84532,
-        address: '0x22E7AA46aDDF743c99322212852dB2FA17b404b2',
-        explorerUrl: 'https://sepolia.basescan.org/address/0x22E7AA46aDDF743c99322212852dB2FA17b404b2',
-        rpcUrl: 'https://sepolia.base.org',
-    },
     mainnet: {
         chainId: 8453,
         address: '0xcF0A164b64b92Fa6262e312cDB60a12c302e8F1c',
         explorerUrl: 'https://basescan.org/address/0xcF0A164b64b92Fa6262e312cDB60a12c302e8F1c',
         rpcUrl: 'https://mainnet.base.org',
+    },
+    testnet: {
+        chainId: 84532,
+        address: '0x22E7AA46aDDF743c99322212852dB2FA17b404b2',
+        explorerUrl: 'https://sepolia.basescan.org/address/0x22E7AA46aDDF743c99322212852dB2FA17b404b2',
+        rpcUrl: 'https://sepolia.base.org',
     },
 } as const satisfies Record<PulseBaseNetwork, BaseContractConfig>
 
@@ -76,6 +76,14 @@ export const QUEST_POINTS = {
     [QUEST_IDS.PREDICT_PULSE]: 80,
     [QUEST_IDS.OPEN_CAPSULE]: 1000,
 } as const satisfies Record<PulseQuestId, number>
+
+// Quest IDs that form the daily-triple combo (matches pulse.clar QUEST-DAILY-CHECKIN, QUEST-UPDATE-ATMOSPHERE, QUEST-COMMIT-MESSAGE)
+export const COMBO_QUEST_IDS = [
+    QUEST_IDS.DAILY_CHECKIN,
+    QUEST_IDS.UPDATE_ATMOSPHERE,
+    QUEST_IDS.COMMIT_MESSAGE,
+] as const
+
 
 export const PULSE_ABI = [
     {
