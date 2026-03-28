@@ -1,15 +1,12 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
-      "@winsznx/sdk": [
-        "../pulse-sdk/dist/index.d.ts"
-      ],
-      "@winsznx/sdk/*": [
-        "../pulse-sdk/dist/*"
-      ]
+      "@winsznx/sdk": ["../pulse-sdk/src/index.ts"]
     },
     "rootDir": "./src",
     "outDir": "./dist",
@@ -18,6 +15,8 @@
     "declarationMap": true,
     "sourceMap": true,
     "incremental": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx"
   },
   "include": [
