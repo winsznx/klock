@@ -97,13 +97,17 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
     }, [address, isMainnet])
 
     useEffect(() => {
-        const storage = getLocalStorage()
-        if (!hasStacksConnection() || !storage?.addresses?.stx?.[0]?.address) {
-            return
-        }
+        const checkConnection = async () => {
+             const storage = getLocalStorage()
+             const connectedOnStorage = hasStacksConnection()
+             const stxAddress = storage?.addresses?.stx?.[0]?.address
 
-        setAddress(storage.addresses.stx[0].address)
-        setConnected(true)
+             if (connectedOnStorage && stxAddress) {
+                 setAddress(stxAddress)
+                 setConnected(true)
+             }
+        }
+        checkConnection()
     }, [])
 
     const refreshData = useCallback(async () => {
