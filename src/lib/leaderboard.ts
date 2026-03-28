@@ -242,23 +242,51 @@ export async function fetchLeaderboard(
             : 0,
     }
 
-    // Try to get actual global stats from Base (mainnet first, then testnet)
-    if (fetchBaseMainnet) {
-        const baseStats = await fetchBaseGlobalStats(false)
-        if (baseStats) {
-            stats.totalUsers = Math.max(stats.totalUsers, baseStats.totalUsers)
-            stats.totalPoints = Math.max(stats.totalPoints, baseStats.totalPoints)
-        }
-    } else if (fetchBaseTestnet) {
-        const baseStats = await fetchBaseGlobalStats(true)
+    // Handle global stats based on selection
+    if (network === 'all' || network.startsWith('base')) {
+        const baseStats = await fetchBaseGlobalStats(network === 'base-testnet')
         if (baseStats) {
             stats.totalUsers = Math.max(stats.totalUsers, baseStats.totalUsers)
             stats.totalPoints = Math.max(stats.totalPoints, baseStats.totalPoints)
         }
     }
 
+    if (network === 'all' || network.startsWith('stacks')) {
+        const stacksGlobal = await fetchStacksGlobalStats(network === 'stacks-testnet')
+        if (stacksGlobal) {
+            if (network === 'all') {
+                stats.totalUsers += stacksGlobal.totalUsers
+                stats.totalPoints += stacksGlobal.totalPoints
+            } else {
+                stats.totalUsers = Math.max(stats.totalUsers, stacksGlobal.totalUsers)
+                stats.totalPoints = Math.max(stats.totalPoints, stacksGlobal.totalPoints)
+            }
+        }
+    }
+
     return { entries, stats }
 }
+
+/**
+ * Fetch Stacks global stats
+ */
+async function fetchStacksGlobalStats(isTestnet: boolean): Promise<{ totalUsers: number; totalPoints: number } | null> {
+    try {
+        const { readStacksGlobalStats } = await import('@winsznx/sdk')
+        const result = await readStacksGlobalStats({
+            network: isTestnet ? 'testnet' : 'mainnet'
+        })
+
+        return {
+            totalUsers: Number(result.totalUsers || 0),
+            totalPoints: Number(result.totalPointsDistributed || 0),
+        }
+    } catch (err) {
+        console.error('[Leaderboard] Error fetching Stacks global stats:', err)
+        return null
+    }
+}
+
 
 /**
  * Format large numbers for display
