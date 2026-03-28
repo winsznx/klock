@@ -93,8 +93,10 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
             explorerUrl: contract.explorerUrl,
             fullContractId: contract.fullContractId,
             network: isMainnet ? 'mainnet' : 'testnet',
+            apiUrl: contract.apiUrl,
         }
     }, [address, isMainnet])
+
 
     useEffect(() => {
         const checkConnection = async () => {
