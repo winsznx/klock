@@ -8,7 +8,10 @@ export {
     QUEST_POINTS,
     COMBO_QUEST_IDS,
     PULSE_ABI,
+    SUPPORTED_NETWORKS,
+    type SupportedNetwork,
 } from './constants.js'
+
 
 export {
     type BaseReadOptions,
