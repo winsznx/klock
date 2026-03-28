@@ -36,7 +36,6 @@ export {
 export { PulseAccessGate } from './gate.js'
 
 export {
-    DAILY_COMBO_QUEST_IDS,
     createPulseAuthStorageKey,
     hasDailyCombo,
     hasStacksDailyCombo,
