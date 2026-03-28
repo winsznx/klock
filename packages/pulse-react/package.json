@@ -1,7 +1,7 @@
 {
   "name": "@winsznx/react",
   "version": "0.1.1",
-  "description": "React hooks and providers for integrating PULSE into AppKit, wagmi, and Stacks apps.",
+  "description": "Ready-to-use React hooks and contexts for the Pulse Protocol.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -13,14 +13,15 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "sideEffects": false,
   "scripts": {
-    "prebuild": "node \"$npm_execpath\" --workspace @winsznx/sdk run build",
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run clean && tsc -p tsconfig.json",
     "clean": "rm -rf dist",
-    "test": "node \"$npm_execpath\" run build && node --test test/*.test.mjs"
+    "prepublishOnly": "npm run build",
+    "test": "npm run build && node --test test/*.test.mjs"
   },
   "keywords": [
     "pulse",
