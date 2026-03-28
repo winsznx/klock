@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Trophy, Medal, Award, ChevronDown, Users, Loader2, RefreshCw } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useStacks } from '@/context/StacksContext'
@@ -75,14 +75,14 @@ export default function Leaderboard() {
     const { address: stacksAddress } = useStacks()
 
     // Get connected address based on network filter
-    const getConnectedAddress = () => {
+    const getConnectedAddress = useCallback(() => {
         if (selectedNetwork.startsWith('base')) return evmAddress
         if (selectedNetwork.startsWith('stacks')) return stacksAddress
         return stacksAddress || evmAddress
-    }
+    }, [selectedNetwork, evmAddress, stacksAddress])
 
     // Fetch leaderboard data
-    const loadLeaderboard = async (showRefreshState = false) => {
+    const loadLeaderboard = useCallback(async (showRefreshState = false) => {
         if (showRefreshState) {
             setIsRefreshing(true)
         } else {
@@ -100,12 +100,12 @@ export default function Leaderboard() {
             setIsLoading(false)
             setIsRefreshing(false)
         }
-    }
+    }, [selectedNetwork, getConnectedAddress])
 
     // Fetch on mount and when network changes
     useEffect(() => {
-        loadLeaderboard()
-    }, [selectedNetwork, evmAddress, stacksAddress])
+        void loadLeaderboard()
+    }, [loadLeaderboard])
 
     const selectedOption = NETWORK_OPTIONS.find(opt => opt.value === selectedNetwork)
 
