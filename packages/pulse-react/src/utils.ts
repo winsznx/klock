@@ -18,7 +18,7 @@ export function resolveActivePulseContract(params: {
     appKitConnected: boolean
     baseNetwork: boolean
 }): PulseContractTarget {
-    if (Boolean(params.stacksConnected)) {
+    if (params.stacksConnected) {
         return 'stacks'
     }
 
