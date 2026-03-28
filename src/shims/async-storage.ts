@@ -88,7 +88,11 @@ async function mergeItem(key: string, value: string): Promise<void> {
     const currentJson = JSON.parse(currentValue)
     const nextJson = JSON.parse(value)
 
-    await setItem(key, JSON.stringify({ ...currentJson, ...nextJson }))
+    if (typeof currentJson === 'object' && currentJson !== null && typeof nextJson === 'object' && nextJson !== null) {
+      await setItem(key, JSON.stringify({ ...currentJson, ...nextJson }))
+    } else {
+      await setItem(key, value)
+    }
   } catch {
     await setItem(key, value)
   }
