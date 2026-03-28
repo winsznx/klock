@@ -1,8 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { usePulseAuth } from './auth.js'
-import { usePulseStacks } from './stacks.js'
+import { useUnifiedPulseContract } from './unified.js'
 
 interface PulseAccessGateProps {
     children: ReactNode
@@ -10,13 +9,11 @@ interface PulseAccessGateProps {
 }
 
 export function PulseAccessGate({ children, fallback = null }: PulseAccessGateProps) {
-    const { isLoggedIn } = usePulseAuth()
-    const { isConnected } = usePulseStacks()
+    const { isConnected } = useUnifiedPulseContract()
 
-    if (isLoggedIn || isConnected) {
+    if (isConnected) {
         return <>{children}</>
     }
 
     return <>{fallback}</>
 }
-
