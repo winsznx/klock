@@ -71,10 +71,14 @@ export function useAppKitStacksWallet() {
 
             const universalProvider = await modal.getUniversalProvider()
             if (!universalProvider) {
-                throw new Error('Universal Provider not available')
+                throw new Error('Universal Provider not available. Ensure AppKit is correctly initialized.')
             }
 
-            const targetChainId = resolveStacksChainId(universalProvider.session ?? {})
+            if (!universalProvider.session) {
+                throw new Error('No active session found. Please reconnect your wallet.')
+            }
+
+            const targetChainId = resolveStacksChainId(universalProvider.session)
             const requestPayload = {
                 method: 'stx_callContract',
                 params: {
@@ -89,6 +93,11 @@ export function useAppKitStacksWallet() {
                 : await universalProvider.request(requestPayload)
 
             const transaction = result as { txid?: string; transaction?: string }
+
+            if (!transaction.txid && !transaction.transaction) {
+                 throw new Error('Transaction rejected or failed to broadcast.')
+            }
+
             return { success: true, txId: transaction.txid ?? transaction.transaction }
         } catch (callError) {
             const message = callError instanceof Error ? callError.message : 'Transaction failed'
