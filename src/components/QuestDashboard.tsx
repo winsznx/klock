@@ -160,7 +160,8 @@ export default function QuestDashboard() {
 
     // Handle claiming combo
     const handleClaimCombo = useCallback(async () => {
-        if (!comboActive) return
+        const available = await checkComboAvailable()
+        if (!available) return
 
         setPendingQuest(-1) // Special ID for combo
         try {
@@ -176,7 +177,9 @@ export default function QuestDashboard() {
         } finally {
             setPendingQuest(null)
         }
-    }, [comboActive, claimDailyCombo, refreshData])
+    }, [checkComboAvailable, claimDailyCombo, refreshData])
+
+
 
     return (
         <div className="w-full">
@@ -329,11 +332,11 @@ export default function QuestDashboard() {
                     <div className="flex gap-3">
                         <button
                             type="button"
-                            onClick={() => handleInteraction(6, 'commitMessage')}
-                            disabled={!message || pendingQuest === 6}
+                            onClick={() => handleInteraction(QUEST_IDS.COMMIT_MESSAGE, 'commitMessage')}
+                            disabled={!message || pendingQuest === QUEST_IDS.COMMIT_MESSAGE}
                             className="bg-[#FF6B00] text-white px-6 py-2 rounded-xl font-medium disabled:opacity-50"
                         >
-                            {pendingQuest === 6 ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit'}
+                            {pendingQuest === QUEST_IDS.COMMIT_MESSAGE ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit'}
                         </button>
                         <button
                             type="button"
@@ -367,11 +370,11 @@ export default function QuestDashboard() {
                     <div className="flex gap-3">
                         <button
                             type="button"
-                            onClick={() => handleInteraction(4, 'nudgeFriend')}
-                            disabled={!friendAddress || pendingQuest === 4}
+                            onClick={() => handleInteraction(QUEST_IDS.NUDGE_FRIEND, 'nudgeFriend')}
+                            disabled={!friendAddress || pendingQuest === QUEST_IDS.NUDGE_FRIEND}
                             className="bg-[#FF6B00] text-white px-6 py-2 rounded-xl font-medium disabled:opacity-50"
                         >
-                            {pendingQuest === 4 ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Nudge'}
+                            {pendingQuest === QUEST_IDS.NUDGE_FRIEND ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Nudge'}
                         </button>
                         <button
                             type="button"
@@ -410,3 +413,4 @@ export default function QuestDashboard() {
         </div>
     )
 }
+
