@@ -88,7 +88,11 @@ export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promi
     })
 
     const [totalUsers, totalCheckins, totalPointsDistributed] = stats as [bigint, bigint, bigint]
-    return { totalUsers, totalCheckins, totalPointsDistributed }
+    return {
+        totalUsers: totalUsers ?? 0n,
+        totalCheckins: totalCheckins ?? 0n,
+        totalPointsDistributed: totalPointsDistributed ?? 0n,
+    }
 }
 
 export async function readBaseQuestCompletion (
