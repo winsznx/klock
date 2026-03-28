@@ -8,11 +8,11 @@ const spaceGrotesk = Space_Grotesk({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'PULSE - Social Ritual dApp | Daily On-Chain Engagement',
-  description: 'Join the global social heartbeat. Complete daily rituals, build streaks, and earn rewards across 20+ blockchain networks. PULSE is a social coordination game where thousands sync their check-ins across timezones.',
-  keywords: ['Web3', 'dApp', 'Social', 'Blockchain', 'Daily Ritual', 'NFT', 'Multi-chain', 'Ethereum', 'Polygon', 'Base', 'Arbitrum'],
-  authors: [{ name: 'winszn' }],
-  creator: 'Tim',
-  publisher: 'Tim',
+  description: 'Join the global social heartbeat. Complete daily rituals, build streaks, and earn rewards across Base and Stacks networks. PULSE is a social coordination game where thousands sync their check-ins.',
+  keywords: ['Web3', 'dApp', 'Social', 'Blockchain', 'Daily Ritual', 'NFT', 'Multi-chain', 'Base', 'Stacks', 'Bitcoin L2'],
+  authors: [{ name: 'PULSE Team' }],
+  creator: 'PULSE',
+  publisher: 'PULSE',
   openGraph: {
     type: 'website',
     locale: 'en_US',
