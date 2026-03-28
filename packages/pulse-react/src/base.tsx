@@ -122,7 +122,7 @@ export function useBasePulseContract(): UseBasePulseContractResult {
 
         setCompletedQuests(
             completed
-                .filter((entry) => Boolean(entry.completed))
+                .filter((entry) => entry.completed)
                 .map((entry) => entry.questId),
         )
     }, [address, contract, publicClient])
@@ -228,7 +228,7 @@ export function useBasePulseContract(): UseBasePulseContractResult {
                 args: [address],
             })
 
-            return Boolean(available)
+            return available as boolean
         } catch {
             return false
         }
@@ -241,7 +241,7 @@ export function useBasePulseContract(): UseBasePulseContractResult {
         isLoading,
         error,
         contractInfo,
-        isBaseNetwork: Boolean(contract),
+        isBaseNetwork: contract !== null,
         isTestnet: isBaseTestnetChain(chainId),
         contractAddress: contract?.address ?? null,
         refreshData,
