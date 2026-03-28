@@ -43,6 +43,7 @@ function toNumber(value: bigint | number | string | null | undefined, fallback =
     }
 
     if (typeof value === 'string') {
+        if (value.trim() === '') return fallback
         const parsed = Number(value)
         return Number.isNaN(parsed) ? fallback : parsed
     }
@@ -63,12 +64,12 @@ export function normalizeBaseUserProfile(profile: BaseUserProfile): UnifiedUserP
 
 export function normalizeStacksUserProfile(profile: StacksUserProfile): UnifiedUserProfile {
     return {
-        totalPoints: profile.totalPoints,
-        currentStreak: profile.currentStreak,
-        longestStreak: profile.longestStreak,
-        level: profile.level,
-        totalCheckins: profile.totalCheckins,
-        exists: true,
+        totalPoints: toNumber(profile.totalPoints),
+        currentStreak: toNumber(profile.currentStreak),
+        longestStreak: toNumber(profile.longestStreak),
+        level: toNumber(profile.level, 1),
+        totalCheckins: toNumber(profile.totalCheckins),
+        exists: profile.exists,
     }
 }
 
