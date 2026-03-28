@@ -69,6 +69,9 @@ async function callStacksReadOnly(
     args: Array<string>,
     options: StacksReadOptions = {},
 ): Promise<StacksReadOnlyResponse | null> {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10000)
+
     try {
         const { contract, sender } = resolveStacksOptions(options)
         const response = await fetch(
@@ -76,6 +79,7 @@ async function callStacksReadOnly(
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal,
                 body: JSON.stringify({
                     sender,
                     arguments: args,
@@ -84,16 +88,25 @@ async function callStacksReadOnly(
         )
 
         if (!response.ok) {
+            const errorText = await response.text().catch(() => 'No detail available')
+            console.error(`[StacksSDK] HTTP error ${response.status} for ${functionName}: ${errorText}`)
             return null
         }
 
         const data = await response.json()
         return data as StacksReadOnlyResponse
-    } catch (error) {
-        console.error(`[StacksSDK] read-only call failed: ${functionName}`, error)
+    } catch (error: any) {
+        if (error.name === 'AbortError') {
+            console.error(`[StacksSDK] read-only call timed out after 10s: ${functionName}`)
+        } else {
+            console.error(`[StacksSDK] read-only call failed: ${functionName}`, error)
+        }
         return null
+    } finally {
+        clearTimeout(timeout)
     }
 }
+
 
 function parseClarityUInt(result: string): number {
     const clarityValue = hexToCV(result) as { value?: bigint }
