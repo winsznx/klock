@@ -208,8 +208,13 @@ export function useBasePulseContract(): UseBasePulseContractResult {
             })
 
             if (publicClient) {
-                await publicClient.waitForTransactionReceipt({ hash })
+                await publicClient.waitForTransactionReceipt({ 
+                    hash,
+                    pollingInterval: 1000,
+                    timeout: 60000 
+                })
             }
+
 
             await refreshData()
 
