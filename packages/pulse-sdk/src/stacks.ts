@@ -219,14 +219,27 @@ export async function readStacksUserProfile(
     user: string,
     options: StacksReadOptions = {},
 ): Promise<StacksUserProfile | null> {
-    const data = await callStacksReadOnly('get-user-profile', [cvToHex(principalCV(user))], options)
-    if (!data?.okay || !data.result || data.result === '0x09') {
+    const [profileData, day] = await Promise.all([
+        callStacksReadOnly('get-user-profile', [cvToHex(principalCV(user))], options),
+        readStacksCurrentDay(options)
+    ])
+
+    if (!profileData?.okay || !profileData.result || profileData.result === '0x09') {
         return null
     }
 
-    const tuple = parseClarityOptionalTuple(data.result)
+    const tuple = parseClarityOptionalTuple(profileData.result)
     if (!tuple) {
         return null
+    }
+
+    // Fetch daily status to get quest bitmap for the current day
+    let questBitmap = 0
+    if (day > 0) {
+        const dailyStatus = await readStacksDailyQuestStatus(user, day, options)
+        if (dailyStatus) {
+            questBitmap = dailyStatus.completedQuests
+        }
     }
 
     return {
@@ -236,6 +249,7 @@ export async function readStacksUserProfile(
         lastCheckinBlock: parseTupleUInt(tuple, 'last-checkin-block'),
         totalCheckins: parseTupleUInt(tuple, 'total-checkins'),
         level: parseTupleUInt(tuple, 'level', 1),
+        questBitmap,
         exists: true,
     }
 }
