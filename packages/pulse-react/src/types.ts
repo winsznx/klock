@@ -20,23 +20,13 @@ export interface UserProfile extends BaseUserProfile {}
 
 export interface GlobalStats extends BaseGlobalStats {}
 
-export interface StacksUserProfile {
-    totalPoints: number
-    currentStreak: number
-    longestStreak: number
-    lastCheckinDay: number
-    questBitmap: number
-    level: number
-    totalCheckins: number
-}
+import type {
+    StacksUserProfile as SDKStacksUserProfile,
+    StacksContractConfig as SDKStacksContractConfig,
+} from '@winsznx/sdk'
 
-export interface StacksContractInfo {
-    network: 'testnet' | 'mainnet'
-    contractAddress: string
-    contractName: string
-    fullContractId: string
-    explorerUrl: string
-}
+export interface StacksUserProfile extends SDKStacksUserProfile {}
+export interface StacksContractInfo extends SDKStacksContractConfig {}
 
 export interface UnifiedUserProfile {
     totalPoints: number
@@ -44,8 +34,10 @@ export interface UnifiedUserProfile {
     longestStreak: number
     level: number
     totalCheckins: number
+    questBitmap: number
     exists: boolean
 }
+
 
 export interface UnifiedContractInfo extends ContractInfo {}
 
