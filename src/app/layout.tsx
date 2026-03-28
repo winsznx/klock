@@ -16,6 +16,16 @@ export const metadata: Metadata = {
   authors: [{ name: 'PULSE Protocol Team', url: 'https://pulse.social' }],
   creator: 'PULSE Protocol',
   publisher: 'PULSE Protocol',
+  themeColor: '#FF6B00',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+  },
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
