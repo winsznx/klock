@@ -11,9 +11,10 @@ import {
     readStacksCurrentDay,
     readStacksDailyQuestStatus,
     readStacksUserProfile,
+    readStacksGlobalStats,
     type PulseQuestId,
 } from '@winsznx/sdk'
-import type { PulseActionResult, StacksContractInfo, StacksUserProfile } from './types.js'
+import type { GlobalStats, PulseActionResult, StacksContractInfo, StacksUserProfile } from './types.js'
 
 export interface PulseStacksContextValue {
     isConnected: boolean
@@ -34,6 +35,7 @@ export interface PulseStacksContextValue {
     claimDailyCombo: () => Promise<PulseActionResult>
     refreshData: () => Promise<void>
     isQuestCompleted: (questId: number) => boolean
+    globalStats: GlobalStats | null
 }
 
 const PulseStacksContext = createContext<PulseStacksContextValue | undefined>(undefined)
@@ -80,6 +82,7 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [userProfile, setUserProfile] = useState<StacksUserProfile | null>(null)
+    const [globalStats, setGlobalStats] = useState<GlobalStats | null>(null)
 
     const isMainnet = isStacksMainnetAddress(address)
     const contractInfo = useMemo<StacksContractInfo>(() => {
@@ -110,8 +113,12 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
 
         try {
             setIsLoading(true)
-            const profile = await fetchStacksWalletProfile(address)
+            const [profile, stats] = await Promise.all([
+                fetchStacksWalletProfile(address),
+                readStacksGlobalStats({ network: isMainnet ? 'mainnet' : 'testnet', sender: address }),
+            ])
             setUserProfile(profile)
+            setGlobalStats(stats)
         } catch (refreshError) {
             console.error('[PULSE][Stacks] Failed to refresh profile', refreshError)
             setError(refreshError instanceof Error ? refreshError.message : 'Failed to refresh Stacks profile')
@@ -153,6 +160,7 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
         setAddress(null)
         setConnected(false)
         setUserProfile(null)
+        setGlobalStats(null)
         setError(null)
     }, [])
 
@@ -234,6 +242,7 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
         claimDailyCombo,
         refreshData,
         isQuestCompleted,
+        globalStats,
     }), [
         address,
         claimDailyCombo,
@@ -244,6 +253,7 @@ export function PulseStacksProvider({ children }: PulseStacksProviderProps) {
         dailyCheckin,
         disconnectWallet,
         error,
+        globalStats,
         isLoading,
         isMainnet,
         isQuestCompleted,
