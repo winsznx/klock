@@ -68,6 +68,7 @@ export default function Leaderboard() {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+    const [error, setError] = useState<string | null>(null)
     const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([])
     const [stats, setStats] = useState<GlobalStats>({ totalUsers: 0, totalPoints: 0, highestStreak: 0, avgLevel: 0 })
 
@@ -88,6 +89,7 @@ export default function Leaderboard() {
         } else {
             setIsLoading(true)
         }
+        setError(null)
 
         try {
             const connectedAddress = getConnectedAddress()
@@ -96,6 +98,7 @@ export default function Leaderboard() {
             setStats(fetchedStats)
         } catch (err) {
             console.error('[Leaderboard] Error loading data:', err)
+            setError('Failed to load leaderboard data. Please try again.')
         } finally {
             setIsLoading(false)
             setIsRefreshing(false)
@@ -110,12 +113,8 @@ export default function Leaderboard() {
     const selectedOption = NETWORK_OPTIONS.find(opt => opt.value === selectedNetwork)
 
     // Check if current user is in the leaderboard
-    const currentUserAddress = getConnectedAddress()
-    const isCurrentUser = (address: string) => {
-        if (!currentUserAddress) return false
-        return address.toLowerCase() === currentUserAddress.toLowerCase() ||
-            address === currentUserAddress
-    }
+    const currentUserAddress = getConnectedAddress()?.toLowerCase()
+    const isCurrentUser = (address: string) => address.toLowerCase() === currentUserAddress
 
     return (
         <div className="w-full">
