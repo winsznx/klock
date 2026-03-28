@@ -16,13 +16,14 @@ const INTERACTIONS = [
     { id: QUEST_IDS.RELAY_SIGNAL, name: 'Relay Signal', desc: 'Pass the torch to another timezone.', icon: Globe, points: 100, action: 'relaySignal' as PulseContractFunction },
     { id: QUEST_IDS.UPDATE_ATMOSPHERE, name: 'Update Atmosphere', desc: 'Sync local weather to chain.', icon: CloudSun, points: 30, action: 'updateAtmosphere' as PulseContractFunction },
     { id: QUEST_IDS.NUDGE_FRIEND, name: 'Nudge Friend', desc: 'Ping a friend to save their streak.', icon: UserCheck, points: 40, action: 'nudgeFriend' as PulseContractFunction },
-    { id: QUEST_IDS.MINT_HOUR_BADGE, name: 'Mint Hour Badge', desc: 'Collect unique hour stamps.', icon: Clock, points: 60, action: 'mintHourBadge' as any, disabled: true },
+    { id: QUEST_IDS.MINT_HOUR_BADGE, name: 'Mint Hour Badge', desc: 'Unlock time-stamped proof of activity. Phase 2 early access.', icon: Clock, points: 60, action: 'mintHourBadge' as any, disabled: true },
     { id: QUEST_IDS.COMMIT_MESSAGE, name: 'Commit Message', desc: 'Etch your mood on the ticker.', icon: MessageSquare, points: 20, action: 'commitMessage' as PulseContractFunction },
-    { id: QUEST_IDS.STAKE_STREAK, name: 'Stake for Streak', desc: 'High risk, high reward.', icon: Flame, points: 200, risk: true, action: 'stakeStreak' as any, disabled: true },
-    { id: QUEST_IDS.CLAIM_MILESTONE, name: 'Claim Milestone', desc: 'Evolve your profile level.', icon: Trophy, points: 500, action: 'claimMilestone' as any, disabled: true },
-    { id: QUEST_IDS.PREDICT_PULSE, name: 'Predict Pulse', desc: "Vote on tomorrow's activity.", icon: TrendingUp, points: 80, action: 'predictPulse' as PulseContractFunction },
-    { id: QUEST_IDS.OPEN_CAPSULE, name: 'Open Capsule', desc: 'Reveal long-term rewards.', icon: Gift, points: 1000, action: 'openCapsule' as any, disabled: true },
+    { id: QUEST_IDS.STAKE_STREAK, name: 'Stake for Streak', desc: 'Pledge STX to double multipliers. V2 Beta.', icon: Flame, points: 200, risk: true, action: 'stakeStreak' as any, disabled: true },
+    { id: QUEST_IDS.CLAIM_MILESTONE, name: 'Claim Milestone', desc: 'Level up your soulbound identity.', icon: Trophy, points: 500, action: 'claimMilestone' as any, disabled: true },
+    { id: QUEST_IDS.PREDICT_PULSE, name: 'Predict Pulse', desc: "Vote on tomorrow's activity levels.", icon: TrendingUp, points: 80, action: 'predictPulse' as PulseContractFunction },
+    { id: QUEST_IDS.OPEN_CAPSULE, name: 'Open Capsule', desc: 'Seasonal loot boxes. Season 1 ending soon.', icon: Gift, points: 1000, action: 'openCapsule' as any, disabled: true },
 ]
+
 
 // Combo quest IDs for "Daily Triple"
 const COMBO_IDS = [...COMBO_QUEST_IDS]
