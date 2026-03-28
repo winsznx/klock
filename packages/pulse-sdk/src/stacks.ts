@@ -69,24 +69,30 @@ async function callStacksReadOnly(
     args: Array<string>,
     options: StacksReadOptions = {},
 ): Promise<StacksReadOnlyResponse | null> {
-    const { contract, sender } = resolveStacksOptions(options)
-    const response = await fetch(
-        `${contract.apiUrl}/v2/contracts/call-read/${contract.contractAddress}/${contract.contractName}/${functionName}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                sender,
-                arguments: args,
-            }),
-        },
-    )
+    try {
+        const { contract, sender } = resolveStacksOptions(options)
+        const response = await fetch(
+            `${contract.apiUrl}/v2/contracts/call-read/${contract.contractAddress}/${contract.contractName}/${functionName}`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sender,
+                    arguments: args,
+                }),
+            },
+        )
 
-    if (!response.ok) {
+        if (!response.ok) {
+            return null
+        }
+
+        const data = await response.json()
+        return data as StacksReadOnlyResponse
+    } catch (error) {
+        console.error(`[StacksSDK] read-only call failed: ${functionName}`, error)
         return null
     }
-
-    return response.json() as Promise<StacksReadOnlyResponse>
 }
 
 function parseClarityUInt(result: string): number {
