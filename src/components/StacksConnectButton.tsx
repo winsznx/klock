@@ -48,10 +48,11 @@ export default function StacksConnectButton({
             <button
                 type="button"
                 onClick={connect}
-                className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg transform hover:-translate-y-0.5 ${className}`}
+                aria-label="Connect Stacks Wallet"
+                className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-full font-semibold hover:shadow-xl transition-all duration-200 shadow-lg transform hover:-translate-y-0.5 ${className}`}
             >
                 <Wallet size={20} />
-                Connect Stacks Wallet
+                Connect Stacks
             </button>
         )
     }
