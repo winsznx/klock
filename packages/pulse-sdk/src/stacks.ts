@@ -130,26 +130,21 @@ function parseTupleUInt(data: Record<string, ClarityTupleField> | null, key: str
 }
 
 function parseTupleBoolean(data: Record<string, ClarityTupleField> | null, key: string, fallback = false): boolean {
-    if (!data) {
-        return fallback
-    }
+    if (!data) return fallback
 
-    const field = data[key] as ClarityTupleField & { type?: string } | undefined
-    const value = field?.value
-    if (typeof value === 'boolean') {
-        return value
-    }
+    const field = data[key] as (ClarityTupleField & { type?: string | number }) | undefined
+    if (!field) return fallback
 
-    if (field?.type === 'true') {
-        return true
-    }
-
-    if (field?.type === 'false') {
-        return false
-    }
+    // Handle v7 Clarity values which often wrap the 'value' or have a distinct 'type'
+    if (typeof field.value === 'boolean') return field.value
+    
+    // ClarityType.BoolTrue is 3, BoolFalse is 4
+    if (field.type === 3 || field.type === 'true' || (field as any).type === ClarityType.BoolTrue) return true
+    if (field.type === 4 || field.type === 'false' || (field as any).type === ClarityType.BoolFalse) return false
 
     return fallback
 }
+
 
 function parseClarityListUInt(result: string): bigint[] {
     try {
@@ -270,4 +265,3 @@ export async function readStacksCompletedQuests(
 
     return getStacksCompletedQuests(status.completedQuests)
 }
-
