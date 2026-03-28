@@ -13,24 +13,34 @@ import type { PulseActionResult, StacksContractInfo, StacksUserProfile } from '.
 import { fetchStacksWalletProfile } from './stacks.js'
 
 function resolveStacksChainId(session: { namespaces?: Record<string, { accounts?: string[] }> }) {
+    // Check for standard stacks namespace
     const stacksNamespace = session.namespaces?.stacks
     if (stacksNamespace?.accounts?.length) {
-        const [namespace, reference] = stacksNamespace.accounts[0].split(':')
-        if (namespace && reference) {
-            return `${namespace}:${reference}`
-        }
+        const firstAccount = stacksNamespace.accounts[0]
+        const [namespace, reference] = firstAccount.split(':')
+        if (namespace && reference) return `${namespace}:${reference}`
     }
 
+    // Check for BIP-122 (Bitcoin) namespace which some Stacks wallets use for discovery
     const bip122Namespace = session.namespaces?.bip122
     if (bip122Namespace?.accounts?.length) {
-        const [namespace, reference] = bip122Namespace.accounts[0].split(':')
-        if (namespace && reference) {
-            return `${namespace}:${reference}`
+        const firstAccount = bip122Namespace.accounts[0]
+        const [namespace, reference] = firstAccount.split(':')
+        // Only use if we can't find a better one
+        if (namespace && reference) return `${namespace}:${reference}`
+    }
+
+    // Fallback to searching all namespaces for any stacks identifier
+    for (const [ns, data] of Object.entries(session.namespaces || {})) {
+        if (ns.includes('stacks') && data.accounts?.length) {
+            const [namespace, reference] = data.accounts[0].split(':')
+            if (namespace && reference) return `${namespace}:${reference}`
         }
     }
 
     return undefined
 }
+
 
 export function useAppKitStacksWallet() {
     const { address, isConnected } = useAppKitAccount()
@@ -50,8 +60,10 @@ export function useAppKitStacksWallet() {
             explorerUrl: contract.explorerUrl,
             fullContractId: contract.fullContractId,
             network: isMainnet ? 'mainnet' : 'testnet',
+            apiUrl: contract.apiUrl,
         }
     }, [address, isMainnet])
+
 
     const executeContractCall = useCallback(async (
         functionName: string,
