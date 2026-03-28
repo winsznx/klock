@@ -7,6 +7,10 @@ import { createPulseAuthStorageKey } from './utils.js'
 
 const PulseAuthContext = createContext<PulseAuthContextValue | undefined>(undefined)
 
+const safeGetItem = (key: string) => typeof window !== 'undefined' ? localStorage.getItem(key) : null
+const safeSetItem = (key: string, value: string) => { if (typeof window !== 'undefined') localStorage.setItem(key, value) }
+const safeRemoveItem = (key: string) => { if (typeof window !== 'undefined') localStorage.removeItem(key) }
+
 interface PulseAuthProviderProps {
     children: React.ReactNode
     namespace?: string
@@ -22,11 +26,11 @@ export function PulseAuthProvider({
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 
     useEffect(() => {
-        if (typeof window === 'undefined' || !isConnected || !address) {
+        if (!isConnected || !address) {
             return
         }
 
-        setIsLoggedIn(localStorage.getItem(storageKey) === address)
+        setIsLoggedIn(safeGetItem(storageKey) === address)
     }, [address, isConnected, storageKey])
 
     useEffect(() => {
@@ -35,9 +39,7 @@ export function PulseAuthProvider({
         }
 
         setIsLoggedIn(false)
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem(storageKey)
-        }
+        safeRemoveItem(storageKey)
     }, [address, isConnected, storageKey])
 
     const login = useCallback(() => {
@@ -46,16 +48,12 @@ export function PulseAuthProvider({
         }
 
         setIsLoggedIn(true)
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(storageKey, address)
-        }
+        safeSetItem(storageKey, address)
     }, [address, isConnected, storageKey])
 
     const logout = useCallback(() => {
         setIsLoggedIn(false)
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem(storageKey)
-        }
+        safeRemoveItem(storageKey)
     }, [storageKey])
 
     const value = useMemo<PulseAuthContextValue>(() => ({
