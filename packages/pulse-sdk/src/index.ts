@@ -6,6 +6,7 @@ export {
     MAINNET_CHAIN_IDS,
     QUEST_IDS,
     QUEST_POINTS,
+    COMBO_QUEST_IDS,
     PULSE_ABI,
 } from './constants.js'
 
