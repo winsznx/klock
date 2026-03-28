@@ -15,13 +15,15 @@ export interface BaseReadOptions {
     network?: PulseBaseNetwork
 }
 
-export function isBaseChain (chainId: number | undefined): chainId is SupportedBaseChainId {
+export function isBaseChain(chainId: number | undefined): chainId is SupportedBaseChainId {
     return chainId === BASE_CONTRACTS.mainnet.chainId || chainId === BASE_CONTRACTS.testnet.chainId
 }
 
-export function isBaseTestnetChain (chainId: number | undefined): boolean {
+export function isBaseTestnetChain(chainId: number | undefined): boolean {
     return chainId === BASE_CONTRACTS.testnet.chainId
 }
+
+const UNSUPPORTED_CHAIN_MSG = 'Unsupported Base chain ID'
 
 export function getBaseContract (chainId: number): BaseContractConfig {
     if (chainId === BASE_CONTRACTS.mainnet.chainId) {
@@ -32,7 +34,7 @@ export function getBaseContract (chainId: number): BaseContractConfig {
         return BASE_CONTRACTS.testnet
     }
 
-    throw new Error(`Unsupported Base chain ID: ${chainId}`)
+    throw new Error(`${UNSUPPORTED_CHAIN_MSG}: ${chainId}`)
 }
 
 export function getBaseContractByNetwork (network: PulseBaseNetwork = 'mainnet') {
