@@ -50,7 +50,7 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
 
                 <div className="mt-6 pt-6 border-t border-orange-200">
                     <p className="text-xs text-gray-500">
-                        Supports 20+ networks including Ethereum, Polygon, Base, Arbitrum, and more.
+                        Connect with Base or Stacks to access your daily rituals and climb the leaderboard.
                     </p>
                 </div>
             </div>
