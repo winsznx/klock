@@ -51,17 +51,23 @@ function toNumber(value: bigint | number | string | null | undefined, fallback =
     return fallback
 }
 
-export function normalizeBaseUserProfile(profile: BaseUserProfile): UnifiedUserProfile {
+export function normalizeBaseUserProfile(profile: BaseUserProfile, completedQuests: number[] = []): UnifiedUserProfile {
+    let questBitmap = 0
+    completedQuests.forEach(id => {
+        questBitmap |= (1 << id)
+    })
+
     return {
         totalPoints: toNumber(profile.totalPoints),
         currentStreak: toNumber(profile.currentStreak),
         longestStreak: toNumber(profile.longestStreak),
         level: toNumber(profile.level, 1),
         totalCheckins: toNumber(profile.totalCheckins),
-        questBitmap: 0, // Base uses individual calls, needs building if bitmap is required
+        questBitmap,
         exists: profile.exists,
     }
 }
+
 
 export function normalizeStacksUserProfile(profile: StacksUserProfile): UnifiedUserProfile {
     return {

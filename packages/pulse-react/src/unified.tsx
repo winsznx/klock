@@ -22,8 +22,9 @@ export function useUnifiedPulseContract() {
 
     const userProfile: UnifiedUserProfile | null = useMemo(() => {
         if (activeContract === 'base' && baseContract.userProfile) {
-            return normalizeBaseUserProfile(baseContract.userProfile)
+            return normalizeBaseUserProfile(baseContract.userProfile, baseContract.completedQuests)
         }
+
 
         if (activeContract === 'stacks' && stacksContext.userProfile) {
             return normalizeStacksUserProfile(stacksContext.userProfile)
