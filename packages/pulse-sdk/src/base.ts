@@ -103,11 +103,11 @@ export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promi
     const contract = getBaseContractByNetwork(network)
 
     try {
-        const stats = await client.readContract({
+        const stats = await withRetry(() => client.readContract({
             address: contract.address,
             abi: PULSE_ABI,
             functionName: 'getGlobalStats',
-        })
+        }))
 
         const [totalUsers, totalCheckins, totalPointsDistributed] = stats as [bigint, bigint, bigint]
         return {
@@ -116,7 +116,7 @@ export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promi
             totalPointsDistributed: totalPointsDistributed ?? 0n,
         }
     } catch (err) {
-        console.error('[PulseSDK] Failed to read global stats:', err)
+        console.error('[PulseSDK] Failed to read global stats after retries:', err)
         return { totalUsers: 0n, totalCheckins: 0n, totalPointsDistributed: 0n }
     }
 }
@@ -131,12 +131,12 @@ export async function readBaseQuestCompletion (
     const contract = getBaseContractByNetwork(network)
 
     try {
-        const completed = await client.readContract({
+        const completed = await withRetry(() => client.readContract({
             address: contract.address,
             abi: PULSE_ABI,
             functionName: 'hasCompletedQuestToday',
             args: [user, questId],
-        })
+        }))
 
         return completed as boolean
     } catch {
@@ -151,7 +151,7 @@ export async function readBaseCompletedQuests (user: Address, options: BaseReadO
     const questIds = Object.values(QUEST_IDS) as PulseQuestId[]
 
     try {
-        const results = await client.multicall({
+        const results = await withRetry(() => client.multicall({
             contracts: questIds.map(questId => ({
                 address: contract.address as Address,
                 abi: PULSE_ABI,
@@ -159,7 +159,7 @@ export async function readBaseCompletedQuests (user: Address, options: BaseReadO
                 args: [user, questId],
             })),
             allowFailure: true
-        })
+        }))
 
         return questIds.filter((_, index) => {
             const res = results[index]
@@ -183,15 +183,16 @@ export async function readBaseComboAvailability (user: Address, options: BaseRea
     const contract = getBaseContractByNetwork(network)
 
     try {
-        const available = await client.readContract({
+        const available = await withRetry(() => client.readContract({
             address: contract.address,
             abi: PULSE_ABI,
             functionName: 'isComboAvailable',
             args: [user],
-        })
+        }))
 
         return available as boolean
     } catch {
         return false
     }
 }
+
