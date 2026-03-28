@@ -108,24 +108,44 @@ export function useBasePulseContract(): UseBasePulseContractResult {
             return
         }
 
-        const questIds = Object.values(QUEST_IDS)
-        const completed = await Promise.all(
-            questIds.map(async (questId) => ({
-                questId,
-                completed: await publicClient.readContract({
+        const questIds = Object.values(QUEST_IDS) as number[]
+        
+        try {
+            // Using multicall for much better performance (Base supports multicall3)
+            const results = await publicClient.multicall({
+                contracts: questIds.map(questId => ({
                     address: contract.address as Address,
                     abi: PULSE_ABI,
                     functionName: 'hasCompletedQuestToday',
                     args: [address, questId],
-                }),
-            })),
-        )
+                })),
+                allowFailure: true
+            })
 
-        setCompletedQuests(
-            completed
-                .filter((entry) => entry.completed)
-                .map((entry) => entry.questId),
-        )
+            const completed = questIds.filter((_, index) => {
+                const res = results[index]
+                return res?.status === 'success' && (res.result as any) === true
+            })
+            setCompletedQuests(completed)
+        } catch (err) {
+            console.error('[BasePulse] Multicall quest fetch failed, falling back to sequential:', err)
+            // Fallback to sequential if multicall fails for some reason
+            const completed: number[] = []
+            for (const questId of questIds) {
+                try {
+                    const isDone = await publicClient.readContract({
+                        address: contract.address as Address,
+                        abi: PULSE_ABI,
+                        functionName: 'hasCompletedQuestToday',
+                        args: [address, questId],
+                    })
+                    if (isDone) completed.push(questId)
+                } catch {
+                    // Ignore single quest fetch errors
+                }
+            }
+            setCompletedQuests(completed)
+        }
     }, [address, contract, publicClient])
 
     const refreshData = useCallback(async () => {
