@@ -177,7 +177,7 @@ export async function readBaseCompletedQuests (user: Address, options: BaseReadO
 
         return questIds.filter((_, index) => {
             const res = results[index]
-            return res?.status === 'success' && (res.result as any) === true
+            return res?.status === 'success' && res.result === true
         })
     } catch {
         // Fallback to sequential
