@@ -95,8 +95,8 @@ async function callStacksReadOnly(
 
         const data = await response.json()
         return data as StacksReadOnlyResponse
-    } catch (error: any) {
-        if (error.name === 'AbortError') {
+    } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
             console.error(`[StacksSDK] read-only call timed out after 10s: ${functionName}`)
         } else {
             console.error(`[StacksSDK] read-only call failed: ${functionName}`, error)
