@@ -26,10 +26,20 @@ type ClarityOptionalTuple = {
     }
 }
 
+/**
+ * Checks if a given string is a valid Stacks address (Mainnet or Testnet)
+ * @param address The address string to validate
+ * @returns True if the string follows the Stacks address format
+ */
 export function isStacksAddress(address: string | null | undefined): address is string {
     return typeof address === 'string' && (address.startsWith('SP') || address.startsWith('ST'))
 }
 
+/**
+ * Specifically checks if an address belongs to the Stacks Mainnet (SP...)
+ * @param address The address string to check
+ * @returns True if it starts with SP
+ */
 export function isStacksMainnetAddress(address: string | null | undefined): boolean {
     return address?.startsWith('SP') ?? false
 }
