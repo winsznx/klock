@@ -18,21 +18,23 @@ export const BASE_CONTRACTS = {
     },
 } as const satisfies Record<PulseBaseNetwork, BaseContractConfig>
 
+const DEFAULT_CONTRACT_NAME = 'pulse'
+
 export const STACKS_CONTRACTS = {
     testnet: {
         network: 'testnet',
         contractAddress: 'ST31DP8F8CF2GXSZBHHHK5J6Y061744E1TP7FRGHT',
-        contractName: 'pulse',
-        fullContractId: 'ST31DP8F8CF2GXSZBHHHK5J6Y061744E1TP7FRGHT.pulse',
-        explorerUrl: 'https://explorer.hiro.so/txid/ST31DP8F8CF2GXSZBHHHK5J6Y061744E1TP7FRGHT.pulse?chain=testnet',
+        contractName: DEFAULT_CONTRACT_NAME,
+        fullContractId: `ST31DP8F8CF2GXSZBHHHK5J6Y061744E1TP7FRGHT.${DEFAULT_CONTRACT_NAME}`,
+        explorerUrl: `https://explorer.hiro.so/txid/ST31DP8F8CF2GXSZBHHHK5J6Y061744E1TP7FRGHT.${DEFAULT_CONTRACT_NAME}?chain=testnet`,
         apiUrl: 'https://api.testnet.hiro.so',
     },
     mainnet: {
         network: 'mainnet',
         contractAddress: 'SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV',
-        contractName: 'pulse',
-        fullContractId: 'SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.pulse',
-        explorerUrl: 'https://explorer.hiro.so/txid/SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.pulse?chain=mainnet',
+        contractName: DEFAULT_CONTRACT_NAME,
+        fullContractId: `SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.${DEFAULT_CONTRACT_NAME}`,
+        explorerUrl: `https://explorer.hiro.so/txid/SP31DP8F8CF2GXSZBHHHK5J6Y061744E1TNFGYWYV.${DEFAULT_CONTRACT_NAME}?chain=mainnet`,
         apiUrl: 'https://api.mainnet.hiro.so',
     },
 } as const satisfies Record<PulseStacksNetwork, StacksContractConfig>
