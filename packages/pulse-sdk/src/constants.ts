@@ -56,6 +56,7 @@ export const MAINNET_CHAIN_IDS = [
     CHAIN_IDS.ETHEREUM_MAINNET,
 ] as const
 
+/** Unique identifiers for each ritual/quest in the Pulse Protocol */
 export const QUEST_IDS = {
     DAILY_CHECKIN: 1,
     RELAY_SIGNAL: 2,
