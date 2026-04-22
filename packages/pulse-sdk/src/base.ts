@@ -25,7 +25,7 @@ export function isBaseTestnetChain(chainId: number | undefined): boolean {
 
 const UNSUPPORTED_CHAIN_MSG = 'Unsupported Base chain ID'
 
-export function getBaseContract (chainId: number): BaseContractConfig {
+export function getBaseContract(chainId: number): BaseContractConfig {
     if (chainId === BASE_CONTRACTS.mainnet.chainId) {
         return BASE_CONTRACTS.mainnet
     }
