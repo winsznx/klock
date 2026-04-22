@@ -82,7 +82,18 @@ export async function readBaseUserProfile (user: Address, options: BaseReadOptio
             args: [user],
         }))
 
-        return profile as unknown as BaseUserProfile
+        const profileData = profile as [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean]
+        return {
+            totalPoints: profileData[0],
+            currentStreak: profileData[1],
+            longestStreak: profileData[2],
+            lastCheckinTime: profileData[3],
+            totalCheckins: profileData[4],
+            level: profileData[5],
+            stakedAmount: profileData[6],
+            joinedTime: profileData[7],
+            exists: profileData[8],
+        }
     } catch (err) {
         console.error(`[PulseSDK] Failed to read user profile for ${user} after retries:`, err)
         return {
