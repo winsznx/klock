@@ -152,12 +152,13 @@ function parseTupleBoolean(data: Record<string, ClarityTupleField> | null, key: 
     const field = data[key] as (ClarityTupleField & { type?: string | number }) | undefined
     if (!field) return fallback
 
-    // Handle v7 Clarity values which often wrap the 'value' or have a distinct 'type'
+    // Handle direct boolean values
     if (typeof field.value === 'boolean') return field.value
-    
-    // ClarityType.BoolTrue is 3, BoolFalse is 4
-    if (field.type === 3 || field.type === 'true' || (field as any).type === ClarityType.BoolTrue) return true
-    if (field.type === 4 || field.type === 'false' || (field as any).type === ClarityType.BoolFalse) return false
+
+    // Handle Clarity representation (ClarityType.BoolTrue = 3, ClarityType.BoolFalse = 4)
+    const typeValue = field.type
+    if (typeValue === 3 || typeValue === 'true' || typeValue === ClarityType.BoolTrue) return true
+    if (typeValue === 4 || typeValue === 'false' || typeValue === ClarityType.BoolFalse) return false
 
     return fallback
 }
