@@ -45,6 +45,7 @@ export type {
     BaseContractConfig,
     BaseGlobalStats,
     BaseUserProfile,
+    PulseNetwork,
     PulseBaseNetwork,
     PulseQuestId,
     PulseStacksNetwork,
