@@ -1,7 +1,12 @@
 import type { Address } from 'viem'
 
+/** Supported network types for the Pulse Protocol */
 export type PulseNetwork = 'mainnet' | 'testnet'
+
+/** Network configuration specific to Base */
 export type PulseBaseNetwork = PulseNetwork
+
+/** Network configuration specific to Stacks */
 export type PulseStacksNetwork = PulseNetwork
 export type PulseQuestId = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 export type SupportedBaseChainId = 8453 | 84532
