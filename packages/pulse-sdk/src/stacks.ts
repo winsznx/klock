@@ -93,7 +93,11 @@ async function callStacksReadOnly(
             return null
         }
 
-        const data = await response.json()
+        const data = await response.json().catch(() => null)
+        if (!data) {
+            console.error(`[StacksSDK] Failed to parse JSON response for ${functionName}`)
+            return null
+        }
         return data as StacksReadOnlyResponse
     } catch (error) {
         if (error instanceof Error && error.name === 'AbortError') {
