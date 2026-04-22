@@ -60,7 +60,10 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Pro
     try {
         return await fn()
     } catch (err) {
-        if (retries <= 1) throw err
+        if (retries <= 1) {
+            throw err
+        }
+        console.warn(`[PulseSDK] Operation failed, retrying in ${delay}ms... (${retries - 1} attempts left)`)
         await new Promise(resolve => setTimeout(resolve, delay))
         return withRetry(fn, retries - 1, delay * 2)
     }
