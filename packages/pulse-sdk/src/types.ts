@@ -101,13 +101,21 @@ export interface StacksDailyQuestStatus {
     firstQuestBlock: number
     /** Whether the daily combo bonus is active */
     comboActivated: boolean
+    /** True if the daily status record exists on-chain */
     exists: boolean
 }
 
+/**
+ * Standard response format for Stacks read-only contract calls
+ */
 export interface StacksReadOnlyResponse {
+    /** True if the call was successful */
     okay: boolean
+    /** The hex-encoded result of the Clarity call */
     result: string
+    /** Detailed error cause if the call failed */
     cause?: string | undefined
+    /** Error message if the call failed */
     error?: string | undefined
 }
 export type PulseContractFunction =
