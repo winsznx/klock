@@ -174,7 +174,7 @@ function parseTupleBoolean(data: Record<string, ClarityTupleField> | null, key: 
 }
 
 
-function parseClarityListUInt(result: string): bigint[] {
+function parseClarityListUInt(result: string): readonly bigint[] {
     try {
         const clarityValue = hexToCV(result) as { list?: Array<{ value?: bigint }> }
         return clarityValue.list?.map(v => v.value ?? 0n) ?? []
