@@ -88,3 +88,7 @@ export function hasDailyCombo(checkQuest: (questId: PulseQuestId) => boolean) {
 export function hasStacksDailyCombo(bitmap: number) {
     return COMBO_QUEST_IDS.every((questId: PulseQuestId) => isStacksQuestCompleted(bitmap, questId))
 }
+
+export function isPulseContractTarget(target: unknown): target is import('./types.js').PulseContractTarget {
+    return target === 'stacks' || target === 'base' || target === 'none';
+}
