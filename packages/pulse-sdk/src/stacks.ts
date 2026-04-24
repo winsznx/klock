@@ -64,7 +64,7 @@ export function getStacksCompletedQuests(bitmap: number): PulseQuestId[] {
     return (Object.values(QUEST_IDS) as PulseQuestId[]).filter((questId) => isStacksQuestCompleted(bitmap, questId))
 }
 
-function resolveStacksOptions(options: StacksReadOptions = {}) {
+function resolveStacksOptions(options: Readonly<StacksReadOptions> = {}) {
     const network = options.network ?? 'mainnet'
     const contract = getStacksContract(network)
     return {
