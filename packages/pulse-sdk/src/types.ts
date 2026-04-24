@@ -35,6 +35,8 @@ export interface StacksContractConfig {
  * Represents a user profile on the Base network
  */
 export interface BaseUserProfile {
+    /** Optional unique identifier */
+    readonly id?: string;
     /** Total Pulse Points accumulated */
     totalPoints: bigint
     /** Current consecutive daily active streak */
