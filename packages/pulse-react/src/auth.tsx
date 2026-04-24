@@ -42,7 +42,7 @@ export function PulseAuthProvider({
     children,
     namespace = 'pulse',
     storageKey = createPulseAuthStorageKey(namespace),
-}: PulseAuthProviderProps) {
+}: Readonly<PulseAuthProviderProps>) {
     const { address, isConnected } = useAppKitAccount()
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
 
