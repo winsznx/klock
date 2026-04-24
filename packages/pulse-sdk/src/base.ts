@@ -153,7 +153,7 @@ export async function readBaseQuestCompletion (
         }))
 
         return completed as boolean
-    } catch {
+    } catch (error) {
         return false
     }
 }
@@ -179,7 +179,7 @@ export async function readBaseCompletedQuests (user: Address, options: BaseReadO
             const res = results[index]
             return res?.status === 'success' && res.result === true
         })
-    } catch {
+    } catch (error) {
         // Fallback to sequential
         const completed: PulseQuestId[] = []
         for (const questId of questIds) {
@@ -205,7 +205,7 @@ export async function readBaseComboAvailability (user: Address, options: BaseRea
         }))
 
         return available as boolean
-    } catch {
+    } catch (error) {
         return false
     }
 }
