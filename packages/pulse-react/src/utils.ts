@@ -29,7 +29,7 @@ export function resolveActivePulseContract(params: Readonly<{ // Strict readonly
     return 'none'
 }
 
-function toNumber(value: bigint | number | string | null | undefined, fallback = 0): number {
+export function toNumber(value: bigint | number | string | null | undefined, fallback: number = 0): number {
     if (value === null || value === undefined) {
         return fallback
     }
