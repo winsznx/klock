@@ -158,7 +158,7 @@ export async function readBaseQuestCompletion (
     }
 }
 
-export async function readBaseCompletedQuests (user: Address, options: BaseReadOptions = {}): Promise<PulseQuestId[]> {
+export async function readBaseCompletedQuests(user: Address, options: Readonly<BaseReadOptions> = {}): Promise<readonly PulseQuestId[]> {
     const network = resolveBaseNetwork(options)
     const client = resolveBaseClient(options)
     const contract = getBaseContractByNetwork(network)
