@@ -37,7 +37,7 @@ export function getBaseContract(chainId: number): BaseContractConfig {
     throw new Error(`${UNSUPPORTED_CHAIN_MSG}: ${chainId}`)
 }
 
-export function getBaseContractByNetwork (network: PulseBaseNetwork = 'mainnet') {
+export function getBaseContractByNetwork(network: PulseBaseNetwork = 'mainnet'): BaseContractConfig {
     return BASE_CONTRACTS[network]
 }
 
