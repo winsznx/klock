@@ -60,7 +60,7 @@ export function isStacksQuestCompleted(bitmap: number, questId: PulseQuestId): b
     return (bitmap & (1 << questId)) !== 0
 }
 
-export function getStacksCompletedQuests(bitmap: number): PulseQuestId[] {
+export function getStacksCompletedQuests(bitmap: number): readonly PulseQuestId[] {
     return (Object.values(QUEST_IDS) as PulseQuestId[]).filter((questId) => isStacksQuestCompleted(bitmap, questId))
 }
 
