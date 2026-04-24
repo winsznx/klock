@@ -76,7 +76,7 @@ function resolveStacksOptions(options: Readonly<StacksReadOptions> = {}) {
 
 async function callStacksReadOnly(
     functionName: string,
-    args: Array<string>,
+    args: ReadonlyArray<string>,
     options: StacksReadOptions = {},
 ): Promise<StacksReadOnlyResponse | null> {
     const controller = new AbortController()
