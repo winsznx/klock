@@ -56,7 +56,7 @@ function resolveBaseNetwork (options: BaseReadOptions = {}) {
     return options.network ?? 'mainnet'
 }
 
-async function withRetry<T>(fn: () => Promise<T>, retries = 3, delay = 500): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, retries: number = 3, delay: number = 500): Promise<T> {
     try {
         return await fn()
     } catch (err) {
