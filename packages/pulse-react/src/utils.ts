@@ -51,7 +51,7 @@ export function toNumber(value: bigint | number | string | null | undefined, fal
     return fallback
 }
 
-export function normalizeBaseUserProfile(profile: BaseUserProfile, completedQuests: number[] = []): UnifiedUserProfile {
+export function normalizeBaseUserProfile(profile: BaseUserProfile, completedQuests: readonly number[] = []): UnifiedUserProfile {
     let questBitmap = 0
     completedQuests.forEach(id => {
         questBitmap |= (1 << id)
