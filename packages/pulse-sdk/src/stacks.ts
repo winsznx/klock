@@ -139,7 +139,7 @@ function parseClarityOptionalTuple(result: string): Record<string, ClarityTupleF
     return clarityValue.value?.value ?? clarityValue.value?.data ?? null
 }
 
-function parseTupleUInt(data: Record<string, ClarityTupleField> | null, key: string, fallback = 0): number {
+function parseTupleUInt(data: Readonly<Record<string, ClarityTupleField>> | null, key: string, fallback: number = 0): number {
     if (!data) {
         return fallback
     }
