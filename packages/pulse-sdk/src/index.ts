@@ -57,3 +57,5 @@ export type {
     SupportedBaseChainId,
 } from './types.js'
 
+
+export { assertNever, sleep } from './utils.js';
