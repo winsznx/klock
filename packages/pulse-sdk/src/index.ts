@@ -59,3 +59,5 @@ export type {
 
 
 export { assertNever, sleep } from './utils.js';
+
+export { isAddress } from './guards.js';
