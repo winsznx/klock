@@ -85,7 +85,7 @@ export function PulseAuthProvider({
     )
 }
 
-export function usePulseAuth() {
+export function usePulseAuth(): PulseAuthContextValue {
     const context = useContext(PulseAuthContext)
     if (!context) {
         throw new Error('usePulseAuth must be used within a PulseAuthProvider')
