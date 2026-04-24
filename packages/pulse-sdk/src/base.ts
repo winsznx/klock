@@ -19,7 +19,7 @@ export function isBaseChain(chainId: number | undefined): chainId is SupportedBa
     return chainId === BASE_CONTRACTS.mainnet.chainId || chainId === BASE_CONTRACTS.testnet.chainId
 }
 
-export function isBaseTestnetChain(chainId: number | undefined): boolean {
+export function isBaseTestnetChain(chainId: number | undefined | null): boolean {
     return chainId === BASE_CONTRACTS.testnet.chainId
 }
 
