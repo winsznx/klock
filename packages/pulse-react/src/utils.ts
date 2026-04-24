@@ -5,7 +5,7 @@ export function createPulseAuthStorageKey(namespace = 'pulse') {
     return `${namespace}_logged_in_address`
 }
 
-export function truncateAddress(address: string, leading = 6, trailing = 4) {
+export function truncateAddress(address: string, leading: number = 6, trailing: number = 4): string {
     if (address.length <= leading + trailing) {
         return address
     }
