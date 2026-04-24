@@ -13,7 +13,7 @@ export function truncateAddress(address: string, leading = 6, trailing = 4) {
     return `${address.slice(0, leading)}...${address.slice(-trailing)}`
 }
 
-export function resolveActivePulseContract(params: {
+export function resolveActivePulseContract(params: Readonly<{ // Strict readonly params
     stacksConnected: boolean
     appKitConnected: boolean
     baseNetwork: boolean
