@@ -131,3 +131,5 @@ export default function EngagementCard({
         </motion.div>
     )
 }
+
+export type EngagementCardBaseProps = Readonly<{ id: string; title: string; description: string; points: number }>;
