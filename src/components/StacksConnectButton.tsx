@@ -77,3 +77,5 @@ export default function StacksConnectButton({
         </button>
     )
 }
+
+export type StacksConnectBaseProps = Readonly<{ onConnect?: () => void; disabled?: boolean }>;
