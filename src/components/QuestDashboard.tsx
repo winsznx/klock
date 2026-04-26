@@ -70,8 +70,11 @@ export default function QuestDashboard() {
     }, [isConnected, checkComboAvailable])
 
     // Calculate completed quests
-    const completedQuests = INTERACTIONS.filter(q => isQuestCompleted(q.id)).map(q => q.id)
-    const progress = (completedQuests.length / INTERACTIONS.length) * 100
+    const { completedQuests, progress } = React.useMemo(() => {
+        const completed = INTERACTIONS.filter(q => isQuestCompleted(q.id)).map(q => q.id);
+        return { completedQuests: completed, progress: (completed.length / INTERACTIONS.length) * 100 };
+    }, [isQuestCompleted]);
+
 
     // Handle quest interaction
     const handleInteraction = useCallback(async (questId: number, action: PulseContractFunction) => {
