@@ -102,7 +102,7 @@ export default function QuestDashboard() {
         setLocalError(null)
 
         try {
-            let result: { success: boolean; error?: string }
+            let result: Readonly<{ success: boolean; error?: string }>
 
             switch (action) {
                 case 'dailyCheckin':
