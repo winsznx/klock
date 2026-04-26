@@ -305,3 +305,6 @@ export default function Leaderboard() {
         </div>
     )
 }
+
+export type SortDirection = 'asc' | 'desc';
+export type LeaderboardSortConfig<T> = Readonly<{ key: keyof T; direction: SortDirection }>;
