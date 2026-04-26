@@ -17,7 +17,7 @@ export function resolveActivePulseContract(params: Readonly<{ // Strict readonly
     stacksConnected: boolean
     appKitConnected: boolean
     baseNetwork: boolean
-}): PulseContractTarget {
+}>): PulseContractTarget {
     if (params.stacksConnected) {
         return 'stacks'
     }
