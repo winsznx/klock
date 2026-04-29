@@ -1,0 +1,1 @@
+export const memoize = <T extends Function>(fn: T): T => { const cache = new Map(); return ((...args: any[]) => { const key = JSON.stringify(args); if(cache.has(key)) return cache.get(key); const res = fn(...args); cache.set(key, res); return res; }) as any; };
