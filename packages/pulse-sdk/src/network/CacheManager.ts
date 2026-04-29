@@ -1,0 +1,1 @@
+export class CacheManager<K, V> { private map = new Map<K, {val: V, exp: number}>(); set(k: K, val: V, ttl: number) { this.map.set(k, {val, exp: Date.now() + ttl}); } get(k: K) { const entry = this.map.get(k); return entry && entry.exp > Date.now() ? entry.val : undefined; } }
