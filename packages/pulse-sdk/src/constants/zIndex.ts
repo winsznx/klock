@@ -1,0 +1,1 @@
+export const Z_INDEX = { BASE: 0, DROPDOWN: 10, STICKY: 100, OVERLAY: 1000, MODAL: 10000, TOAST: 100000 } as const;
