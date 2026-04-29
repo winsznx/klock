@@ -6,5 +6,5 @@ export type PulseProps<T> = T & {
 };
 
 export function withPulseRef<T, P = {}>(Component: React.ForwardRefRenderFunction<T, PulseProps<P>>) {
-    return forwardRef(Component);
+    return forwardRef(Component as any) as React.ForwardRefExoticComponent<React.PropsWithoutRef<PulseProps<P>> & React.RefAttributes<T>>;
 }

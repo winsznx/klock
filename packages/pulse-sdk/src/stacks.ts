@@ -285,7 +285,7 @@ export async function readStacksUserProfile(
 export async function readStacksCompletedQuests(
     user: string,
     options: StacksReadOptions = {},
-): Promise<PulseQuestId[]> {
+): Promise<readonly PulseQuestId[]> {
     const day = await readStacksCurrentDay(options)
     if (day === 0) {
         return []

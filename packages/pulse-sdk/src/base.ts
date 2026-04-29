@@ -82,17 +82,17 @@ export async function readBaseUserProfile (user: Address, options: BaseReadOptio
             args: [user],
         }))
 
-        const profileData = profile as [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean]
+        const profileData: any = profile
         return {
-            totalPoints: profileData[0],
-            currentStreak: profileData[1],
-            longestStreak: profileData[2],
-            lastCheckinTime: profileData[3],
-            totalCheckins: profileData[4],
-            level: profileData[5],
-            stakedAmount: profileData[6],
-            joinedTime: profileData[7],
-            exists: profileData[8],
+            totalPoints: profileData.totalPoints ?? profileData[0],
+            currentStreak: profileData.currentStreak ?? profileData[1],
+            longestStreak: profileData.longestStreak ?? profileData[2],
+            lastCheckinTime: profileData.lastCheckinTime ?? profileData[3],
+            totalCheckins: profileData.totalCheckins ?? profileData[4],
+            level: profileData.level ?? profileData[5],
+            stakedAmount: profileData.stakedAmount ?? profileData[6],
+            joinedTime: profileData.joinedTime ?? profileData[7],
+            exists: profileData.exists ?? profileData[8],
         }
     } catch (err) {
         console.error(`[PulseSDK] Failed to read user profile for ${user} after retries:`, err)
@@ -123,11 +123,11 @@ export async function readBaseGlobalStats (options: BaseReadOptions = {}): Promi
             functionName: 'getGlobalStats',
         }))
 
-        const [totalUsers, totalCheckins, totalPointsDistributed] = stats as [bigint, bigint, bigint]
+        const statsData: any = stats
         return {
-            totalUsers: totalUsers ?? 0n,
-            totalCheckins: totalCheckins ?? 0n,
-            totalPointsDistributed: totalPointsDistributed ?? 0n,
+            totalUsers: statsData.totalUsers ?? statsData[0] ?? 0n,
+            totalCheckins: statsData.totalCheckins ?? statsData[1] ?? 0n,
+            totalPointsDistributed: statsData.totalPointsDistributed ?? statsData[2] ?? 0n,
         }
     } catch (err) {
         console.error('[PulseSDK] Failed to read global stats after retries:', err)
@@ -177,7 +177,7 @@ export async function readBaseCompletedQuests(user: Address, options: Readonly<B
 
         return questIds.filter((_, index) => {
             const res = results[index]
-            return res?.status === 'success' && res.result === true
+            return res?.status === 'success' && (res.result as any) === true
         })
     } catch (error) {
         // Fallback to sequential
