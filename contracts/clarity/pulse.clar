@@ -296,7 +296,10 @@
             (let ((points-earned (add-points user POINTS-DAILY-CHECKIN)))
                 ;; Update global stats
                 (var-set total-checkins (+ (var-get total-checkins) u1))
-                
+
+                ;; Emit event (print)
+                (print {event: "daily-checkin", user: user, day: day, points: points-earned})
+
                 (ok {
                     points-earned: points-earned,
                     day: day,
